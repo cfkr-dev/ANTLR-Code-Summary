@@ -1,19 +1,25 @@
 grammar sourceCode;
 
-source                  :   (IDENTIFIER|CONST_DEF_IDENTIFIER|NUMERIC_INTEGER_CONST|NUMERIC_REAL_CONST|STRING_CONST|COMMENT)+
+source                  :   (IDENTIFIER
+                            |CONST_DEF_IDENTIFIER
+                            |NUMERIC_INTEGER_CONST
+                            |NUMERIC_REAL_CONST
+                            |STRING_CONST
+                            |COMMENT
+                            |REST)+
                         ;
 
-IDENTIFIER              :   '_'+(MINUS|NUMBER)+(MINUS|NUMBER|'_')*
-                        |   MINUS+(MINUS|NUMBER|'_')*
+IDENTIFIER              :   MINUS+(MINUS|NUMBER|'_')*
+                        |   '_'+(MINUS|NUMBER)+(MINUS|NUMBER|'_')*
                         ;
-CONST_DEF_IDENTIFIER    :   '_'+(MAYUS|NUMBER)+(MAYUS|NUMBER|'_')*
-                        |   MAYUS+(MAYUS|NUMBER|'_')*
+CONST_DEF_IDENTIFIER    :   MAYUS+(MAYUS|NUMBER|'_')*
+                        |   '_'+(MAYUS|NUMBER)+(MAYUS|NUMBER|'_')*
                         ;
 
 NUMERIC_INTEGER_CONST   :   ('+'|'-')?NUMBER+
                         ;
-NUMERIC_REAL_CONST      :   REAL
-                        |   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
+NUMERIC_REAL_CONST      :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
+                        |   REAL
                         ;
 
 STRING_CONST            :   '\''(~'\''|('\\''\''))*'\''
@@ -28,9 +34,10 @@ COMMENT                 :   '//'~'\n'*
                              *('*'+)'/'
                         ;
 
-REST                    :   '\n' ->skip
+REST                    :   . ->skip
                         ;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 fragment MAYUS          :   [A-Z]
                         ;
