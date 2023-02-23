@@ -36,13 +36,13 @@ RESERVED_WORD
     ;
 
 IDENTIFIER
-    :   MINUS+(MINUS|NUMBER|'_')*
-    |   '_'+(MINUS|NUMBER)+(MINUS|NUMBER|'_')*
+    :   LOWER+(LOWER|NUMBER|'_')*
+    |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
     ;
 
 CONST_DEF_IDENTIFIER
-    :   MAYUS+(MAYUS|NUMBER|'_')*
-    |   '_'+(MAYUS|NUMBER)+(MAYUS|NUMBER|'_')*
+    :   UPPER+(UPPER|NUMBER|'_')*
+    |   '_'+(UPPER|NUMBER)+(UPPER|NUMBER|'_')*
     ;
 
 NUMERIC_INTEGER_CONST
@@ -64,10 +64,12 @@ COMMENT
     |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/'
     ;
 
-// TODO ver si hay que quitarlo
-REST
-    :   . ->skip
-    ;
+WHITE_SPACE : [ \t\n\r]+ -> channel(HIDDEN) ;
+
+// Descomentar si se quiere evitar que se reconozcan tokens erroneos
+//REST
+//    :   . -> skip
+//    ;
 
 
 /*
@@ -76,11 +78,11 @@ REST
 |-----------------------------------------|
 */
 
-fragment MAYUS
+fragment UPPER
     :   [A-Z]
     ;
 
-fragment MINUS
+fragment LOWER
     :   [a-z]
     ;
 
