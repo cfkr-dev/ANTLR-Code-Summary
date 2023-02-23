@@ -1,49 +1,115 @@
 grammar sourceCode;
 
-source                  :   (IDENTIFIER
-                            |CONST_DEF_IDENTIFIER
-                            |NUMERIC_INTEGER_CONST
-                            |NUMERIC_REAL_CONST
-                            |STRING_CONST
-                            |COMMENT
-                            |REST)+
-                        ;
+/*
+|-------------------------------------|
+|        GRAMMAR SPECIFICATION        |
+|-------------------------------------|
+*/
 
-IDENTIFIER              :   MINUS+(MINUS|NUMBER|'_')*
-                        |   '_'+(MINUS|NUMBER)+(MINUS|NUMBER|'_')*
-                        ;
-CONST_DEF_IDENTIFIER    :   MAYUS+(MAYUS|NUMBER|'_')*
-                        |   '_'+(MAYUS|NUMBER)+(MAYUS|NUMBER|'_')*
-                        ;
+source
+    :   COMMENT
+    |   RESERVED_WORD
+    |   NUMERIC_INTEGER_CONST
+    |   NUMERIC_REAL_CONST
+    |   IDENTIFIER
+    |   CONST_DEF_IDENTIFIER
+    |   STRING_CONST
+    ;
 
-NUMERIC_INTEGER_CONST   :   ('+'|'-')?NUMBER+
-                        ;
-NUMERIC_REAL_CONST      :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
-                        |   REAL
-                        ;
 
-STRING_CONST            :   '\''(~'\''|('\\''\''))*'\''
-                        |   '"'(~'"'|('\\''"'))*'"'
-                        ;
+/*
+|-----------------------------------|
+|        TOKEN SPECIFICATION        |
+|-----------------------------------|
+*/
 
-COMMENT                 :   '//'~'\n'*
-                        |   '/'('*'+)(('*'+)(~[/]+)
-                                     |(~[/*]+)
-                                     |(~[*]+)('/'+)
-                                     |'\n')
-                             *('*'+)'/'
-                        ;
+RESERVED_WORD
+    :   RESERVED_SYMBOL
+    |   '#define'
+    |   'integer'
+    |   'float'
+    |   'string'
+    |   'void'
+    |   'Main'
+    |   'DIV'
+    |   'MOD'
+    ;
 
-REST                    :   . ->skip
-                        ;
+IDENTIFIER
+    :   MINUS+(MINUS|NUMBER|'_')*
+    |   '_'+(MINUS|NUMBER)+(MINUS|NUMBER|'_')*
+    ;
 
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+CONST_DEF_IDENTIFIER
+    :   MAYUS+(MAYUS|NUMBER|'_')*
+    |   '_'+(MAYUS|NUMBER)+(MAYUS|NUMBER|'_')*
+    ;
 
-fragment MAYUS          :   [A-Z]
-                        ;
-fragment MINUS          :   [a-z]
-                        ;
-fragment NUMBER         :   [0-9]
-                        ;
-fragment REAL           :   ('+'|'-')?(NUMBER*'.'NUMBER+)
-                        ;
+NUMERIC_INTEGER_CONST
+    :   ('+'|'-')?NUMBER+
+    ;
+
+NUMERIC_REAL_CONST
+    :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
+    |   REAL
+    ;
+
+STRING_CONST
+    :   '\''(~'\''|('\\''\''))*'\''
+    |   '"'(~'"'|('\\''"'))*'"'
+    ;
+
+COMMENT
+    :   '/''/'(~'\n'*)'\n'
+    |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/'
+    ;
+
+// TODO ver si hay que quitarlo
+REST
+    :   . ->skip
+    ;
+
+
+/*
+|-----------------------------------------|
+|                FRAGMENTS                |
+|-----------------------------------------|
+*/
+
+fragment MAYUS
+    :   [A-Z]
+    ;
+
+fragment MINUS
+    :   [a-z]
+    ;
+
+fragment NUMBER
+    :   [0-9]
+    ;
+
+fragment REAL
+    :   ('+'|'-')?(NUMBER*'.'NUMBER+)
+    ;
+
+fragment RESERVED_SYMBOL
+    :   [\u007b\u007d\u003b\u0028\u0029\u002c\u003d\u002b\u002d\u002a\u002f\u000a]
+    ;
+
+/*
+   TABLA TRADUCCIÓN UNICODE - CARACTER
+   -----------------------------------
+   |        \u007b  --->  '{'        |
+   |        \u007d  --->  '}'        |
+   |        \u003b  --->  ';'        |
+   |        \u0028  --->  '('        |
+   |        \u0029  --->  ')'        |
+   |        \u002c  --->  ','        |
+   |        \u003d  --->  '='        |
+   |        \u002b  --->  '+'        |
+   |        \u002d  --->  '-'        |
+   |        \u002a  --->  '*'        |
+   |        \u002f  --->  '/'        |
+   |        \u000a  --->  '\n'       |
+   -----------------------------------
+*/
