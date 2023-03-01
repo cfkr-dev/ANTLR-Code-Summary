@@ -8,7 +8,6 @@ grammar sourceCode;
 
 source
     :   COMMENT
-    |   RESERVED_WORD
     |   NUMERIC_INTEGER_CONST
     |   NUMERIC_REAL_CONST
     |   IDENTIFIER
@@ -23,17 +22,6 @@ source
 |-----------------------------------|
 */
 
-RESERVED_WORD
-    :   RESERVED_SYMBOL
-    |   '#define'
-    |   'integer'
-    |   'float'
-    |   'string'
-    |   'void'
-    |   'Main'
-    |   'DIV'
-    |   'MOD'
-    ;
 
 IDENTIFIER
     :   LOWER+(LOWER|NUMBER|'_')*
