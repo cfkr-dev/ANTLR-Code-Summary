@@ -7,41 +7,20 @@ grammar sourceCode;
 */
 
 program
-    : '#define' program_aux
-    | 'integer' program_aux
-    | 'float' program_aux
-    | 'string' program_aux
-    | 'void' program_aux
-    ;
-
-program_aux
     : dcllist funlist sentlist
     | dcllist sentlist
+    | funlist sentlist
+    | sentlist
     ;
 
 dcllist
-    : '#define' dcllist_aux
-    | 'integer' dcllist_aux
-    | 'float' dcllist_aux
-    | 'string' dcllist_aux
-    | 'void' dcllist_aux
-    ;
-
-dcllist_aux
-    : dcl
-    | dcl dcllist
+    : dcl dcllist
+    | dcl
     ;
 
 funlist
-    : 'integer' funlist_aux
-    | 'float' funlist_aux
-    | 'string' funlist_aux
-    | 'void' funlist_aux
-    ;
-
-funlist_aux
-    : funcdef
-    | funcdef funlist
+    : funcdef funlist
+    | funcdef
     ;
 
 sentlist
@@ -59,12 +38,8 @@ dcl
     ;
 
 ctelist
-    : '#define' ctelist_aux
-    ;
-
-ctelist_aux
-    : CONST_DEF_IDENTIFIER simpvalue '\n'
-    | CONST_DEF_IDENTIFIER simpvalue '\n' ctelist
+    : '#define' CONST_DEF_IDENTIFIER simpvalue '\n' ctelist
+    | '#define' CONST_DEF_IDENTIFIER simpvalue '\n'
     ;
 
 simpvalue
@@ -74,25 +49,11 @@ simpvalue
     ;
 
 varlist
-    : 'integer' varlist_aux
-    | 'float' varlist_aux
-    | 'string' varlist_aux
-    | 'void' varlist_aux
-    ;
-
-varlist_aux
-    : vardef ';'
-    | vardef ';' varlist
+    : vardef ';' varlist
+    | vardef ';'
     ;
 
 vardef
-    : 'integer' vardef_aux
-    | 'float' vardef_aux
-    | 'string' vardef_aux
-    | 'void' vardef_aux
-    ;
-
-vardef_aux
     : tbas IDENTIFIER ';'
     | tbas IDENTIFIER '=' simpvalue ';'
     ;
@@ -113,37 +74,16 @@ tvoid
 
 
 funcdef
-    : 'integer' funcdef_aux
-    | 'float' funcdef_aux
-    | 'string' funcdef_aux
-    | 'void' funcdef_aux
-    ;
-
-funcdef_aux
-    : funchead '{'code'}'
-    | funchead '{''}'
+    : funchead '{' code '}'
+    | funchead '{' '}'
     ;
 
 funchead
-    : 'integer' funchead_aux
-    | 'float' funchead_aux
-    | 'string' funchead_aux
-    | 'void' funchead_aux
-    ;
-
-funchead_aux
-    : tbas IDENTIFIER '('typedef')'
-    | tbas IDENTIFIER '('')'
+    : tbas IDENTIFIER '(' typedef ')'
+    | tbas IDENTIFIER '(' ')'
     ;
 
 typedef
-    : 'integer' typedef_aux
-    | 'float' typedef_aux
-    | 'string' typedef_aux
-    | 'void' typedef_aux
-    ;
-
-typedef_aux
     : tbas IDENTIFIER typedef
     | tbas IDENTIFIER
     ;
@@ -153,12 +93,8 @@ typedef_aux
 
 
 mainhead
-    : 'void' mainhead_aux
-    ;
-
-mainhead_aux
-    : tvoid 'Main' '('typedef')'
-    | tvoid 'Main' '('')'
+    : tvoid 'Main' '(' typedef ')'
+    | tvoid 'Main' '(' ')'
     ;
 
 code
@@ -202,16 +138,12 @@ factor
     ;
 
 funccall
-    : IDENTIFIER funccall_aux
-    ;
-
-funccall_aux
     : IDENTIFIER subpparamlist
     | IDENTIFIER
     ;
 
 subpparamlist
-    : '('explist')'
+    : '(' explist ')'
     ;
 
 explist
