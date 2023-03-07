@@ -6,27 +6,46 @@ grammar sourceCode;
 |-------------------------------------|
 */
 
+
+
 program
-    : dcllist funlist sentlist
-    | dcllist sentlist
+    : dcllist program_aux
     | funlist sentlist
     | sentlist
     ;
 
+program_aux
+    : funlist sentlist
+    | sentlist
+    ;
+
 dcllist
-    : dcl dcllist
-    | dcl
+    : dcl dcllist_aux
+    ;
+
+dcllist_aux
+    : dcllist
+    |
     ;
 
 funlist
-    : funcdef funlist
-    | funcdef
+    : funcdef funlist_aux
+    ;
+
+funlist_aux
+    : funlist
+    |
     ;
 
 sentlist
-    : mainhead '{'code'}'
-    | mainhead '{''}'
+    : mainhead '{' sentlist_aux
     ;
+
+sentlist_aux
+    : code'}'
+    | '}'
+    ;
+
 
 
 /* ---- ZONA DE DECLARACIONES ---- */
@@ -38,9 +57,13 @@ dcl
     ;
 
 ctelist
-    : '#define' CONST_DEF_IDENTIFIER simpvalue '\n' ctelist
-    | '#define' CONST_DEF_IDENTIFIER simpvalue '\n'
+    : '#define' CONST_DEF_IDENTIFIER simpvalue '\n' /*ctelist_aux*/
     ;
+
+//ctelist_aux
+//    : ctelist
+//    |
+//    ;
 
 simpvalue
     : NUMERIC_INTEGER_CONST
@@ -49,13 +72,21 @@ simpvalue
     ;
 
 varlist
-    : vardef ';' varlist
-    | vardef ';'
+    : vardef ';' /*varlist_aux*/
     ;
 
+//varlist_aux
+//    : varlist
+//    |
+//    ;
+
 vardef
-    : tbas IDENTIFIER ';'
-    | tbas IDENTIFIER '=' simpvalue ';'
+    : tbas IDENTIFIER vardef_aux
+    ;
+
+vardef_aux
+    : ';'
+    | '=' simpvalue ';'
     ;
 
 tbas
@@ -74,18 +105,30 @@ tvoid
 
 
 funcdef
-    : funchead '{' code '}'
-    | funchead '{' '}'
+    : funchead '{' funcdef_aux
+    ;
+
+funcdef_aux
+    : code '}'
+    | '}'
     ;
 
 funchead
-    : tbas IDENTIFIER '(' typedef ')'
-    | tbas IDENTIFIER '(' ')'
+    : tbas IDENTIFIER '(' funchead_aux
+    ;
+
+funchead_aux
+    : typedef ')'
+    | ')'
     ;
 
 typedef
-    : tbas IDENTIFIER typedef
-    | tbas IDENTIFIER
+    : tbas IDENTIFIER typedef_aux
+    ;
+
+typedef_aux
+    : typedef
+    |
     ;
 
 
@@ -93,13 +136,21 @@ typedef
 
 
 mainhead
-    : tvoid 'Main' '(' typedef ')'
-    | tvoid 'Main' '(' ')'
+    : tvoid 'Main' '(' mainhead_aux
+    ;
+
+mainhead_aux
+    : typedef ')'
+    | ')'
     ;
 
 code
-    : sent code
-    | sent
+    : sent code_aux
+    ;
+
+code_aux
+    : code
+    |
     ;
 
 sent
@@ -112,15 +163,23 @@ asig
     ;
 
 exp
-    : factor exps
-    | factor
+    : factor exp_aux
+    ;
+
+exp_aux
+    : exps
+    |
     ;
 
 exps
-    : exp exps
-    | exp op
-    | exp
+    : exp exps_aux
     | op
+    ;
+
+exps_aux
+    : exps
+    | op
+    |
     ;
 
 op
@@ -138,8 +197,12 @@ factor
     ;
 
 funccall
-    : IDENTIFIER subpparamlist
-    | IDENTIFIER
+    : IDENTIFIER funccall_aux
+    ;
+
+funccall_aux
+    : subpparamlist
+    |
     ;
 
 subpparamlist
@@ -147,8 +210,12 @@ subpparamlist
     ;
 
 explist
-    : exp
-    | exp ',' explist
+    : exp explist_aux
+    ;
+
+explist_aux
+    : ',' explist
+    |
     ;
 
 
