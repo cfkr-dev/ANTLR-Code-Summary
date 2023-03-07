@@ -57,13 +57,8 @@ dcl
     ;
 
 ctelist
-    : '#define' CONST_DEF_IDENTIFIER simpvalue '\n' /*ctelist_aux*/
+    : '#define' CONST_DEF_IDENTIFIER simpvalue
     ;
-
-//ctelist_aux
-//    : ctelist
-//    |
-//    ;
 
 simpvalue
     : NUMERIC_INTEGER_CONST
@@ -72,21 +67,16 @@ simpvalue
     ;
 
 varlist
-    : vardef ';' /*varlist_aux*/
+    : vardef ';'
     ;
-
-//varlist_aux
-//    : varlist
-//    |
-//    ;
 
 vardef
     : tbas IDENTIFIER vardef_aux
     ;
 
 vardef_aux
-    : ';'
-    | '=' simpvalue ';'
+    : '=' simpvalue
+    |
     ;
 
 tbas
@@ -127,7 +117,7 @@ typedef
     ;
 
 typedef_aux
-    : typedef
+    : ',' typedef
     |
     ;
 
@@ -156,6 +146,7 @@ code_aux
 sent
     : asig ';'
     | funccall ';'
+    | vardef ';'
     ;
 
 asig
@@ -206,7 +197,12 @@ funccall_aux
     ;
 
 subpparamlist
-    : '(' explist ')'
+    : '(' subpparamlist_aux
+    ;
+
+subpparamlist_aux
+    : explist ')'
+    | ')'
     ;
 
 explist
