@@ -113,16 +113,12 @@ funchead_aux
     ;
 
 typedef1
-    : tbas IDENTIFIER
-    | typedef1_aux
+    : tbas IDENTIFIER typedef1_aux
+    | ',' tbas IDENTIFIER typedef1_aux
     ;
 
 typedef1_aux
-    : ',' tbas IDENTIFIER typedef1_aux_aux
-    ;
-
-typedef1_aux_aux
-    : typedef1_aux
+    : typedef1
     |
     ;
 
@@ -130,7 +126,12 @@ typedef1_aux_aux
 
 
 mainhead
-    : tvoid 'Main' '(' typedef1 ')'
+    : tvoid 'Main' '(' mainhead_aux
+    ;
+
+mainhead_aux
+    : typedef1 ')'
+    | ')'
     ;
 
 code
@@ -157,18 +158,7 @@ exp
     ;
 
 exp_aux
-    : exps
-    |
-    ;
-
-exps
-    : exp exps_aux
-    | op
-    ;
-
-exps_aux
-    : exps
-    | op
+    : op exp exp_aux
     |
     ;
 
@@ -187,9 +177,13 @@ factor
     ;
 
 funccall
-    : IDENTIFIER subpparamlist
-    | IDENTIFIER
+    : IDENTIFIER funccall_aux
     | CONST_DEF_IDENTIFIER
+    ;
+
+funccall_aux
+    : subpparamlist
+    |
     ;
 
 subpparamlist
