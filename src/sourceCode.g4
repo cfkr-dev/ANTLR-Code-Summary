@@ -108,30 +108,29 @@ funchead
     ;
 
 funchead_aux
-    : typedef ')'
+    : typedef1 ')'
     | ')'
     ;
 
-typedef
-    : tbas IDENTIFIER typedef_aux
+typedef1
+    : tbas IDENTIFIER
+    | typedef1_aux
     ;
 
-typedef_aux
-    : ',' typedef
+typedef1_aux
+    : ',' tbas IDENTIFIER typedef1_aux_aux
+    ;
+
+typedef1_aux_aux
+    : typedef1_aux
     |
     ;
-
 
 /* ---- ZONA DE SENTENCIAS DEL PROGRAMA PRINCIPAL ---- */
 
 
 mainhead
-    : tvoid 'Main' '(' mainhead_aux
-    ;
-
-mainhead_aux
-    : typedef ')'
-    | ')'
+    : tvoid 'Main' '(' typedef1 ')'
     ;
 
 code
@@ -188,21 +187,13 @@ factor
     ;
 
 funccall
-    : IDENTIFIER funccall_aux
-    ;
-
-funccall_aux
-    : subpparamlist
-    |
+    : IDENTIFIER subpparamlist
+    | IDENTIFIER
+    | CONST_DEF_IDENTIFIER
     ;
 
 subpparamlist
-    : '(' subpparamlist_aux
-    ;
-
-subpparamlist_aux
-    : explist ')'
-    | ')'
+    : '(' explist ')'
     ;
 
 explist
