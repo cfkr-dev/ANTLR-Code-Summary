@@ -7,6 +7,7 @@ grammar sourceCode;
 */
 
 
+/* ---- ZONA PRINCIPAL ---- */
 
 program
     : dcllist program_aux
@@ -42,7 +43,7 @@ sentlist
     ;
 
 sentlist_aux
-    : code'}'
+    : code '}'
     | '}'
     ;
 
@@ -108,17 +109,17 @@ funchead
     ;
 
 funchead_aux
-    : typedef1 ')'
+    : typedef ')'
     | ')'
     ;
 
-typedef1
-    : tbas IDENTIFIER typedef1_aux
-    | ',' tbas IDENTIFIER typedef1_aux
+typedef
+    : tbas IDENTIFIER typedef_aux
+    | ',' tbas IDENTIFIER typedef_aux
     ;
 
-typedef1_aux
-    : typedef1
+typedef_aux
+    : typedef
     |
     ;
 
@@ -130,7 +131,7 @@ mainhead
     ;
 
 mainhead_aux
-    : typedef1 ')'
+    : typedef ')'
     | ')'
     ;
 
@@ -147,6 +148,17 @@ sent
     : asig ';'
     | funccall ';'
     | vardef ';'
+    | return_func ';'
+    ;
+
+return_func
+    : 'return' return_func_aux
+    |
+    ;
+
+return_func_aux
+    : IDENTIFIER
+    | simpvalue
     ;
 
 asig
