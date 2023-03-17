@@ -48,7 +48,6 @@ sentlist_aux
     ;
 
 
-
 /* ---- ZONA DE DECLARACIONES ---- */
 
 
@@ -153,12 +152,11 @@ sent
 
 return_func
     : 'return' return_func_aux
-    |
     ;
 
 return_func_aux
-    : IDENTIFIER
-    | simpvalue
+    : '(' explist ')'
+    | explist
     ;
 
 asig
@@ -212,16 +210,6 @@ explist_aux
     ;
 
 
-//source
-//    :   COMMENT
-//    |   NUMERIC_INTEGER_CONST
-//    |   NUMERIC_REAL_CONST
-//    |   IDENTIFIER
-//    |   CONST_DEF_IDENTIFIER
-//    |   STRING_CONST
-//    ;
-
-
 /*
 |-----------------------------------|
 |        TOKEN SPECIFICATION        |
@@ -260,11 +248,6 @@ COMMENT
 
 WHITE_SPACE : [ \t\n\r]+ -> channel(HIDDEN) ;
 
-// Descomentar si se quiere evitar que se reconozcan tokens erroneos
-//REST
-//    :   . -> skip
-//    ;
-
 
 /*
 |-----------------------------------------|
@@ -286,10 +269,6 @@ fragment NUMBER
 
 fragment REAL
     :   ('+'|'-')?(NUMBER*'.'NUMBER+)
-    ;
-
-fragment RESERVED_SYMBOL
-    :   [\u007b\u007d\u003b\u0028\u0029\u002c\u003d\u002b\u002d\u002a\u002f\u000a]
     ;
 
 /*
