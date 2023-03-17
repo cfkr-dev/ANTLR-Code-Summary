@@ -84,10 +84,15 @@ tbas
     | 'float'
     | 'string'
     | tvoid
+    | struct
     ;
 
 tvoid
     : 'void'
+    ;
+
+struct
+    : 'struct' '{' varlist '}'
     ;
 
 
@@ -148,6 +153,79 @@ sent
     | funccall ';'
     | vardef ';'
     | return_func ';'
+    | if
+    | while
+    | dowhile
+    | for
+    ;
+
+if
+    : 'if' expcond '{' sentlist_aux if_aux
+    ;
+
+if_aux
+    : else
+    |
+    ;
+
+else
+    : 'else' else_aux
+    ;
+
+else_aux
+    : '{' sentlist_aux
+    | if
+    ;
+
+while
+    : 'while' '(' expcond ')' '{' sentlist_aux
+    ;
+
+dowhile
+    : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
+    ;
+
+for
+    : 'for' '(' for_aux
+    ;
+
+for_aux
+    : vardef ';' expcond ';' asig ')' '{' sentlist_aux
+    | asig ';' expcond ';' asig ')' '{' sentlist_aux
+    ;
+
+expcond
+    : factorcond expcond_aux
+    ;
+
+expcond_aux
+    : oplog expcond expcond_aux
+    |
+    ;
+
+oplog
+    : '||'
+    | '&'
+    ;
+
+factorcond
+    : '(' expcond ')'
+    | exp factorcond_aux
+    | '!' factorcond
+    ;
+
+factorcond_aux
+    : opcomp exp
+    |
+    ;
+
+opcomp
+    : '<'
+    | '>'
+    | '<='
+    | '>='
+    | '=='
+    | '!='
     ;
 
 return_func
@@ -209,7 +287,6 @@ explist_aux
     |
     ;
 
-
 /*
 |-----------------------------------|
 |        TOKEN SPECIFICATION        |
@@ -241,12 +318,14 @@ STRING_CONST
     |   '"'(~'"'|('\\''"'))*'"'
     ;
 
-COMMENT
-    :   '/''/'(~'\n'*)'\n'
-    |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/'
+WHITE_SPACE
+    :   [ \t\n\r]+ -> channel(HIDDEN)
     ;
 
-WHITE_SPACE : [ \t\n\r]+ -> channel(HIDDEN) ;
+COMMENT
+    :   ('/''/'(~'\n'*)'\n'
+    |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/') -> channel(HIDDEN)
+    ;
 
 
 /*
