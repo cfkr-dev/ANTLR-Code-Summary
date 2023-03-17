@@ -37,7 +37,7 @@ public class Main {
             */
 
             // Ejecución del analizador
-            anasint.grammar();
+            anasint.source();
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             //Fallo al reconocer la entrada
