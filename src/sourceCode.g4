@@ -280,6 +280,7 @@ subpparamlist
 
 explist
     : exp explist_aux
+    |
     ;
 
 explist_aux
