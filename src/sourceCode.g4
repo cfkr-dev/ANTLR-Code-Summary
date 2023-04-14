@@ -54,6 +54,7 @@ sentlist_aux
 dcl
     : ctelist
     | varlist
+    | varlist_error_semicolon
     ;
 
 ctelist
@@ -69,6 +70,10 @@ simpvalue
 
 varlist
     : vardef ';'
+    ;
+
+varlist_error_semicolon
+    : vardef
     ;
 
 vardef
