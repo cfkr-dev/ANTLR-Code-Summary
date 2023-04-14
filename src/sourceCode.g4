@@ -58,6 +58,7 @@ dcl
 
 ctelist
     : '#define' CONST_DEF_IDENTIFIER simpvalue
+    | DEFINE_ERROR CONST_DEF_IDENTIFIER simpvalue
     ;
 
 simpvalue
@@ -81,18 +82,23 @@ vardef_aux
 
 tbas
     : 'integer'
+    | INTEGER_ERROR
     | 'float'
+    | FLOAT_ERROR
     | 'string'
+    | STRING_ERROR
     | tvoid
     | struct
     ;
 
 tvoid
     : 'void'
+    | VOID_ERROR
     ;
 
 struct
     : 'struct' '{' varlist '}'
+    | STRUCT_ERROR '{' varlist '}'
     ;
 
 
@@ -132,6 +138,7 @@ typedef_aux
 
 mainhead
     : tvoid 'Main' '(' mainhead_aux
+    | tvoid MAIN_ERROR '(' mainhead_aux
     ;
 
 mainhead_aux
@@ -152,6 +159,7 @@ sent
     : asig ';'
     | funccall ';'
     | vardef ';'
+    | vardef_and_asig ';'
     | return_func ';'
     | if
     | while
@@ -161,6 +169,7 @@ sent
 
 if
     : 'if' expcond '{' sentlist_aux if_aux
+    | IF_ERROR expcond '{' sentlist_aux if_aux
     ;
 
 if_aux
@@ -170,6 +179,7 @@ if_aux
 
 else
     : 'else' else_aux
+    | ELSE_ERROR else_aux
     ;
 
 else_aux
@@ -179,19 +189,24 @@ else_aux
 
 while
     : 'while' '(' expcond ')' '{' sentlist_aux
+    | WHILE_ERROR '(' expcond ')' '{' sentlist_aux
     ;
 
 dowhile
     : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
+    | DO_ERROR '{' sentlist_aux WHILE_ERROR '(' expcond ')' ';'
     ;
 
 for
     : 'for' '(' for_aux
+    | FOR_ERROR '(' for_aux
     ;
 
+// NUEVO
 for_aux
     : vardef ';' expcond ';' asig ')' '{' sentlist_aux
     | asig ';' expcond ';' asig ')' '{' sentlist_aux
+    | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
     ;
 
 expcond
@@ -205,7 +220,9 @@ expcond_aux
 
 oplog
     : '||'
+    | OR_ERROR
     | '&'
+    | AND_ERROR
     ;
 
 factorcond
@@ -221,13 +238,20 @@ factorcond_aux
 
 opcomp
     : '<'
+    | LT_ERROR
     | '>'
+    | GT_ERROR
     | '<='
+    | LTE_ERROR
     | '>='
+    | GTE_ERROR
     | '=='
+    | EQ_ERROR
     | '!='
+    | NEQ_ERROR
     ;
 
+// NUEVO
 return_func
     : 'return' return_func_aux
     ;
@@ -241,6 +265,11 @@ asig
     : IDENTIFIER '=' exp
     ;
 
+// NUEVO
+vardef_and_asig
+    : typedef '=' exp
+    ;
+
 exp
     : factor exp_aux
     ;
@@ -252,10 +281,15 @@ exp_aux
 
 op
     : '+'
+    | PLUS_ERROR
     | '-'
+    | MINUS_ERROR
     | '*'
+    | MULT_ERROR
     | 'DIV'
+    | DIV_ERROR
     | 'MOD'
+    | MOD_ERROR
     ;
 
 factor
@@ -288,12 +322,39 @@ explist_aux
     |
     ;
 
+
+/*
+|-------------------------------------------------------|
+|        TOKEN TYPES COMMON ERRORS SPECIFICATION        |
+|-------------------------------------------------------|
+*/
+
+INTEGER_ERROR
+    : [iI] (LOWER | UPPER)*
+    ;
+
+FLOAT_ERROR
+    : [fF] (LOWER | UPPER)*
+    ;
+
+STRUCT_ERROR
+    : [sS] (LOWER | UPPER)* [cC] (LOWER | UPPER)*
+    ;
+
+STRING_ERROR
+    : [sS] (LOWER | UPPER)*
+    ;
+
+VOID_ERROR
+    : [vV] (LOWER | UPPER)*
+    ;
+
+
 /*
 |-----------------------------------|
 |        TOKEN SPECIFICATION        |
 |-----------------------------------|
 */
-
 
 IDENTIFIER
     :   LOWER+(LOWER|NUMBER|'_')*
@@ -328,6 +389,98 @@ COMMENT
     |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/') -> channel(HIDDEN)
     ;
 
+
+/*
+|-----------------------------------|
+|        TOKEN COMMON ERRORS        |
+|-----------------------------------|
+*/
+
+FOR_ERROR
+    : [fF] (LOWER | UPPER)*
+    ;
+
+WHILE_ERROR
+    : [wW] (LOWER | UPPER)*
+    ;
+
+DO_ERROR
+    : [dD] (LOWER | UPPER)*
+    ;
+
+IF_ERROR
+    : [iI][fF] (LOWER | UPPER)*
+    ;
+
+ELSE_ERROR
+    : [eE] [lL] (LOWER | UPPER)*
+    ;
+
+MAIN_ERROR
+    : 'M' (LOWER | UPPER)*
+    ;
+
+DEFINE_ERROR
+    : '\u0023' '\u0023'* (LOWER | UPPER)*
+    ;
+
+MOD_ERROR
+    : ([mM] | '\u0025' '\u0025'+) (LOWER | UPPER)*
+    ;
+
+PLUS_ERROR
+    : ([sS][uU][mM] | '\u002b' '\u002b'+)
+    ;
+
+MINUS_ERROR
+    : '\u002d' '\u002d'+
+    ;
+
+MULT_ERROR
+    : ([Mm][uU][lL][tT] | '\u002a' '\u002a'+)
+    ;
+
+DIV_ERROR
+    : ([dD] | '\u002f' '\u002f'*) (LOWER | UPPER)*
+    ;
+
+LT_ERROR
+    : '\u003c' '\u003c'+
+    ;
+
+LTE_ERROR
+    : '\u003c' '\u003c'+ '\u003d'+
+    | '\u003d'+ '\u003c'+
+    ;
+
+GT_ERROR
+    : '\u003e' '\u003e'+
+    ;
+
+GTE_ERROR
+    : '\u003e' '\u003e'+ '\u003d'+
+    | '\u003e'+ '\u003e'+
+    ;
+
+EQ_ERROR
+    : '\u003d' '\u003d' '\u003d'+
+    ;
+
+NEQ_ERROR
+    : ('\u007e' | '\u0021' '\u0021'+) '\u003d' '\u003d'+
+    | '\u003d'+ ('\u0021'+ | '\u007e'+)
+    ;
+
+OR_ERROR
+    : '\u007c' '\u007c' '\u007c'+
+    | [oO][rR]
+    | [rR][oO]
+    ;
+
+AND_ERROR
+    : '\u0026' '\u0026'+
+    | [aA][nN][dD]
+    ;
 
 /*
 |-----------------------------------------|
