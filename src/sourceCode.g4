@@ -53,7 +53,7 @@ sentlist_aux
 
 dcl
     : ctelist
-    | varlist
+    | var
     | varlist_error_semicolon
     ;
 
@@ -68,7 +68,7 @@ simpvalue
     | STRING_CONST
     ;
 
-varlist
+var
     : vardef ';'
     ;
 
@@ -77,7 +77,27 @@ varlist_error_semicolon
     ;
 
 vardef
+    : simple_vardef
+    | struct_vardef
+    ;
+
+simple_vardef
     : tbas IDENTIFIER vardef_aux
+    | error_simple_vardef
+    ;
+
+error_simple_vardef
+    : tbas
+    | tbas vardef_aux
+    ;
+
+struct_vardef
+    : struct_def IDENTIFIER
+    | error_struct_vardef
+    ;
+
+error_struct_vardef
+    : struct_def
     ;
 
 vardef_aux
@@ -85,15 +105,40 @@ vardef_aux
     |
     ;
 
+struct_def
+    : 'struct' '{' dcllist_struct '}'
+    | STRUCT_ERROR '{' dcllist_struct '}'
+    ;
+
+dcllist_struct
+    : dcl_struct dcllist_struct_aux
+    |
+    ;
+
+dcllist_struct_aux
+    : dcllist_struct
+    |
+    ;
+
+dcl_struct
+    : var
+    | varlist_error_semicolon
+    ;
+
 tbas
     : 'integer'
-    | INTEGER_ERROR
+    | integer_error
     | 'float'
     | FLOAT_ERROR
     | 'string'
     | STRING_ERROR
     | tvoid
-    | struct
+//    | 'struct'
+//    | STRUCT_ERROR
+    ;
+
+integer_error
+    : INTEGER_ERROR IDENTIFIER
     ;
 
 tvoid
@@ -102,8 +147,8 @@ tvoid
     ;
 
 struct
-    : 'struct' '{' varlist '}'
-    | STRUCT_ERROR '{' varlist '}'
+    : 'struct' '{' dcllist_struct '}'
+    | STRUCT_ERROR '{' dcllist_struct '}'
     ;
 
 
@@ -327,6 +372,10 @@ explist_aux
     |
     ;
 
+IDENTIFIER
+    :   LOWER+(LOWER|NUMBER|'_')*
+    |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
+    ;
 
 /*
 |-------------------------------------------------------|
@@ -339,19 +388,19 @@ INTEGER_ERROR
     ;
 
 FLOAT_ERROR
-    : [fF] (LOWER | UPPER)*
+    : [fF] (LOWER | UPPER)* [ \t\n\r]* ~[;{ \t\n\r]+
     ;
 
 STRUCT_ERROR
-    : [sS] (LOWER | UPPER)* [cC] (LOWER | UPPER)*
+    : [sS] (LOWER | UPPER)* [cC] (LOWER | UPPER)* ~[;{ \t\n\r]+
     ;
 
 STRING_ERROR
-    : [sS] (LOWER | UPPER)*
+    : [sS] (LOWER | UPPER)* [ \t\n\r]* ~[;{ \t\n\r]+
     ;
 
 VOID_ERROR
-    : [vV] (LOWER | UPPER)*
+    : [vV] (LOWER | UPPER)* [ \t\n\r]* ~[;{ \t\n\r]+
     ;
 
 
@@ -361,10 +410,7 @@ VOID_ERROR
 |-----------------------------------|
 */
 
-IDENTIFIER
-    :   LOWER+(LOWER|NUMBER|'_')*
-    |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
-    ;
+
 
 CONST_DEF_IDENTIFIER
     :   UPPER+(UPPER|NUMBER|'_')*
