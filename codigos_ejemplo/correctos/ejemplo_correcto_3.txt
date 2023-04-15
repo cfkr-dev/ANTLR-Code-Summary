@@ -28,6 +28,7 @@ do{
     resultado_2=calc_float(__float1_,float2_,float3);
     print("El valor obtenido en 1 es : " + resultado_1 + "\n el valor obtenido en 2 es : " + resultado_2);
     n = n + 1;
+    n=n+-1;
 
     }while( n <= 0);
 
