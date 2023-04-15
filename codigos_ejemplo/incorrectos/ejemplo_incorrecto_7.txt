@@ -1,0 +1,39 @@
+integer entero_1= +-0953 ;
+integer ___= -690 ;
+float __float1_ = +.Ee456;
+float float2_ = +045.-16;
+float 5float3 = -00.69;
+string frase = "Operaciones Realizadas";
+
+
+
+integer calc_integer(integer number_1,integer number_2){
+   integer number_int ;
+   number_int= ((number_1+number_2)*number_2)     DIV       number_1;
+   return number_int;
+}
+integer calc_float(float number_3,float number_4, float number_5){
+   float number_float ;
+   number_float= ((number_3-number_4)DIVnumber_5)
+   MODnumber_3*(number_3-number_5);
+   return number_float;
+}
+
+void Main (){
+
+do{
+    print(frase);
+    integer resultado_1;
+    resultado_1=calc_integer(entero_1,_entero_2);
+    float resultado_2;
+    resultado_2=calc_float(__float1_,float2_,float3);
+    print("El valor obtenido en 1 es : " + resultado_1 + "\n el valor obtenido en 2 es : " + resultado_2);
+    n = n +1;
+
+string frase2 = "Operaciones" Realizadas";
+
+    }while( n <= 0);
+
+}
+
+}
