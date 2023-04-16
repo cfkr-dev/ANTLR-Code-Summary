@@ -6,287 +6,588 @@ grammar sourceCode;
 |-------------------------------------|
 */
 
+    // **** MAIN SECTION ****
+    // ------------------------
 
-/* ---- ZONA PRINCIPAL ---- */
+        program
+            : sentlist
+            | funlist sentlist
+            | dcllist program_aux
+            | program_empty
+            ;
 
-program
-    : dcllist program_aux
-    | funlist sentlist
-    | sentlist
-    ;
+        program_aux
+            : funlist sentlist
+            | sentlist
+            ;
 
-program_aux
-    : funlist sentlist
-    | sentlist
-    ;
+        program_empty
+            :
+            ;
 
-dcllist
-    : dcl dcllist_aux
-    ;
+        dcllist
+            : dcl dcllist_aux
+            ;
 
-dcllist_aux
-    : dcllist
-    |
-    ;
+        dcllist_aux
+            : dcllist
+            |
+            ;
 
-funlist
-    : funcdef funlist_aux
-    ;
+        funlist
+            : funcdef funlist_aux
+            ;
 
-funlist_aux
-    : funlist
-    |
-    ;
+        funlist_aux
+            : funlist
+            |
+            ;
 
-sentlist
-    : mainhead '{' sentlist_aux
-    ;
+        sentlist
+            : mainhead '{' sentlist_aux
+            | sentlist_error
+            ;
 
-sentlist_aux
-    : code '}'
-    | '}'
-    ;
+        sentlist_aux
+            : code '}'
+            | '}'
+            ;
+
+        sentlist_error
+            :
+            ;
+
+    // **** DECLARATIONS SECTION ****
+    // ------------------------------
+
+        dcl
+            : cte
+            | var
+            | cte_error_semicolon
+            ;
+
+        /* ---- CONSTANTS DECLARATION ---- */
+
+            cte
+                : '#define' CONST_DEF_IDENTIFIER simpvalue
+                | cte_error
+                ;
+
+            cte_error
+                : HASHTAG_TEXT cte_error_aux
+                | '#define' cte_error_aux
+                ;
+
+            cte_error_aux
+                : simpvalue
+                | cte_error_aux_1
+                |
+                ;
+
+            cte_error_aux_1
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) cte_error_aux_1_aux
+                ;
+
+            cte_error_aux_1_aux
+                : simpvalue
+                |
+                ;
+
+            cte_error_semicolon
+                : cte ';'
+                ;
+
+        /* ---- SIMPLE VARIABLES DECLARATION ---- */
+
+            var
+                : vardef
+                ;
+
+            vardef
+                : simple_vardef
+                | struct_vardef
+                ;
+
+            vardef_aux
+                :
+                | equal_asig simpvalue
+                | vardef_aux_error
+                ;
+
+            vardef_aux_error
+                : equal_asig exp
+                ;
+
+            simple_vardef
+                : tbas IDENTIFIER vardef_aux semicolon
+                | error_simple_vardef vardef_aux semicolon
+                ;
+
+            error_simple_vardef
+                : tbas error_simple_vardef_aux
+                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                ;
+
+            error_simple_vardef_aux
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                |
+                ;
+
+        /* ---- STRUCTS DECLARATION ---- */
+
+            struct_vardef
+                : struct_def IDENTIFIER semicolon
+                | error_struct_vardef semicolon
+                ;
+
+            error_struct_vardef
+                : struct_def
+                ;
+
+            struct_def
+                : 'struct' curly_open dcllist_struct curly_close
+                ;
+
+            dcllist_struct
+                : dcl_struct dcllist_struct_aux
+                |
+                ;
+
+            dcllist_struct_aux
+                : dcllist_struct
+                |
+                ;
+
+            dcl_struct
+                : var
+                ;
 
 
-/* ---- ZONA DE DECLARACIONES ---- */
+        /* ---- ASSIGNABLE VALUES ---- */
+
+            simpvalue
+                : NUMERIC_INTEGER_CONST
+                | NUMERIC_REAL_CONST
+                | STRING_CONST
+                | simpvalue_error
+                ;
+
+            simpvalue_error
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                |
+                ;
+
+        /* ---- VARIABLE TYPES ---- */
+
+            tbas
+                : 'integer'
+                | 'float'
+                | 'string'
+                | tvoid
+                | 'struct'
+                ;
+
+            tvoid
+                : 'void'
+                ;
 
 
-dcl
-    : ctelist
-    | varlist
-    ;
-
-ctelist
-    : '#define' CONST_DEF_IDENTIFIER simpvalue
-    ;
-
-simpvalue
-    : NUMERIC_INTEGER_CONST
-    | NUMERIC_REAL_CONST
-    | STRING_CONST
-    ;
-
-varlist
-    : vardef ';'
-    ;
-
-vardef
-    : tbas IDENTIFIER vardef_aux
-    ;
-
-vardef_aux
-    : '=' simpvalue
-    |
-    ;
-
-tbas
-    : 'integer'
-    | 'float'
-    | 'string'
-    | tvoid
-    | struct
-    ;
-
-tvoid
-    : 'void'
-    ;
-
-struct
-    : 'struct' '{' varlist '}'
-    ;
 
 
-/* ---- ZONA DE IMPLEMENTACIÓN DE FUNCIONES ---- */
+    // **** FUNCTION IMPLEMENTATION SECTION ****
+    // -----------------------------------------
+
+        funcdef
+            : funchead curly_open funcdef_aux
+            ;
+
+        funcdef_aux
+            : code curly_close
+            | curly_close
+            ;
+
+        /* ---- FUNCTION HEAD ---- */
+
+            funchead
+                : tbas IDENTIFIER '(' funchead_aux
+                | funchead_error '(' funchead_aux
+                ;
+
+            funchead_aux
+                : typedef paren_close
+                | paren_close
+                ;
+
+            funchead_error
+                : tbas funchead_error_aux
+                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                ;
+
+            funchead_error_aux
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                |
+                ;
+
+        /* ---- FUNCTION PARAMETERS ---- */
+
+            typedef
+                : tbas IDENTIFIER typedef_aux
+                | typedef_error typedef_aux
+                ;
+
+            typedef_aux
+                : comma typedef
+                | comma_no_var_error
+                |
+                ;
+
+            typedef_error
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) typedef_error_aux
+                | tbas typedef_error_aux
+                ;
+
+            typedef_error_aux
+                : TEXT
+                |
+                ;
+
+    // **** MAIN-PROGRAM-SENTENCES SECTION ****
+    // ----------------------------------------
+
+        /* ---- FUNCION PRINCIPAL ---- */
+
+            mainhead
+                : tvoid 'Main' '(' mainhead_aux
+                | mainhead_error 'Main' '(' mainhead_aux
+                ;
+
+            mainhead_aux
+                : typedef paren_close
+                | paren_close
+                ;
+
+            mainhead_error
+                : tbas
+                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                ;
+
+        /* ---- CODE BLOCK ---- */
+
+            code
+                : sent code_aux
+                ;
+
+            code_aux
+                : code
+                |
+                ;
+
+        /* ---- SENTENCES ---- */
+
+            sent
+                : asig semicolon
+                | vardef_and_asig semicolon
+                | vardef_code semicolon
+                | funccall semicolon
+                | return_func semicolon
+                | if
+                | while
+                | dowhile
+                | for
+                ;
+
+        /* ---- VARIABLE DEFINITIONS ---- */
+        
+            vardef_code
+                : simple_vardef_code
+                | struct_vardef
+                ;
+
+            simple_vardef_code
+                : tbas IDENTIFIER
+                | error_simple_vardef_code
+                ;
+    
+            error_simple_vardef_code
+                : tbas error_simple_vardef_code_aux
+                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                ;
+    
+            error_simple_vardef_code_aux
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                |
+                ;
+        
+        /* ---- ASSIGNMENTS ---- */
+
+            asig
+                : IDENTIFIER equal_asig_no_empty exp
+                | asig_error equal_asig_no_empty exp
+                ;
+
+            asig_error
+                : (TEXT | CONST_DEF_IDENTIFIER | IDENTIFIER)
+                |
+                ;
+
+            vardef_and_asig
+                : simple_vardef_code equal_asig_no_empty exp
+                ;
+
+        /* ---- FUNCTION CALLS ---- */
+
+            funccall
+                : IDENTIFIER funccall_aux
+                | CONST_DEF_IDENTIFIER
+                | funccall_error funccall_aux
+                ;
+
+            funccall_error
+                : TEXT
+                ;
+
+            funccall_aux
+                : subpparamlist
+                |
+                ;
+
+            subpparamlist
+                : paren_open explist paren_close
+                ;
+
+            explist
+                : exp explist_aux
+                |
+                ;
+
+            explist_aux
+                : comma explist
+                | comma_no_var_error
+                |
+                ;
+
+        //todo completar recuperación desde este punto
+        /* ---- FUNCTION-RETURN SECTION ---- */
+
+            return_func
+                : 'return' return_func_aux
+                ;
+
+            return_func_aux
+                : '(' explist ')'
+                | explist
+                ;
+
+        /* ---- IF-ELSE SENTENCE ---- */
+
+            if
+                : 'if' expcond '{' sentlist_aux if_aux
+                ;
+
+            if_aux
+                : else
+                |
+                ;
+
+            else
+                : 'else' else_aux
+                ;
+
+            else_aux
+                : '{' sentlist_aux
+                | if
+                ;
+
+        /* ---- WHILE SENTENCE ---- */
+
+            while
+                : 'while' '(' expcond ')' '{' sentlist_aux
+                ;
+
+        /* ---- DO-WHILE SENTENCE ---- */
+
+            dowhile
+                : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
+                ;
+
+        /* ---- FOR SENTENCE ---- */
+
+            for
+                : 'for' '(' for_aux
+                ;
+
+            for_aux
+                : vardef ';' expcond ';' asig ')' '{' sentlist_aux
+                | asig ';' expcond ';' asig ')' '{' sentlist_aux
+                | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
+                ;
+
+        /* ---- CONDITIONAL OPERATIONS ---- */
+
+            expcond
+                : factorcond expcond_aux
+                ;
+
+            expcond_aux
+                : oplog expcond expcond_aux
+                |
+                ;
+
+            oplog
+                : '||'
+                | '&'
+                ;
+
+            factorcond
+                : '(' expcond ')'
+                | exp factorcond_aux
+                | '!' factorcond
+                ;
+
+            factorcond_aux
+                : opcomp exp
+                |
+                ;
+
+            opcomp
+                : '<'
+                | '>'
+                | '<='
+                | '>='
+                | '=='
+                | '!='
+                ;
+
+        /* ---- ARITHMETIC OPERATIONS ---- */
+
+            exp
+                : factor exp_aux
+                ;
+
+            exp_aux
+                : op exp exp_aux
+                |
+                ;
+
+            op
+                : '+'
+                | '-'
+                | '*'
+                | 'DIV'
+                | 'MOD'
+                ;
+
+            factor
+                : simpvalue_code
+                | '(' exp ')'
+                | funccall
+                ;
+
+            simpvalue_code
+                : NUMERIC_INTEGER_CONST
+                | NUMERIC_REAL_CONST
+                | STRING_CONST
+                | IDENTIFIER
+                | CONST_DEF_IDENTIFIER
+                | simpvalue_code_error
+                ;
+
+            simpvalue_code_error
+                : TEXT
+                ;
 
 
-funcdef
-    : funchead '{' funcdef_aux
-    ;
+    // **** ERROR-RECOBERY-CONTROL PRODUCTIONS ****
+    // ------------------------------------
 
-funcdef_aux
-    : code '}'
-    | '}'
-    ;
+        /* ---- OPEN AND CLOSE PARENTHESIS ---- */
 
-funchead
-    : tbas IDENTIFIER '(' funchead_aux
-    ;
+            paren_open
+                : '('
+                | paren_open_error
+                ;
 
-funchead_aux
-    : typedef ')'
-    | ')'
-    ;
+            paren_open_error
+                :
+                ;
 
-typedef
-    : tbas IDENTIFIER typedef_aux
-    | ',' tbas IDENTIFIER typedef_aux
-    ;
+            paren_close
+                : ')'
+                | paren_close_error
+                ;
 
-typedef_aux
-    : typedef
-    |
-    ;
+            paren_close_error
+                :
+                ;
 
-/* ---- ZONA DE SENTENCIAS DEL PROGRAMA PRINCIPAL ---- */
+        /* ---- OPEN AND CLOSE CURLY-BRACKETS ---- */
 
+            curly_open
+                : '{'
+                | curly_open_error
+                ;
 
-mainhead
-    : tvoid 'Main' '(' mainhead_aux
-    ;
+            curly_open_error
+                :
+                ;
 
-mainhead_aux
-    : typedef ')'
-    | ')'
-    ;
+            curly_close
+                : '}'
+                | curly_close_error
+                ;
 
-code
-    : sent code_aux
-    ;
+            curly_close_error
+                :
+                ;
 
-code_aux
-    : code
-    |
-    ;
+        /* ---- COMMA-SYMBOL ---- */
 
-sent
-    : asig ';'
-    | funccall ';'
-    | vardef ';'
-    | return_func ';'
-    | if
-    | while
-    | dowhile
-    | for
-    ;
+            comma
+                : ','
+                | comma_error
+                ;
 
-if
-    : 'if' expcond '{' sentlist_aux if_aux
-    ;
+            comma_error
+                :
+                ;
 
-if_aux
-    : else
-    |
-    ;
+            comma_no_var_error
+                : ','
+                ;
 
-else
-    : 'else' else_aux
-    ;
+        /* ---- SEMICOLON-SYMBOL ---- */
 
-else_aux
-    : '{' sentlist_aux
-    | if
-    ;
+            semicolon
+                : ';'
+                | semicolon_error
+                ;
 
-while
-    : 'while' '(' expcond ')' '{' sentlist_aux
-    ;
+            semicolon_error
+                :
+                ;
 
-dowhile
-    : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
-    ;
+        /* ---- EQUAL-SYMBOL FOR ASSIGNMENTS ---- */
 
-for
-    : 'for' '(' for_aux
-    ;
+            equal_asig
+                : '='
+                | equal_asig_error
+                ;
 
-for_aux
-    : vardef ';' expcond ';' asig ')' '{' sentlist_aux
-    | asig ';' expcond ';' asig ')' '{' sentlist_aux
-    ;
+            equal_asig_error
+                : '=='
+                | EQ_MORE_ONE_ERROR
+                |
+                ;
 
-expcond
-    : factorcond expcond_aux
-    ;
+            equal_asig_no_empty
+                : '='
+                | equal_asig_no_empty_error
+                ;
 
-expcond_aux
-    : oplog expcond expcond_aux
-    |
-    ;
-
-oplog
-    : '||'
-    | '&'
-    ;
-
-factorcond
-    : '(' expcond ')'
-    | exp factorcond_aux
-    | '!' factorcond
-    ;
-
-factorcond_aux
-    : opcomp exp
-    |
-    ;
-
-opcomp
-    : '<'
-    | '>'
-    | '<='
-    | '>='
-    | '=='
-    | '!='
-    ;
-
-return_func
-    : 'return' return_func_aux
-    ;
-
-return_func_aux
-    : '(' explist ')'
-    | explist
-    ;
-
-asig
-    : IDENTIFIER '=' exp
-    ;
-
-exp
-    : factor exp_aux
-    ;
-
-exp_aux
-    : op exp exp_aux
-    |
-    ;
-
-op
-    : '+'
-    | '-'
-    | '*'
-    | 'DIV'
-    | 'MOD'
-    ;
-
-factor
-    : simpvalue
-    | '(' exp ')'
-    | funccall
-    ;
-
-funccall
-    : IDENTIFIER funccall_aux
-    | CONST_DEF_IDENTIFIER
-    ;
-
-funccall_aux
-    : subpparamlist
-    |
-    ;
-
-subpparamlist
-    : '(' explist ')'
-    ;
-
-explist
-    : exp explist_aux
-    |
-    ;
-
-explist_aux
-    : ',' explist
-    |
-    ;
+            equal_asig_no_empty_error
+                : '=='
+                | EQ_MORE_ONE_ERROR
+                ;
 
 /*
 |-----------------------------------|
@@ -294,44 +595,59 @@ explist_aux
 |-----------------------------------|
 */
 
+    // **** MAIN TOKENS ****
+    // ---------------------
 
-IDENTIFIER
-    :   LOWER+(LOWER|NUMBER|'_')*
-    |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
-    ;
+        IDENTIFIER
+            :   LOWER+(LOWER|NUMBER|'_')*
+            |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
+            ;
 
-CONST_DEF_IDENTIFIER
-    :   UPPER+(UPPER|NUMBER|'_')*
-    |   '_'+(UPPER|NUMBER)+(UPPER|NUMBER|'_')*
-    ;
+        CONST_DEF_IDENTIFIER
+            :   UPPER+(UPPER|NUMBER|'_')*
+            |   '_'+(UPPER|NUMBER)+(UPPER|NUMBER|'_')*
+            ;
 
-NUMERIC_INTEGER_CONST
-    :   ('+'|'-')?NUMBER+
-    ;
+        NUMERIC_INTEGER_CONST
+            :   ('+'|'-')?NUMBER+
+            ;
 
-NUMERIC_REAL_CONST
-    :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
-    |   REAL
-    ;
+        NUMERIC_REAL_CONST
+            :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
+            |   REAL
+            ;
 
-STRING_CONST
-    :   '\''(~'\''|('\\''\''))*'\''
-    |   '"'(~'"'|('\\''"'))*'"'
-    ;
+        STRING_CONST
+            :   '\''(~'\''|('\\''\''))*'\''
+            |   '"'(~'"'|('\\''"'))*'"'
+            ;
 
-WHITE_SPACE
-    :   [ \t\n\r]+ -> channel(HIDDEN)
-    ;
+    // **** AUXILIAR ERROR-RECOVERY-CONTROL TOKENS ****
+    // ------------------------------------------------
 
-COMMENT
-    :   ('/''/'(~'\n'*)('\n'|EOF)
-    |   '/'('*'+)(('*'+)(~[/]+)
-                 |(~[/*]+)
-                 |(~[*]*)('/'+)
-                 |'\n'
-                 )* ('*'+)'/') -> channel(HIDDEN)
-    ;
+        TEXT
+            :   (NUMBER | LOWER | UPPER | '_')+
+            ;
 
+        HASHTAG_TEXT
+            :   '#' (NUMBER | LOWER | UPPER | '_')*
+            ;
+
+        EQ_MORE_ONE_ERROR
+            : '=' '='+
+            ;
+
+    // **** TOKENS TO IGNORE ****
+    // --------------------------
+
+        WHITE_SPACE
+            :   [ \t\n\r]+ -> channel(HIDDEN)
+            ;
+
+        COMMENT
+            :   ('/''/'(~'\n'*)('\n'|EOF)
+            |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]*)('/'+)|'\n')* ('*'+)'/') -> channel(HIDDEN)
+            ;
 
 /*
 |-----------------------------------------|
@@ -339,36 +655,18 @@ COMMENT
 |-----------------------------------------|
 */
 
-fragment UPPER
-    :   [A-Z]
-    ;
+    fragment UPPER
+        :   [A-Z]
+        ;
 
-fragment LOWER
-    :   [a-z]
-    ;
+    fragment LOWER
+        :   [a-z]
+        ;
 
-fragment NUMBER
-    :   [0-9]
-    ;
+    fragment NUMBER
+        :   [0-9]
+        ;
 
-fragment REAL
-    :   ('+'|'-')?(NUMBER*'.'NUMBER+)
-    ;
-
-/*
-   TABLA TRADUCCIÓN UNICODE - CARACTER
-   -----------------------------------
-   |        \u007b  --->  '{'        |
-   |        \u007d  --->  '}'        |
-   |        \u003b  --->  ';'        |
-   |        \u0028  --->  '('        |
-   |        \u0029  --->  ')'        |
-   |        \u002c  --->  ','        |
-   |        \u003d  --->  '='        |
-   |        \u002b  --->  '+'        |
-   |        \u002d  --->  '-'        |
-   |        \u002a  --->  '*'        |
-   |        \u002f  --->  '/'        |
-   |        \u000a  --->  '\n'       |
-   -----------------------------------
-*/
+    fragment REAL
+        :   ('+'|'-')?(NUMBER*'.'NUMBER+)
+        ;
