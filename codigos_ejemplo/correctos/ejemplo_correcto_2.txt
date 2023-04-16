@@ -1,0 +1,28 @@
+/*
+    CODIGO DE EJEMPLO 2
+    -------------------
+
+    Declaracion de structs
+*/
+
+struct {
+    string marca = "BMW";
+    integer asientos = 5;
+    string color = "amarillo";
+
+    struct {
+        integer centimetros_cubicos = 500;
+        integer caballos = 200;
+
+        integer revoluciones;
+    } motor;
+
+    integer valocidad;
+
+} coche;
+
+
+
+void Main() {
+    struct coche_1 = coche;
+}
