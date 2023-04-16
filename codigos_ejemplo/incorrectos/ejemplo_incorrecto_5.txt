@@ -5,7 +5,7 @@
     Ejemplo para calculo de factorial
 */
 
-integer calc_fact(integer number) {
+integer calc_fact(integer number,) {
     if (number == 0)  {
         return 0;
     } else {

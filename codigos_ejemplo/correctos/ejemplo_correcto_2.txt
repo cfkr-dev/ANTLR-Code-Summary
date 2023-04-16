@@ -25,4 +25,10 @@ struct {
 
 void Main() {
     struct coche_1 = coche;
+
+    for (integer i = 0; i < 10; i = i + 1) {
+        velocidad = velocidad * 10;
+    }
+
+    coche_1 = velocidad;
 }

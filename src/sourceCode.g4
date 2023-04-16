@@ -13,7 +13,7 @@ grammar sourceCode;
             : sentlist
             | funlist sentlist
             | dcllist program_aux
-            | program_empty
+            //| program_empty
             ;
 
         program_aux
@@ -44,13 +44,13 @@ grammar sourceCode;
             ;
 
         sentlist
-            : mainhead '{' sentlist_aux
-            | sentlist_error
+            : mainhead /*curly_open*/ '{' sentlist_aux
+            //| sentlist_error
             ;
 
         sentlist_aux
-            : code '}'
-            | '}'
+            : code /*curly_close*/ '}'
+            | /*curly_close*/ '}'
             ;
 
         sentlist_error
@@ -63,14 +63,14 @@ grammar sourceCode;
         dcl
             : cte
             | var
-            | cte_error_semicolon
+            //| cte_error_semicolon
             ;
 
         /* ---- CONSTANTS DECLARATION ---- */
 
             cte
                 : '#define' CONST_DEF_IDENTIFIER simpvalue
-                | cte_error
+                //| cte_error
                 ;
 
             cte_error
@@ -110,17 +110,17 @@ grammar sourceCode;
 
             vardef_aux
                 :
-                | equal_asig simpvalue
-                | vardef_aux_error
+                | /*equal_asig*/ '=' simpvalue
+                //| vardef_aux_error
                 ;
 
             vardef_aux_error
-                : equal_asig exp
+                : /*equal_asig*/ '=' exp
                 ;
 
             simple_vardef
-                : tbas IDENTIFIER vardef_aux semicolon
-                | error_simple_vardef vardef_aux semicolon
+                : tbas IDENTIFIER vardef_aux /*semicolon*/ ';'
+                //| error_simple_vardef vardef_aux semicolon
                 ;
 
             error_simple_vardef
@@ -136,8 +136,8 @@ grammar sourceCode;
         /* ---- STRUCTS DECLARATION ---- */
 
             struct_vardef
-                : struct_def IDENTIFIER semicolon
-                | error_struct_vardef semicolon
+                : struct_def IDENTIFIER /*semicolon*/ ';'
+                //| error_struct_vardef semicolon
                 ;
 
             error_struct_vardef
@@ -145,7 +145,7 @@ grammar sourceCode;
                 ;
 
             struct_def
-                : 'struct' curly_open dcllist_struct curly_close
+                : 'struct' /*curly_open*/ '{' dcllist_struct /*curly_close*/ '}'
                 ;
 
             dcllist_struct
@@ -169,7 +169,7 @@ grammar sourceCode;
                 : NUMERIC_INTEGER_CONST
                 | NUMERIC_REAL_CONST
                 | STRING_CONST
-                | simpvalue_error
+                //| simpvalue_error
                 ;
 
             simpvalue_error
@@ -198,24 +198,24 @@ grammar sourceCode;
     // -----------------------------------------
 
         funcdef
-            : funchead curly_open funcdef_aux
+            : funchead /*curly_open*/ '{' funcdef_aux
             ;
 
         funcdef_aux
-            : code curly_close
-            | curly_close
+            : code /*curly_close*/ '}'
+            | /*curly_close*/ '}'
             ;
 
         /* ---- FUNCTION HEAD ---- */
 
             funchead
                 : tbas IDENTIFIER '(' funchead_aux
-                | funchead_error '(' funchead_aux
+                //| funchead_error '(' funchead_aux
                 ;
 
             funchead_aux
-                : typedef paren_close
-                | paren_close
+                : typedef /*paren_close*/ ')'
+                | /*paren_close*/ ')'
                 ;
 
             funchead_error
@@ -232,12 +232,12 @@ grammar sourceCode;
 
             typedef
                 : tbas IDENTIFIER typedef_aux
-                | typedef_error typedef_aux
+                //| typedef_error typedef_aux
                 ;
 
             typedef_aux
-                : comma typedef
-                | comma_no_var_error
+                : /*comma*/ ',' typedef
+                //| comma_no_var_error
                 |
                 ;
 
@@ -258,12 +258,12 @@ grammar sourceCode;
 
             mainhead
                 : tvoid 'Main' '(' mainhead_aux
-                | mainhead_error 'Main' '(' mainhead_aux
+                //| mainhead_error 'Main' '(' mainhead_aux
                 ;
 
             mainhead_aux
-                : typedef paren_close
-                | paren_close
+                : typedef /*paren_close*/ ')'
+                | /*paren_close*/ ')'
                 ;
 
             mainhead_error
@@ -285,11 +285,11 @@ grammar sourceCode;
         /* ---- SENTENCES ---- */
 
             sent
-                : asig semicolon
-                | vardef_and_asig semicolon
-                | vardef_code semicolon
-                | funccall semicolon
-                | return_func semicolon
+                : asig /*semicolon*/ ';'
+                | vardef_and_asig /*semicolon*/ ';'
+                | vardef_code /*semicolon*/ ';'
+                | funccall /*semicolon*/ ';'
+                | return_func /*semicolon*/ ';'
                 | if
                 | while
                 | dowhile
@@ -305,7 +305,7 @@ grammar sourceCode;
 
             simple_vardef_code
                 : tbas IDENTIFIER
-                | error_simple_vardef_code
+                //| error_simple_vardef_code
                 ;
     
             error_simple_vardef_code
@@ -321,8 +321,8 @@ grammar sourceCode;
         /* ---- ASSIGNMENTS ---- */
 
             asig
-                : IDENTIFIER equal_asig_no_empty exp
-                | asig_error equal_asig_no_empty exp
+                : IDENTIFIER /*equal_asig_no_empty*/ '=' exp
+                //| asig_error equal_asig_no_empty exp
                 ;
 
             asig_error
@@ -331,7 +331,7 @@ grammar sourceCode;
                 ;
 
             vardef_and_asig
-                : simple_vardef_code equal_asig_no_empty exp
+                : simple_vardef_code /*equal_asig_no_empty*/ '=' exp
                 ;
 
         /* ---- FUNCTION CALLS ---- */
@@ -339,7 +339,7 @@ grammar sourceCode;
             funccall
                 : IDENTIFIER funccall_aux
                 | CONST_DEF_IDENTIFIER
-                | funccall_error funccall_aux
+                //| funccall_error funccall_aux
                 ;
 
             funccall_error
@@ -352,7 +352,7 @@ grammar sourceCode;
                 ;
 
             subpparamlist
-                : paren_open explist paren_close
+                : '(' explist /*paren_close*/ ')'
                 ;
 
             explist
@@ -361,9 +361,9 @@ grammar sourceCode;
                 ;
 
             explist_aux
-                : comma explist
-                | comma_no_var_error
-                |
+                :
+                | /*comma*/ ',' explist
+                //| comma_no_var_error
                 ;
 
         //todo completar recuperación desde este punto
@@ -417,9 +417,9 @@ grammar sourceCode;
                 ;
 
             for_aux
-                : vardef ';' expcond ';' asig ')' '{' sentlist_aux
-                | asig ';' expcond ';' asig ')' '{' sentlist_aux
+                : asig ';' expcond ';' asig ')' '{' sentlist_aux
                 | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
+                | vardef_code ';' expcond ';' asig ')' '{' sentlist_aux
                 ;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
@@ -489,7 +489,7 @@ grammar sourceCode;
                 | STRING_CONST
                 | IDENTIFIER
                 | CONST_DEF_IDENTIFIER
-                | simpvalue_code_error
+                //| simpvalue_code_error
                 ;
 
             simpvalue_code_error
