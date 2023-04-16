@@ -1,0 +1,40 @@
+// Prueba de los comentarios monolinea de mas de una
+unica linea
+
+/*Prueba comentarios multilonea de una unica linea y dos cierres */*/
+
+/* Prueba comentarios
+multilinea de varias y dos cierres */*/
+
+/*
+Prueba comentarios multilinea de varias
+lineas dejando las primera y la untima vacia y dos cierres */
+*/
+
+/********
+/********
+
+/* /* /* /* /* /* /* /* /* /* /* /*
+******** ///////// ********
+Prueba intercalacion de "*" y "/"
+texto/*texto/texto*texto/texto*texto/texto/*texto/
+*
+/
+*/
+********/
+
+// Uso de simbolos de comentarios multilinea en comentarios de una unica linea
+/*
+Test comentarios multilinea con elementos de codigo
+void Main (integer i){
+}*/
+//*/
+
+// (Si eliminamos una unica barra se convierte en un comentario multilinea)
+void Main (integer j){
+
+    s = "Test de que funcionan las comillas simples " y las comillas dobles escapadas \' en los comentarios de domillas simple";
+    s = 'Test de que funcionan las comillas simples ' y las comillas dobles escapadas \" en los comentarios de domillas simple';
+
+}
+//*/
