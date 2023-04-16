@@ -41,6 +41,7 @@ grammar sourceCode;
 
         sentlist
             : mainhead '{' sentlist_aux
+            | sentlist_error
             ;
 
         sentlist_aux
@@ -48,6 +49,9 @@ grammar sourceCode;
             | '}'
             ;
 
+        sentlist_error
+            :
+            ;
 
     // **** ZONA DE DECLARACIONES ****
     // -------------------------------
@@ -55,7 +59,6 @@ grammar sourceCode;
         dcl
             : cte
             | var
-            | var_error_semicolon
             | cte_error_semicolon
             ;
 
@@ -82,7 +85,7 @@ grammar sourceCode;
                 ;
 
             cte_error_aux_1_aux
-                :  simpvalue
+                : simpvalue
                 |
                 ;
 
@@ -96,10 +99,6 @@ grammar sourceCode;
                 : vardef
                 ;
 
-            var_error_semicolon
-                : vardef
-                ;
-
             vardef
                 : simple_vardef
                 | struct_vardef
@@ -107,7 +106,12 @@ grammar sourceCode;
 
             vardef_aux
                 : equal simpvalue
+                | vardef_aux_error
                 |
+                ;
+
+            vardef_aux_error
+                : equal exp
                 ;
 
             simple_vardef
@@ -152,7 +156,6 @@ grammar sourceCode;
 
             dcl_struct
                 : var
-                | var_error_semicolon
                 ;
 
 
@@ -252,190 +255,232 @@ grammar sourceCode;
     // **** ZONA DE SENTENCIAS DEL PROGRAMA PRINCIPAL ****
     // ---------------------------------------------------
 
-    mainhead
-        : tvoid 'Main' '(' mainhead_aux
-        ;
+        /* ---- FUNCION PRINCIPAL ---- */
 
-    mainhead_aux
-        : typedef ')'
-        | ')'
-        ;
+            mainhead
+                : tvoid 'Main' '(' mainhead_aux
+                | mainhead_error 'Main' '(' mainhead_aux
+                ;
 
-    code
-        : sent code_aux
-        ;
+            mainhead_aux
+                : typedef paren_close
+                | paren_close
+                ;
 
-    code_aux
-        : code
-        |
-        ;
+            mainhead_error
+                : tbas
+                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                |
+                ;
 
-    sent
-        : asig ';'
-        | funccall ';'
-        | vardef ';'
-        | vardef_and_asig ';'
-        | return_func ';'
-        | if
-        | while
-        | dowhile
-        | for
-        ;
+        /* ---- BLOQUE DE CODIGO---- */
 
-    if
-        : 'if' expcond '{' sentlist_aux if_aux
-    //    | IF_ERROR expcond '{' sentlist_aux if_aux
-        ;
+            code
+                : sent code_aux
+                ;
 
-    if_aux
-        : else
-        |
-        ;
+            code_aux
+                : code
+                |
+                ;
 
-    else
-        : 'else' else_aux
-    //    | ELSE_ERROR else_aux
-        ;
+        /* ---- POSIBLES SENTENCIAS ---- */
 
-    else_aux
-        : '{' sentlist_aux
-        | if
-        ;
+            sent
+                : vardef_code semicolon
+                | asig semicolon
+                | vardef_and_asig semicolon
+                | funccall semicolon
+                | return_func semicolon
+                | if
+                | while
+                | dowhile
+                | for
+                ;
 
-    while
-        : 'while' '(' expcond ')' '{' sentlist_aux
-    //    | WHILE_ERROR '(' expcond ')' '{' sentlist_aux
-        ;
+        /* ---- DEFINICION DE VARIABLES ---- */
+        
+            vardef_code
+                : simple_vardef_code
+                | struct_vardef
+                ;
 
-    dowhile
-        : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
-    //    | DO_ERROR '{' sentlist_aux WHILE_ERROR '(' expcond ')' ';'
-        ;
+            simple_vardef_code
+                : tbas IDENTIFIER
+                | error_simple_vardef_code
+                ;
+    
+            error_simple_vardef_code
+                : tbas error_simple_vardef_code_aux
+                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                ;
+    
+            error_simple_vardef_code_aux
+                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
+                |
+                ;
+        
+        /* ---- ASIGNACIONES ---- */
 
-    for
-        : 'for' '(' for_aux
-    //    | FOR_ERROR '(' for_aux
-        ;
+            asig
+                : IDENTIFIER '=' exp
+                ;
 
-    // NUEVO
-    for_aux
-        : vardef ';' expcond ';' asig ')' '{' sentlist_aux
-        | asig ';' expcond ';' asig ')' '{' sentlist_aux
-        | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
-        ;
+            vardef_and_asig
+                : typedef '=' exp
+                ;
 
-    expcond
-        : factorcond expcond_aux
-        ;
+        /* ---- LLAMADAS A FUNCIONES ---- */
 
-    expcond_aux
-        : oplog expcond expcond_aux
-        |
-        ;
+            funccall
+                : IDENTIFIER funccall_aux
+                | CONST_DEF_IDENTIFIER
+                ;
 
-    oplog
-        : '||'
-    //    | OR_ERROR
-        | '&'
-    //    | AND_ERROR
-        ;
+            funccall_aux
+                : subpparamlist
+                |
+                ;
 
-    factorcond
-        : '(' expcond ')'
-        | exp factorcond_aux
-        | '!' factorcond
-        ;
+            subpparamlist
+                : '(' explist ')'
+                ;
 
-    factorcond_aux
-        : opcomp exp
-        |
-        ;
+            explist
+                : exp explist_aux
+                |
+                ;
 
-    opcomp
-        : '<'
-    //    | LT_ERROR
-        | '>'
-    //    | GT_ERROR
-        | '<='
-    //    | LTE_ERROR
-        | '>='
-    //    | GTE_ERROR
-        | '=='
-    //    | EQ_ERROR
-        | '!='
-    //    | NEQ_ERROR
-        ;
+            explist_aux
+                : ',' explist
+                |
+                ;
 
-    // NUEVO
-    return_func
-        : 'return' return_func_aux
-        ;
+        /* ---- PUNTO DE RETORNO EN FUNCIONES ---- */
 
-    return_func_aux
-        : '(' explist ')'
-        | explist
-        ;
+            return_func
+                : 'return' return_func_aux
+                ;
 
-    asig
-        : IDENTIFIER '=' exp
-        ;
+            return_func_aux
+                : '(' explist ')'
+                | explist
+                ;
 
-    // NUEVO
-    vardef_and_asig
-        : typedef '=' exp
-        ;
+        /* ---- SENTENCIA IF-ELSE ---- */
 
-    exp
-        : factor exp_aux
-        ;
+            if
+                : 'if' expcond '{' sentlist_aux if_aux
+                ;
 
-    exp_aux
-        : op exp exp_aux
-        |
-        ;
+            if_aux
+                : else
+                |
+                ;
 
-    op
-        : '+'
-    //    | PLUS_ERROR
-        | '-'
-    //    | MINUS_ERROR
-        | '*'
-    //    | MULT_ERROR
-        | 'DIV'
-    //    | DIV_ERROR
-        | 'MOD'
-    //    | MOD_ERROR
-        ;
+            else
+                : 'else' else_aux
+                ;
 
-    factor
-        : simpvalue
-        | '(' exp ')'
-        | funccall
-        ;
+            else_aux
+                : '{' sentlist_aux
+                | if
+                ;
 
-    funccall
-        : IDENTIFIER funccall_aux
-        | CONST_DEF_IDENTIFIER
-        ;
+        /* ---- SENTENCIA WHILE ---- */
 
-    funccall_aux
-        : subpparamlist
-        |
-        ;
+            while
+                    : 'while' '(' expcond ')' '{' sentlist_aux
+                    ;
 
-    subpparamlist
-        : '(' explist ')'
-        ;
+        /* ---- SENTENCIA DO-WHILE ---- */
 
-    explist
-        : exp explist_aux
-        |
-        ;
+            dowhile
+                    : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
+                    ;
 
-    explist_aux
-        : ',' explist
-        |
-        ;
+        /* ---- SENTENCIA FOR ---- */
+
+            for
+                    : 'for' '(' for_aux
+                    ;
+
+            for_aux
+                : vardef ';' expcond ';' asig ')' '{' sentlist_aux
+                | asig ';' expcond ';' asig ')' '{' sentlist_aux
+                | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
+                ;
+
+        /* ---- OPERACIONES CONDICIONALES ---- */
+
+            expcond
+                : factorcond expcond_aux
+                ;
+
+            expcond_aux
+                : oplog expcond expcond_aux
+                |
+                ;
+
+            oplog
+                : '||'
+                | '&'
+                ;
+
+            factorcond
+                : '(' expcond ')'
+                | exp factorcond_aux
+                | '!' factorcond
+                ;
+
+            factorcond_aux
+                : opcomp exp
+                |
+                ;
+
+            opcomp
+                : '<'
+                | '>'
+                | '<='
+                | '>='
+                | '=='
+                | '!='
+                ;
+
+        /* ---- OPERACIONES ARITMETICAS ---- */
+
+            exp
+                : factor exp_aux
+                ;
+
+            exp_aux
+                : op exp exp_aux
+                |
+                ;
+
+            op
+                : '+'
+                | '-'
+                | '*'
+                | 'DIV'
+                | 'MOD'
+                ;
+
+            factor
+                : simpvalue
+                | '(' exp ')'
+                | funccall
+                ;
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -513,7 +558,8 @@ grammar sourceCode;
         ;
 
     equal_error
-        :
+        : '=='
+        |
         ;
 
 
