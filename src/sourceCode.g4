@@ -6,19 +6,23 @@ grammar sourceCode;
 |-------------------------------------|
 */
 
-    // **** ZONA PRINCIPAL ****
+    // **** MAIN SECTION ****
     // ------------------------
 
         program
-            : dcllist program_aux
+            : sentlist
             | funlist sentlist
-            | sentlist
-            | // Empty program
+            | dcllist program_aux
+            | program_empty
             ;
 
         program_aux
             : funlist sentlist
             | sentlist
+            ;
+
+        program_empty
+            :
             ;
 
         dcllist
@@ -53,8 +57,8 @@ grammar sourceCode;
             :
             ;
 
-    // **** ZONA DE DECLARACIONES ****
-    // -------------------------------
+    // **** DECLARATIONS SECTION ****
+    // ------------------------------
 
         dcl
             : cte
@@ -62,7 +66,7 @@ grammar sourceCode;
             | cte_error_semicolon
             ;
 
-        /* ---- DECLARACIÓN DE CONSTANTES ---- */
+        /* ---- CONSTANTS DECLARATION ---- */
 
             cte
                 : '#define' CONST_DEF_IDENTIFIER simpvalue
@@ -93,7 +97,7 @@ grammar sourceCode;
                 : cte ';'
                 ;
 
-        /* ---- DECLARACIÓN DE VARIABLES SIMPLES ---- */
+        /* ---- SIMPLE VARIABLES DECLARATION ---- */
 
             var
                 : vardef
@@ -105,13 +109,13 @@ grammar sourceCode;
                 ;
 
             vardef_aux
-                : equal simpvalue
+                :
+                | equal_asig simpvalue
                 | vardef_aux_error
-                |
                 ;
 
             vardef_aux_error
-                : equal exp
+                : equal_asig exp
                 ;
 
             simple_vardef
@@ -129,7 +133,7 @@ grammar sourceCode;
                 |
                 ;
 
-        /* ---- DECLARACION DE STRUCTS ---- */
+        /* ---- STRUCTS DECLARATION ---- */
 
             struct_vardef
                 : struct_def IDENTIFIER semicolon
@@ -159,7 +163,7 @@ grammar sourceCode;
                 ;
 
 
-        /* ---- VALORES ASIGNABLES ---- */
+        /* ---- ASSIGNABLE VALUES ---- */
 
             simpvalue
                 : NUMERIC_INTEGER_CONST
@@ -173,7 +177,7 @@ grammar sourceCode;
                 |
                 ;
 
-        /* ---- TIPOS DE VARIABLES ---- */
+        /* ---- VARIABLE TYPES ---- */
 
             tbas
                 : 'integer'
@@ -190,8 +194,8 @@ grammar sourceCode;
 
 
 
-    // **** ZONA DE IMPLEMENTACIÓN DE FUNCIONES ****
-    // ---------------------------------------------
+    // **** FUNCTION IMPLEMENTATION SECTION ****
+    // -----------------------------------------
 
         funcdef
             : funchead curly_open funcdef_aux
@@ -202,7 +206,7 @@ grammar sourceCode;
             | curly_close
             ;
 
-        /* ---- CABECERA DE LA FUNCION ---- */
+        /* ---- FUNCTION HEAD ---- */
 
             funchead
                 : tbas IDENTIFIER '(' funchead_aux
@@ -224,7 +228,7 @@ grammar sourceCode;
                 |
                 ;
 
-        /* ---- PARTAMETROS DE LA FUNCION ---- */
+        /* ---- FUNCTION PARAMETERS ---- */
 
             typedef
                 : tbas IDENTIFIER typedef_aux
@@ -247,13 +251,8 @@ grammar sourceCode;
                 |
                 ;
 
-            comma_no_var_error
-                : ','
-                ;
-
-
-    // **** ZONA DE SENTENCIAS DEL PROGRAMA PRINCIPAL ****
-    // ---------------------------------------------------
+    // **** MAIN-PROGRAM-SENTENCES SECTION ****
+    // ----------------------------------------
 
         /* ---- FUNCION PRINCIPAL ---- */
 
@@ -270,10 +269,9 @@ grammar sourceCode;
             mainhead_error
                 : tbas
                 | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                |
                 ;
 
-        /* ---- BLOQUE DE CODIGO---- */
+        /* ---- CODE BLOCK ---- */
 
             code
                 : sent code_aux
@@ -284,12 +282,12 @@ grammar sourceCode;
                 |
                 ;
 
-        /* ---- POSIBLES SENTENCIAS ---- */
+        /* ---- SENTENCES ---- */
 
             sent
-                : vardef_code semicolon
-                | asig semicolon
+                : asig semicolon
                 | vardef_and_asig semicolon
+                | vardef_code semicolon
                 | funccall semicolon
                 | return_func semicolon
                 | if
@@ -298,7 +296,7 @@ grammar sourceCode;
                 | for
                 ;
 
-        /* ---- DEFINICION DE VARIABLES ---- */
+        /* ---- VARIABLE DEFINITIONS ---- */
         
             vardef_code
                 : simple_vardef_code
@@ -320,21 +318,32 @@ grammar sourceCode;
                 |
                 ;
         
-        /* ---- ASIGNACIONES ---- */
+        /* ---- ASSIGNMENTS ---- */
 
             asig
-                : IDENTIFIER '=' exp
+                : IDENTIFIER equal_asig_no_empty exp
+                | asig_error equal_asig_no_empty exp
+                ;
+
+            asig_error
+                : (TEXT | CONST_DEF_IDENTIFIER | IDENTIFIER)
+                |
                 ;
 
             vardef_and_asig
-                : typedef '=' exp
+                : simple_vardef_code equal_asig_no_empty exp
                 ;
 
-        /* ---- LLAMADAS A FUNCIONES ---- */
+        /* ---- FUNCTION CALLS ---- */
 
             funccall
                 : IDENTIFIER funccall_aux
                 | CONST_DEF_IDENTIFIER
+                | funccall_error funccall_aux
+                ;
+
+            funccall_error
+                : TEXT
                 ;
 
             funccall_aux
@@ -343,7 +352,7 @@ grammar sourceCode;
                 ;
 
             subpparamlist
-                : '(' explist ')'
+                : paren_open explist paren_close
                 ;
 
             explist
@@ -352,11 +361,13 @@ grammar sourceCode;
                 ;
 
             explist_aux
-                : ',' explist
+                : comma explist
+                | comma_no_var_error
                 |
                 ;
 
-        /* ---- PUNTO DE RETORNO EN FUNCIONES ---- */
+        //todo completar recuperación desde este punto
+        /* ---- FUNCTION-RETURN SECTION ---- */
 
             return_func
                 : 'return' return_func_aux
@@ -367,7 +378,7 @@ grammar sourceCode;
                 | explist
                 ;
 
-        /* ---- SENTENCIA IF-ELSE ---- */
+        /* ---- IF-ELSE SENTENCE ---- */
 
             if
                 : 'if' expcond '{' sentlist_aux if_aux
@@ -387,23 +398,23 @@ grammar sourceCode;
                 | if
                 ;
 
-        /* ---- SENTENCIA WHILE ---- */
+        /* ---- WHILE SENTENCE ---- */
 
             while
-                    : 'while' '(' expcond ')' '{' sentlist_aux
-                    ;
+                : 'while' '(' expcond ')' '{' sentlist_aux
+                ;
 
-        /* ---- SENTENCIA DO-WHILE ---- */
+        /* ---- DO-WHILE SENTENCE ---- */
 
             dowhile
-                    : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
-                    ;
+                : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
+                ;
 
-        /* ---- SENTENCIA FOR ---- */
+        /* ---- FOR SENTENCE ---- */
 
             for
-                    : 'for' '(' for_aux
-                    ;
+                : 'for' '(' for_aux
+                ;
 
             for_aux
                 : vardef ';' expcond ';' asig ')' '{' sentlist_aux
@@ -411,7 +422,7 @@ grammar sourceCode;
                 | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
                 ;
 
-        /* ---- OPERACIONES CONDICIONALES ---- */
+        /* ---- CONDITIONAL OPERATIONS ---- */
 
             expcond
                 : factorcond expcond_aux
@@ -447,7 +458,7 @@ grammar sourceCode;
                 | '!='
                 ;
 
-        /* ---- OPERACIONES ARITMETICAS ---- */
+        /* ---- ARITHMETIC OPERATIONS ---- */
 
             exp
                 : factor exp_aux
@@ -467,131 +478,116 @@ grammar sourceCode;
                 ;
 
             factor
-                : simpvalue
+                : simpvalue_code
                 | '(' exp ')'
                 | funccall
                 ;
 
+            simpvalue_code
+                : NUMERIC_INTEGER_CONST
+                | NUMERIC_REAL_CONST
+                | STRING_CONST
+                | IDENTIFIER
+                | CONST_DEF_IDENTIFIER
+                | simpvalue_code_error
+                ;
+
+            simpvalue_code_error
+                : TEXT
+                ;
 
 
+    // **** ERROR-RECOBERY-CONTROL PRODUCTIONS ****
+    // ------------------------------------
 
+        /* ---- OPEN AND CLOSE PARENTHESIS ---- */
 
+            paren_open
+                : '('
+                | paren_open_error
+                ;
 
+            paren_open_error
+                :
+                ;
 
+            paren_close
+                : ')'
+                | paren_close_error
+                ;
 
+            paren_close_error
+                :
+                ;
 
+        /* ---- OPEN AND CLOSE CURLY-BRACKETS ---- */
 
+            curly_open
+                : '{'
+                | curly_open_error
+                ;
 
+            curly_open_error
+                :
+                ;
 
+            curly_close
+                : '}'
+                | curly_close_error
+                ;
 
+            curly_close_error
+                :
+                ;
 
+        /* ---- COMMA-SYMBOL ---- */
 
+            comma
+                : ','
+                | comma_error
+                ;
 
+            comma_error
+                :
+                ;
 
+            comma_no_var_error
+                : ','
+                ;
 
+        /* ---- SEMICOLON-SYMBOL ---- */
 
+            semicolon
+                : ';'
+                | semicolon_error
+                ;
 
+            semicolon_error
+                :
+                ;
 
+        /* ---- EQUAL-SYMBOL FOR ASSIGNMENTS ---- */
 
+            equal_asig
+                : '='
+                | equal_asig_error
+                ;
 
+            equal_asig_error
+                : '=='
+                | EQ_MORE_ONE_ERROR
+                |
+                ;
 
+            equal_asig_no_empty
+                : '='
+                | equal_asig_no_empty_error
+                ;
 
-
-
-    paren_open
-        : '('
-        | paren_open_error
-        ;
-
-    paren_open_error
-        :
-        ;
-
-    paren_close
-        : ')'
-        | paren_close_error
-        ;
-
-    paren_close_error
-        :
-        ;
-
-    curly_open
-        : '{'
-        | curly_open_error
-        ;
-
-    curly_open_error
-        :
-        ;
-
-    curly_close
-        : '}'
-        | curly_close_error
-        ;
-
-    curly_close_error
-        :
-        ;
-
-    comma
-        : ','
-        | comma_error
-        ;
-
-    comma_error
-        :
-        ;
-
-    semicolon
-        : ';'
-        | semicolon_error
-        ;
-
-    semicolon_error
-        :
-        ;
-
-    equal
-        : '='
-        | equal_error
-        ;
-
-    equal_error
-        : '=='
-        |
-        ;
-
-
-
-
-
-/*
-|-------------------------------------------------------|
-|        TOKEN TYPES COMMON ERRORS SPECIFICATION        |
-|-------------------------------------------------------|
-*/
-
-//INTEGER_ERROR
-//    : [iI] (LOWER | UPPER)*
-//    ;
-//
-//FLOAT_ERROR
-//    : [fF] (LOWER | UPPER)* [ \t\n\r]* ~[;{ \t\n\r]+
-//    ;
-//
-//STRUCT_ERROR
-//    : [sS] (LOWER | UPPER)* [cC] (LOWER | UPPER)* ~[;{ \t\n\r]+
-//    ;
-//
-//STRING_ERROR
-//    : [sS] (LOWER | UPPER)* [ \t\n\r]* ~[;{ \t\n\r]+
-//    ;
-//
-//VOID_ERROR
-//    : [vV] (LOWER | UPPER)* [ \t\n\r]* ~[;{ \t\n\r]+
-//    ;
-
+            equal_asig_no_empty_error
+                : '=='
+                | EQ_MORE_ONE_ERROR
+                ;
 
 /*
 |-----------------------------------|
@@ -599,142 +595,59 @@ grammar sourceCode;
 |-----------------------------------|
 */
 
+    // **** MAIN TOKENS ****
+    // ---------------------
 
+        IDENTIFIER
+            :   LOWER+(LOWER|NUMBER|'_')*
+            |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
+            ;
 
+        CONST_DEF_IDENTIFIER
+            :   UPPER+(UPPER|NUMBER|'_')*
+            |   '_'+(UPPER|NUMBER)+(UPPER|NUMBER|'_')*
+            ;
 
-IDENTIFIER
-    :   LOWER+(LOWER|NUMBER|'_')*
-    |   '_'+(LOWER|NUMBER)+(LOWER|NUMBER|'_')*
-    ;
+        NUMERIC_INTEGER_CONST
+            :   ('+'|'-')?NUMBER+
+            ;
 
-CONST_DEF_IDENTIFIER
-    :   UPPER+(UPPER|NUMBER|'_')*
-    |   '_'+(UPPER|NUMBER)+(UPPER|NUMBER|'_')*
-    ;
+        NUMERIC_REAL_CONST
+            :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
+            |   REAL
+            ;
 
-NUMERIC_INTEGER_CONST
-    :   ('+'|'-')?NUMBER+
-    ;
+        STRING_CONST
+            :   '\''(~'\''|('\\''\''))*'\''
+            |   '"'(~'"'|('\\''"'))*'"'
+            ;
 
-NUMERIC_REAL_CONST
-    :   (REAL|NUMERIC_INTEGER_CONST)[Ee]NUMERIC_INTEGER_CONST
-    |   REAL
-    ;
+    // **** AUXILIAR ERROR-RECOVERY-CONTROL TOKENS ****
+    // ------------------------------------------------
 
-TEXT
-    :   (NUMBER | LOWER | UPPER | '_')+
-    ;
+        TEXT
+            :   (NUMBER | LOWER | UPPER | '_')+
+            ;
 
-HASHTAG_TEXT
-    :   '#' (NUMBER | LOWER | UPPER | '_')*
-    ;
+        HASHTAG_TEXT
+            :   '#' (NUMBER | LOWER | UPPER | '_')*
+            ;
 
-STRING_CONST
-    :   '\''(~'\''|('\\''\''))*'\''
-    |   '"'(~'"'|('\\''"'))*'"'
-    ;
+        EQ_MORE_ONE_ERROR
+            : '=' '='+
+            ;
 
-WHITE_SPACE
-    :   [ \t\n\r]+ -> channel(HIDDEN)
-    ;
+    // **** TOKENS TO IGNORE ****
+    // --------------------------
 
-COMMENT
-    :   ('/''/'(~'\n'*)'\n'
-    |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/') -> channel(HIDDEN)
-    ;
+        WHITE_SPACE
+            :   [ \t\n\r]+ -> channel(HIDDEN)
+            ;
 
-
-/*
-|-----------------------------------|
-|        TOKEN COMMON ERRORS        |
-|-----------------------------------|
-*/
-
-//FOR_ERROR
-//    : [fF] (LOWER | UPPER)*
-//    ;
-//
-//WHILE_ERROR
-//    : [wW] (LOWER | UPPER)*
-//    ;
-//
-//DO_ERROR
-//    : [dD] (LOWER | UPPER)*
-//    ;
-//
-//IF_ERROR
-//    : [iI][fF] (LOWER | UPPER)*
-//    ;
-//
-//ELSE_ERROR
-//    : [eE] [lL] (LOWER | UPPER)*
-//    ;
-//
-//MAIN_ERROR
-//    : 'M' (LOWER | UPPER)*
-//    ;
-//
-//DEFINE_ERROR
-//    : '\u0023' '\u0023'* (LOWER | UPPER)*
-//    ;
-//
-//MOD_ERROR
-//    : ([mM] | '\u0025' '\u0025'+) (LOWER | UPPER)*
-//    ;
-//
-//PLUS_ERROR
-//    : ([sS][uU][mM] | '\u002b' '\u002b'+)
-//    ;
-//
-//MINUS_ERROR
-//    : '\u002d' '\u002d'+
-//    ;
-//
-//MULT_ERROR
-//    : ([Mm][uU][lL][tT] | '\u002a' '\u002a'+)
-//    ;
-//
-//DIV_ERROR
-//    : ([dD] | '\u002f' '\u002f'*) (LOWER | UPPER)*
-//    ;
-//
-//LT_ERROR
-//    : '\u003c' '\u003c'+
-//    ;
-//
-//LTE_ERROR
-//    : '\u003c' '\u003c'+ '\u003d'+
-//    | '\u003d'+ '\u003c'+
-//    ;
-//
-//GT_ERROR
-//    : '\u003e' '\u003e'+
-//    ;
-//
-//GTE_ERROR
-//    : '\u003e' '\u003e'+ '\u003d'+
-//    | '\u003e'+ '\u003e'+
-//    ;
-//
-//EQ_ERROR
-//    : '\u003d' '\u003d' '\u003d'+
-//    ;
-//
-//NEQ_ERROR
-//    : ('\u007e' | '\u0021' '\u0021'+) '\u003d' '\u003d'+
-//    | '\u003d'+ ('\u0021'+ | '\u007e'+)
-//    ;
-//
-//OR_ERROR
-//    : '\u007c' '\u007c' '\u007c'+
-//    | [oO][rR]
-//    | [rR][oO]
-//    ;
-//
-//AND_ERROR
-//    : '\u0026' '\u0026'+
-//    | [aA][nN][dD]
-//    ;
+        COMMENT
+            :   ('/''/'(~'\n'*)'\n'
+            |   '/'('*'+)(('*'+)(~[/]+)|(~[/*]+)|(~[*]+)('/'+)|'\n')*('*'+)'/') -> channel(HIDDEN)
+            ;
 
 /*
 |-----------------------------------------|
@@ -742,36 +655,18 @@ COMMENT
 |-----------------------------------------|
 */
 
-fragment UPPER
-    :   [A-Z]
-    ;
+    fragment UPPER
+        :   [A-Z]
+        ;
 
-fragment LOWER
-    :   [a-z]
-    ;
+    fragment LOWER
+        :   [a-z]
+        ;
 
-fragment NUMBER
-    :   [0-9]
-    ;
+    fragment NUMBER
+        :   [0-9]
+        ;
 
-fragment REAL
-    :   ('+'|'-')?(NUMBER*'.'NUMBER+)
-    ;
-
-/*
-   TABLA TRADUCCIÓN UNICODE - CARACTER
-   -----------------------------------
-   |        \u007b  --->  '{'        |
-   |        \u007d  --->  '}'        |
-   |        \u003b  --->  ';'        |
-   |        \u0028  --->  '('        |
-   |        \u0029  --->  ')'        |
-   |        \u002c  --->  ','        |
-   |        \u003d  --->  '='        |
-   |        \u002b  --->  '+'        |
-   |        \u002d  --->  '-'        |
-   |        \u002a  --->  '*'        |
-   |        \u002f  --->  '/'        |
-   |        \u000a  --->  '\n'       |
-   -----------------------------------
-*/
+    fragment REAL
+        :   ('+'|'-')?(NUMBER*'.'NUMBER+)
+        ;
