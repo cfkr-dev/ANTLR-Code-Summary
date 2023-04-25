@@ -1,32 +1,29 @@
 /*
-    CODIGO DE EJEMPLO 2
+    CODIGO DE EJEMPLO 6
     -------------------
 
     Declaracion de structs
 */
 
-struct
-    string marca = "BMW"
-    integer asientos = 5;
+struct {
+    string marca = "BMW";
+    integer asientos = 5
     string color = "amarillo";
 
     struct {
-        integer centimetros_cubicos = 500;
+        ineger centimetros_cubicos = 500;
         integer caballos = 200;
 
-        integer revoluciones;
-     motor;
+        integer revoluciones
+    } motor
 
-    integer valocidad;
+    ineger valocidad;
 
-} coche;
-
-
+ coche;
 
 void Main() {
     struct coche_1 = coche;
-
-    fore (integer i = 0; i <! 10; i = i + 1) {
+    fore (i < 10; i = i + 1) {
         velocidad = velocidad * 10;
     }
 
