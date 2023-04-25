@@ -23,6 +23,9 @@ public class Main {
             // Crear el objeto correspondiente al analizador sintáctico
             sourceCodeParser anasint = new sourceCodeParser(tokens);
 
+            anasint.removeErrorListeners(); // remove ConsoleErrorListener
+            anasint.addErrorListener(new UnderlineListener()); // add ours
+
             /*
             Si se quiere pasar al analizador algún objeto externo con el que trabajar,
             este deberá ser de una clase del mismo paquete
