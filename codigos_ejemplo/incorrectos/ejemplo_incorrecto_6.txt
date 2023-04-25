@@ -1,5 +1,5 @@
 /*
-    CODIGO DE EJEMPLO 2
+    CODIGO DE EJEMPLO 6
     -------------------
 
     Declaracion de structs
@@ -21,11 +21,8 @@ struct {
 
  coche;
 
-
-
 void Main() {
     struct coche_1 = coche;
-
     fore (i < 10; i = i + 1) {
         velocidad = velocidad * 10;
     }
