@@ -1,5 +1,7 @@
 public class Constants {
 
+  public static String FILE_NAME;
+
   // RUTA RAIZ PARA TEST
   private static final String TEST_PATH = "./test/";
   
