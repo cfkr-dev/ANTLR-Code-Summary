@@ -1,9 +1,10 @@
 import enums.Element;
+import enums.Type;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class Program implements ProgramElement{
+public class Program implements ProgrammableElement{
 
     private String name;
     private ProgramElement context;
@@ -17,6 +18,11 @@ public class Program implements ProgramElement{
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Element getElementType() {
+        return null;
     }
 
     public void setName(String name) {
@@ -49,5 +55,41 @@ public class Program implements ProgramElement{
         for (Element e: Element.values())
             symbolTable.put(e, new HashMap<>());
         return symbolTable;
+    }
+
+    @Override
+    public void addToSymbolTable(ProgramElement element) {
+        this.symbolTable.get(element.getElementType()).put(element.getName(), element);
+    }
+
+    @Override
+    public void updateSymbolTable(ProgramElement element) {
+        this.symbolTable.get(element.getElementType()).replace(element.getName(), element);
+    }
+
+    @Override
+    public boolean hasThisSymbol(String name) {
+        for (Element e: Element.values()){
+            if (this.symbolTable.get(e).containsKey(name))
+                return true;
+        }
+        return false;
+    }
+
+    @Override
+    public Variable createNewVariable(String type, String name) {
+        if (!this.hasThisSymbol(name)) {
+            Variable variable = new Variable(type, name, this);
+            this.addToSymbolTable(variable);
+            return variable;
+        } else {
+            System.err.println("This element has been previously declared");
+            return null;
+        }
+    }
+
+    @Override
+    public ProgramElement getSymbolByNameAndElement(String name, Element element) {
+        return this.symbolTable.get(element).get(name);
     }
 }

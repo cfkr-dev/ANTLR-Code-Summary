@@ -30,4 +30,14 @@ public class Function implements ProgramElement{
     public String toHTML() {
         return null;
     }
+
+    @Override
+    public String getName() {
+        return null;
+    }
+
+    @Override
+    public Element getElementType() {
+        return null;
+    }
 }

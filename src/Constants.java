@@ -1,3 +1,5 @@
+import enums.Type;
+
 public class Constants {
 
   public static String FILE_NAME;
@@ -11,4 +13,16 @@ public class Constants {
   // RUTA PARA FICHEROS DE SALIDA
   private static final String TEST_OUT_PATH = "./test/out/";
 
+  public static boolean checkTypeTokenType(Type type, String tokenType) {
+    switch (tokenType) {
+      case "NUMERIC_INTEGER_CONST" :
+        return type.equals(Type.INTEGER);
+      case "NUMERIC_REAL_CONST" :
+        return type.equals(Type.FLOAT);
+      case "STRING_CONST" :
+        return type.equals(Type.STRING);
+      default :
+        return false;
+    }
+  }
 }

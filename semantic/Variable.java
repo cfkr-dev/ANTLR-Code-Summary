@@ -1,19 +1,20 @@
 import enums.Element;
 import enums.Type;
 
-import java.util.Map;
-
-public class Variable<E> implements ProgramElement{
+public class Variable implements ProgramElement{
 
     private String name;
-    private ProgramElement context;
+    private ProgrammableElement context;
 
     private Type type;
 
-    private E value;
+    private Element elementType;
 
-    public Variable(String type, String name, ProgramElement context) {
+    private String value;
+
+    public Variable(String type, String name, ProgrammableElement context) {
         this.type = Type.valueOf(type.toUpperCase());
+        this.elementType = Element.VARIABLE;
         this.name = name;
         this.context = context;
         this.value = null;
@@ -21,6 +22,11 @@ public class Variable<E> implements ProgramElement{
 
     public String getName() {
         return name;
+    }
+
+    @Override
+    public Element getElementType() {
+        return this.elementType;
     }
 
     public void setName(String name) {
@@ -31,10 +37,6 @@ public class Variable<E> implements ProgramElement{
         return context;
     }
 
-    public void setContext(ProgramElement context) {
-        this.context = context;
-    }
-
     public Type getType() {
         return type;
     }
@@ -43,13 +45,38 @@ public class Variable<E> implements ProgramElement{
         this.type = type;
     }
 
-    public E getValue() {
+    public String getValue() {
         return value;
     }
 
-    public void setValue(E value) {
-        if (value.getClass().getName().equals(this.type.name()))
-            this.value = value;
+    public void setValue(String value, String tokenType) {
+        if (!this.context.hasThisSymbol(this.name)) {
+            System.err.println("Can't assign " + value + " to " + this.name + " because it hasn't been previously declared");
+            return;
+        }
+
+        if (!(Constants.checkTypeTokenType(this.type, tokenType))) {
+            System.err.println("Can't assign \"" + value + "\" to " + this.type.name().toLowerCase() + " variable");
+            return;
+        }
+
+        this.value = value;
+        this.context.updateSymbolTable(this);
+    }
+
+    public void setValue(Variable variable) {
+        if (!this.context.hasThisSymbol(this.name)) {
+            System.err.println("Can't assign " + variable.name + " value to " + this.name + " because it hasn't been previously declared");
+            return;
+        }
+
+        if (!this.type.equals(variable.type)) {
+            System.err.println("Can't assign " + variable.name + " value (" + variable.type.name().toLowerCase() + ") to " + this.name + " (" + this.type.name().toLowerCase() + ") because types doesn't match");
+            return;
+        }
+
+        this.value = variable.value;
+        this.context.updateSymbolTable(this);
     }
 
     @Override
