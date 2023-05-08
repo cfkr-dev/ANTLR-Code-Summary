@@ -2,6 +2,7 @@ import enums.Element;
 import enums.Type;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Program implements ProgrammableElement{
@@ -17,7 +18,7 @@ public class Program implements ProgrammableElement{
     }
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -82,6 +83,17 @@ public class Program implements ProgrammableElement{
             Variable variable = new Variable(type, name, this);
             this.addToSymbolTable(variable);
             return variable;
+        } else {
+            System.err.println("This element has been previously declared");
+            return null;
+        }
+    }
+
+    public Function createNewFunction(String type, String name, List<Param> params) {
+        if (!this.hasThisSymbol(name)) {
+            Function function = new Function(type, name, this, params);
+            this.addToSymbolTable(function);
+            return function;
         } else {
             System.err.println("This element has been previously declared");
             return null;
