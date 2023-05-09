@@ -1,7 +1,12 @@
+import semantic.element.Function;
 import semantic.element.Program;
 import semantic.element.Variable;
 import semantic.enums.Element;
 import semantic.utils.Constants;
+import semantic.utils.Param;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class FunctionsAndVariablesTest {
     public static void runTest() throws InstantiationException {
@@ -37,5 +42,11 @@ public class FunctionsAndVariablesTest {
 
         // Error -> tipos no iguales
         variable_assign.setValue(variable_1);
+
+        List<Param> paramList = new ArrayList<>();
+        paramList.add(new Param("integer", "param_1"));
+
+        Function function_1 = program.createNewFunction("integer", "function_1", paramList);
+        function_1.createNewVariable("float", "local_variable");
     }
 }
