@@ -1,4 +1,7 @@
-import enums.Element;
+import semantic.element.Program;
+import semantic.element.Variable;
+import semantic.enums.Element;
+import semantic.utils.Constants;
 
 public class FunctionsAndVariablesTest {
     public static void runTest() throws InstantiationException {

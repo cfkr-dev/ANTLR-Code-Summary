@@ -1,4 +1,6 @@
-import enums.Type;
+package semantic.utils;
+
+import semantic.enums.Type;
 
 public class Constants {
 

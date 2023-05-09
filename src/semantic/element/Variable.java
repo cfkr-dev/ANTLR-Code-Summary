@@ -1,14 +1,12 @@
-import enums.Element;
-import enums.Type;
+package semantic.element;
 
-public class Variable implements ProgramElement{
+import semantic.enums.Element;
+import semantic.enums.Type;
+import semantic.element_interfaces.ProgrammableElement;
+import semantic.element_master.MasterProgramElement;
+import semantic.utils.Constants;
 
-    private String name;
-    private ProgrammableElement context;
-
-    private Type type;
-
-    private Element elementType;
+public class Variable extends MasterProgramElement {
 
     private String value;
 
@@ -18,35 +16,6 @@ public class Variable implements ProgramElement{
         this.name = name;
         this.context = context;
         this.value = null;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Element getElementType() {
-        return this.elementType;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public ProgramElement getContext() {
-        return context;
-    }
-
-    public Type getType() {
-        return type;
-    }
-
-    public void setType(Type type) {
-        this.type = type;
-    }
-
-    public String getValue() {
-        return value;
     }
 
     public void setValue(String value, String tokenType) {

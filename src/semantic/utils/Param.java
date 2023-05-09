@@ -1,3 +1,5 @@
+package semantic.utils;
+
 public class Param {
     String type, name;
 
