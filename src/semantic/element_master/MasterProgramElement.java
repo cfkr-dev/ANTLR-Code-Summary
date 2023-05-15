@@ -16,7 +16,8 @@ public abstract class MasterProgramElement implements ProgramElement {
     public Type getType() {
         return this.type;
     }
-    @Override
+
+
     public void setType(Type type) {
         this.type = type;
     }

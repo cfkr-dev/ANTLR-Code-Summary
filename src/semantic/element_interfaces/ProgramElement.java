@@ -7,8 +7,6 @@ public interface ProgramElement {
 
     public Type getType();
 
-    public void setType(Type type);
-
     public String getName();
 
     public Element getElementType();

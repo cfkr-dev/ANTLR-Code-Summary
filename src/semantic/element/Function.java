@@ -1,17 +1,15 @@
 package semantic.element;
 
+import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element_interfaces.ProgramElement;
-import semantic.element_master.MasterProgrammableElement;
 import semantic.enums.Element;
 import semantic.enums.Type;
-import semantic.element_master.Sentence;
 import semantic.utils.Param;
 
 import java.util.*;
 
-public class Function extends MasterProgrammableElement {
+public class Function extends MasterSentenceContainer {
     private List<Variable> params;
-    private List<Sentence> sentences;
 
     public Function(String type, String name, Program context, List<Param> params) {
         this.type = Type.valueOf(type.toUpperCase());

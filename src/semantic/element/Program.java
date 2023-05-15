@@ -1,8 +1,8 @@
 package semantic.element;
 
-import semantic.enums.Element;
 import semantic.element_interfaces.ProgramElement;
 import semantic.element_master.MasterProgrammableElement;
+import semantic.enums.Element;
 import semantic.utils.Constants;
 import semantic.utils.Param;
 

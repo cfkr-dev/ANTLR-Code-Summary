@@ -1,5 +1,10 @@
 package semantic.enums;
 
 public enum Element {
-    VARIABLE, CONSTANT, FUNCTION
+    VARIABLE,
+    CONSTANT,
+    FUNCTION,
+    SENTENCE,
+    LITERAL
+
 }

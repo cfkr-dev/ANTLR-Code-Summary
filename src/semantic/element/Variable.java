@@ -1,14 +1,14 @@
 package semantic.element;
 
-import semantic.enums.Element;
-import semantic.enums.Type;
+import semantic.element.sentence.sentence_interface.AssignableElement;
 import semantic.element_interfaces.ProgrammableElement;
 import semantic.element_master.MasterProgramElement;
-import semantic.utils.Constants;
+import semantic.enums.Element;
+import semantic.enums.Type;
 
-public class Variable extends MasterProgramElement {
+public class Variable extends MasterProgramElement implements AssignableElement {
 
-    private String value;
+    private AssignableElement value;
 
     public Variable(String type, String name, ProgrammableElement context) {
         this.type = Type.valueOf(type.toUpperCase());
@@ -18,38 +18,42 @@ public class Variable extends MasterProgramElement {
         this.value = null;
     }
 
-    public void setValue(String value, String tokenType) {
-        if (!this.context.hasThisSymbol(this.name)) {
-            System.err.println("Can't assign " + value + " to " + this.name + " because it hasn't been previously declared");
-            return;
-        }
-
-        if (!(Constants.checkTypeTokenType(this.type, tokenType))) {
-            System.err.println("Can't assign \"" + value + "\" to " + this.type.name().toLowerCase() + " variable");
-            return;
-        }
-
-        this.value = value;
-        this.context.updateSymbolTable(this);
+    public AssignableElement getValueTarget() {
+        return this.value;
     }
 
-    public void setValue(Variable variable) {
+    @Override
+    public String getLiteralValue() {
+        return this.value.getLiteralValue();
+    }
+
+    public boolean setValue(AssignableElement assignableElement) {
         if (!this.context.hasThisSymbol(this.name)) {
-            System.err.println("Can't assign " + variable.name + " value to " + this.name + " because it hasn't been previously declared");
-            return;
+            System.err.println("Can't assign " + assignableElement.getLiteralValue() + " to " + this.name + " because " + this.name + " hasn't been previously declared");
+            return false;
         }
 
-        if (!this.type.equals(variable.type)) {
-            System.err.println("Can't assign " + variable.name + " value (" + variable.type.name().toLowerCase() + ") to " + this.name + " (" + this.type.name().toLowerCase() + ") because types doesn't match");
-            return;
+        if (assignableElement.getElementType().equals(Element.VARIABLE) || assignableElement.getElementType().equals(Element.FUNCTION)) {
+            if (!this.context.hasThisSymbol(assignableElement.getName())) {
+                System.err.println("Can't assign " + assignableElement.getLiteralValue() + " to " + this.name + " because " + assignableElement.getName() + " hasn't been previously declared");
+                return false;
+            }
         }
 
-        this.value = variable.value;
+        if (!this.type.equals(assignableElement.getType())) {
+            System.err.println("Can't assign \"" + assignableElement.getLiteralValue() + "\" to " + this.type.name().toLowerCase() + " variable");
+            return false;
+        }
+
+        this.value = assignableElement;
         this.context.updateSymbolTable(this);
+        return true;
     }
 
     @Override
     public String toHTML() {
         return null;
     }
+
+
 }
