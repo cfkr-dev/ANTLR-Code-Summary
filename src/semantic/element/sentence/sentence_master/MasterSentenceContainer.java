@@ -3,15 +3,16 @@ package semantic.element.sentence.sentence_master;
 import semantic.element.Function;
 import semantic.element.Variable;
 import semantic.element.sentence.*;
+import semantic.element.sentence.conditional_branch.ConditionalBranch;
 import semantic.element.sentence.literal.NumericIntegerConstant;
 import semantic.element.sentence.literal.NumericRealConstant;
 import semantic.element.sentence.literal.StringConstant;
 import semantic.element.sentence.operation.ArithmeticOperation;
 import semantic.element.sentence.operation.LogicOperation;
 import semantic.element.sentence.sentence_interface.AssignableElement;
-import semantic.element.sentence.conditional_branch.ConditionalBranch;
 import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element_master.MasterProgrammableElement;
+import semantic.enums.Type;
 
 import java.util.List;
 
@@ -78,7 +79,15 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         this.sentences.add(elseBranch);
         return elseBranch;
     }
-    Sentence addNewForLoop(Variable variable, LogicOperation logicOperation, ArithmeticOperation arithmeticOperation){
+    Sentence addNewForLoop(Variable variable, NumericIntegerConstant startValue,
+                           String logicPartVariableName, LogicOperation logicOperation,
+                           String ArithmeticPartVariableName, ArithmeticOperation arithmeticOperation){
+
+    }
+
+    Sentence addNewForLoop(Type indexVariableType, String indexVariableName, NumericIntegerConstant startValue,
+                           String logicPartVariableName, LogicOperation logicOperation,
+                           String ArithmeticPartVariableName, ArithmeticOperation arithmeticOperation){
 
     }
     Sentence addNewWhileLoop(LogicOperation logicOperation){

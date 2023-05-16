@@ -1,5 +1,6 @@
 package semantic.element;
 
+import semantic.element.sentence.literal.literal_master.Literal;
 import semantic.element_interfaces.ProgramElement;
 import semantic.element_master.MasterProgrammableElement;
 import semantic.enums.Element;
@@ -30,6 +31,17 @@ public class Program extends MasterProgrammableElement {
             Function function = new Function(type, name, this, params);
             this.addToSymbolTable(function);
             return function;
+        } else {
+            System.err.println("This element has been previously declared");
+            return null;
+        }
+    }
+
+    public Constant createNewConstant(String name, Literal value) {
+        if (!this.hasThisSymbol(name)) {
+            Constant constant = new Constant(name, value, this);
+            this.addToSymbolTable(constant);
+            return constant;
         } else {
             System.err.println("This element has been previously declared");
             return null;
