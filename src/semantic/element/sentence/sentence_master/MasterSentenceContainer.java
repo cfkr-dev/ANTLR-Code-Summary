@@ -9,9 +9,11 @@ import semantic.element.sentence.literal.NumericRealConstant;
 import semantic.element.sentence.literal.StringConstant;
 import semantic.element.sentence.operation.ArithmeticOperation;
 import semantic.element.sentence.operation.LogicOperation;
-import semantic.element.sentence.sentence_interface.AssignableElement;
+import semantic.element_interfaces.AssignableElement;
 import semantic.element.sentence.sentence_interface.Sentence;
+import semantic.element_interfaces.ProgramElement;
 import semantic.element_master.MasterProgrammableElement;
+import semantic.enums.Element;
 import semantic.enums.Type;
 
 import java.util.List;
@@ -52,10 +54,11 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             } else return null;
         } else return null;
     }
-    Sentence addNewVariableAssign(Variable variable, AssignableElement assignableElement){
-        if (variable != null) {
-            if (variable.setValue(assignableElement)) {
-                VariableAssignation variableAssignation = new VariableAssignation(variable, this);
+    Sentence addNewVariableAssign(String name, AssignableElement assignableElement){
+        ProgramElement variable = this.getSymbolByNameAndElement(name, Element.VARIABLE);
+        if (variable instanceof Variable) {
+            if (((Variable) variable).setValue(assignableElement)) {
+                VariableAssignation variableAssignation = new VariableAssignation((Variable) variable, this);
                 this.sentences.add(variableAssignation);
                 return variableAssignation;
             } else return null;
@@ -79,27 +82,74 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         this.sentences.add(elseBranch);
         return elseBranch;
     }
-    Sentence addNewForLoop(Variable variable, NumericIntegerConstant startValue,
-                           String logicPartVariableName, LogicOperation logicOperation,
-                           String ArithmeticPartVariableName, ArithmeticOperation arithmeticOperation){
+    Sentence addNewForLoop(String indexVariableName, NumericIntegerConstant startValue,
+                           LogicOperation conditionStop,
+                           ArithmeticOperation afterIteration){
 
+        ProgramElement variable = this.getSymbolByNameAndElement(indexVariableName, Element.VARIABLE);
+        if (variable instanceof Variable) {
+            if (((Variable) variable).setValue(startValue)) {
+                ForLoop forLoop = new ForLoop((Variable) variable, conditionStop, afterIteration, this);
+                this.sentences.add(forLoop);
+                return forLoop;
+            } else return null;
+        } else return null;
     }
 
-    Sentence addNewForLoop(Type indexVariableType, String indexVariableName, NumericIntegerConstant startValue,
-                           String logicPartVariableName, LogicOperation logicOperation,
-                           String ArithmeticPartVariableName, ArithmeticOperation arithmeticOperation){
-
+    Sentence addNewForLoop(String indexVariableType, String indexVariableName, NumericIntegerConstant startValue,
+                           LogicOperation conditionStop,
+                           ArithmeticOperation afterIteration){
+        if (!this.hasThisSymbol(indexVariableName) && Type.valueOf(indexVariableType.toUpperCase()).equals(startValue.getType())) {
+            ForLoop forLoop = new ForLoop(indexVariableType, indexVariableName, startValue, conditionStop, afterIteration, this);
+            this.sentences.add(forLoop);
+            return forLoop;
+        } else return null;
     }
     Sentence addNewWhileLoop(LogicOperation logicOperation){
-
+        WhileLoop whileLoop = new WhileLoop(logicOperation, this);
+        this.sentences.add(whileLoop);
+        return whileLoop;
     }
-    Sentence addNewDoWhileLoop(LogicOperation logicOperation){
-
+    private Sentence getNewDoWhileSentenceContainer() {
+        return new DoWhileLoop(this);
     }
-    Sentence addNewFunctionCall(Function function, List<FunctionCallParams> params){
 
+    Sentence addNewDoWhileLoop() {
+        return getNewDoWhileSentenceContainer();
     }
-    Sentence addNewReturnPoint(Returnable returnElement){
 
+    Sentence addNewDoWhileLoop(DoWhileLoop doWhileLoopSentenceContainer, LogicOperation logicOperation) {
+        if (doWhileLoopSentenceContainer == null || logicOperation == null)
+            return addNewDoWhileLoop();
+        else {
+            doWhileLoopSentenceContainer.setLogicOperation(logicOperation);
+            this.sentences.add(doWhileLoopSentenceContainer);
+            return doWhileLoopSentenceContainer;
+        }
+    }
+    Sentence addNewFunctionCall(String functionName, List<AssignableElement> params){
+        if (this.hasThisSymbol(functionName)){
+            Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
+            if (function.checkCallingParams(params)) {
+                FunctionCall functionCall = new FunctionCall(function, params, this);
+                this.sentences.add(functionCall);
+                return functionCall;
+            } else return null;
+        } else {
+            OuterFunctionCall outerFunctionCall = new OuterFunctionCall(functionName, params, this);
+            this.sentences.add(outerFunctionCall);
+            return outerFunctionCall;
+        }
+    }
+    Sentence addNewReturnPoint(AssignableElement returnElement){
+        if (this.getSuperContext().getType().equals(returnElement.getType())) {
+            ReturnPoint returnPoint = new ReturnPoint((Function) this.getSuperContext(), returnElement, this);
+            this.sentences.add(returnPoint);
+            return returnPoint;
+        } else return null;
+    }
+
+    List<Sentence> getSentences() {
+        return sentences;
     }
 }

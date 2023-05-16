@@ -17,6 +17,7 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence {
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.VARDEF_ASSIG;
         this.context = context;
+        this.superContext = context.getSuperContext();
         this.variable = variable;
         this.value = variable.getLiteralValue();
     }

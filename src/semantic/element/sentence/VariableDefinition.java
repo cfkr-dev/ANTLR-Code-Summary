@@ -16,6 +16,7 @@ public class VariableDefinition extends MasterSimpleSentence {
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.VAR_DEF;
         this.context = context;
+        this.superContext = context.getSuperContext();
         this.variable = variable;
     }
 

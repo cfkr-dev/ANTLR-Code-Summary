@@ -11,6 +11,7 @@ public abstract class MasterProgramElement implements ProgramElement {
     protected String name;
     protected Element elementType;
     protected ProgrammableElement context;
+    protected ProgrammableElement superContext;
 
     @Override
     public Type getType() {
@@ -35,6 +36,11 @@ public abstract class MasterProgramElement implements ProgramElement {
     @Override
     public ProgrammableElement getContext() {
         return this.context;
+    }
+
+    @Override
+    public ProgrammableElement getSuperContext() {
+        return this.superContext;
     }
 
     @Override

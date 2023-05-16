@@ -1,6 +1,5 @@
 package semantic.element.sentence;
 
-import semantic.element.sentence.conditional_branch.ConditionalBranch;
 import semantic.element.sentence.conditional_branch.MasterConditionalBranch;
 import semantic.element.sentence.operation.LogicOperation;
 import semantic.element_interfaces.ProgramElement;
@@ -12,22 +11,23 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class ElseBranch extends MasterConditionalBranch {
-
+public class DoWhileLoop extends MasterConditionalBranch {
     LogicOperation logicOperation;
-    ConditionalBranch previous;
 
-    public ElseBranch(LogicOperation logicOperation, ConditionalBranch previous, ProgrammableElement context) {
+    public DoWhileLoop(ProgrammableElement context) {
         this.type = null;
-        this.name = logicOperation.getExpression() + "_ELSE_BRANCH";
+        this.name = "DO_WHILE_LOOP";
         this.elementType = Element.SENTENCE;
-        this.sentenceType = Sentence.ELSE;
+        this.sentenceType = Sentence.DO_WHILE;
         this.context = context;
         this.superContext = context.getSuperContext();
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
+        this.logicOperation = null;
+    }
+
+    public void setLogicOperation(LogicOperation logicOperation) {
         this.logicOperation = logicOperation;
-        this.previous = previous;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {

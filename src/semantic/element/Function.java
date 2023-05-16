@@ -1,5 +1,6 @@
 package semantic.element;
 
+import semantic.element_interfaces.AssignableElement;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element_interfaces.ProgramElement;
 import semantic.enums.Element;
@@ -16,6 +17,7 @@ public class Function extends MasterSentenceContainer {
         this.name = name;
         this.elementType = Element.FUNCTION;
         this.context = context;
+        this.superContext = this;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.params = addParamsToSymbolTable(params);
@@ -41,5 +43,18 @@ public class Function extends MasterSentenceContainer {
     @Override
     public String toHTML() {
         return null;
+    }
+
+    public boolean checkCallingParams(List<AssignableElement> params) {
+        if (this.params.size() != params.size()) return false;
+        else {
+            int index = 0;
+            for (Variable param: this.params) {
+                if (!param.getType().equals(params.get(index).getType()) && !(params.get(index).getType().equals(Type.ANY)))
+                    return false;
+                index++;
+            }
+            return true;
+        }
     }
 }

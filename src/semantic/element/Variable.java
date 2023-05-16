@@ -1,12 +1,13 @@
 package semantic.element;
 
-import semantic.element.sentence.sentence_interface.AssignableElement;
+import semantic.element_interfaces.AssignableElement;
 import semantic.element_interfaces.ProgrammableElement;
+import semantic.element_interfaces.StructableElement;
 import semantic.element_master.MasterProgramElement;
 import semantic.enums.Element;
 import semantic.enums.Type;
 
-public class Variable extends MasterProgramElement implements AssignableElement {
+public class Variable extends MasterProgramElement implements AssignableElement, StructableElement {
 
     private AssignableElement value;
 
@@ -15,6 +16,7 @@ public class Variable extends MasterProgramElement implements AssignableElement 
         this.elementType = Element.VARIABLE;
         this.name = name;
         this.context = context;
+        this.superContext = context.getSuperContext();
         this.value = null;
     }
 
@@ -33,14 +35,12 @@ public class Variable extends MasterProgramElement implements AssignableElement 
             return false;
         }
 
-        if (assignableElement.getElementType().equals(Element.VARIABLE) || assignableElement.getElementType().equals(Element.FUNCTION)) {
-            if (!this.context.hasThisSymbol(assignableElement.getName())) {
-                System.err.println("Can't assign " + assignableElement.getLiteralValue() + " to " + this.name + " because " + assignableElement.getName() + " hasn't been previously declared");
-                return false;
-            }
+        if (!this.context.hasThisSymbol(assignableElement.getName())) {
+            System.err.println("Can't assign " + assignableElement.getLiteralValue() + " to " + this.name + " because " + assignableElement.getName() + " hasn't been previously declared");
+            return false;
         }
 
-        if (!this.type.equals(assignableElement.getType())) {
+        if (!this.type.equals(assignableElement.getType()) && !assignableElement.getType().equals(Type.ANY)) {
             System.err.println("Can't assign \"" + assignableElement.getLiteralValue() + "\" to " + this.type.name().toLowerCase() + " variable");
             return false;
         }

@@ -13,5 +13,7 @@ public interface ProgramElement {
 
     public ProgrammableElement getContext();
 
+    public ProgrammableElement getSuperContext();
+
     public String toHTML();
 }

@@ -23,6 +23,7 @@ public class IfBranch extends MasterConditionalBranch {
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.IF;
         this.context = context;
+        this.superContext = context.getSuperContext();
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = logicOperation;

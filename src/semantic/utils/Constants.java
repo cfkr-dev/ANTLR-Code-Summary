@@ -1,10 +1,13 @@
 package semantic.utils;
 
+import semantic.enums.Element;
 import semantic.enums.Type;
 
 public class Constants {
 
-  public static String FILE_NAME;
+    public static final Element[] STRUCT_SYMBOLS = {Element.VARIABLE, Element.STRUCT};
+  public static final Element[] PROGRAM_SYMBOLS = {Element.VARIABLE, Element.CONSTANT, Element.STRUCT, Element.FUNCTION};
+    public static String FILE_NAME;
 
   // RUTA RAIZ PARA TEST
   private static final String TEST_PATH = "./test/";
