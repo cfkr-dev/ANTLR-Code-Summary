@@ -1,20 +1,16 @@
 package semantic.element.sentence;
 
-import semantic.element_interfaces.AssignableElement;
-import semantic.element.sentence.sentence_master.MasterSimpleSentence;
+import semantic.element.sentence.function_call.master_function_call.MasterFunctionCall;
 import semantic.element_interfaces.ProgrammableElement;
 import semantic.enums.Element;
 import semantic.enums.Sentence;
 import semantic.enums.Type;
 
-import java.util.List;
+import java.util.LinkedList;
 
-public class OuterFunctionCall extends MasterSimpleSentence implements AssignableElement{
+public class OuterFunctionCall extends MasterFunctionCall {
 
-    private String functionName;
-    private List<AssignableElement> callingParams;
-
-    public OuterFunctionCall(String functionName, List<AssignableElement> callingParams, ProgrammableElement context) {
+    public OuterFunctionCall(String functionName, ProgrammableElement context) {
         this.type = Type.ANY;
         this.name = functionName + "_CALL";
         this.elementType = Element.SENTENCE;
@@ -22,30 +18,11 @@ public class OuterFunctionCall extends MasterSimpleSentence implements Assignabl
         this.context = context;
         this.superContext = context.getSuperContext();
         this.functionName = functionName;
-        this.callingParams = callingParams;
+        this.callingParams = new LinkedList<>();
     }
 
     @Override
     public String toHTML() {
         return null;
-    }
-
-    @Override
-    public String getLiteralValue() {
-        return this.toString();
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder(this.functionName + '(');
-        boolean first = true;
-        for (AssignableElement param: this.callingParams) {
-            if (first) {
-                s.append(param.getName());
-                first = false;
-            } else
-                s.append(", ").append(param.getName());
-        }
-        return s.toString();
     }
 }

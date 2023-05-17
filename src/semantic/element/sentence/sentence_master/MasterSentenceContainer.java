@@ -4,13 +4,15 @@ import semantic.element.Function;
 import semantic.element.Variable;
 import semantic.element.sentence.*;
 import semantic.element.sentence.conditional_branch.ConditionalBranch;
+import semantic.element.sentence.function_call.FunctionCall;
+import semantic.element.sentence.function_call.master_function_call.MasterFunctionCall;
 import semantic.element.sentence.literal.NumericIntegerConstant;
 import semantic.element.sentence.literal.NumericRealConstant;
 import semantic.element.sentence.literal.StringConstant;
 import semantic.element.sentence.operation.ArithmeticOperation;
 import semantic.element.sentence.operation.LogicOperation;
-import semantic.element_interfaces.AssignableElement;
 import semantic.element.sentence.sentence_interface.Sentence;
+import semantic.element_interfaces.AssignableElement;
 import semantic.element_interfaces.ProgramElement;
 import semantic.element_master.MasterProgrammableElement;
 import semantic.enums.Element;
@@ -22,19 +24,31 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     protected List<Sentence> sentences;
 
-    AssignableElement newIntegerConstant(String value) {
+    public NumericIntegerConstant newIntegerConstant(String value) {
         return new NumericIntegerConstant(value, this);
     }
 
-    AssignableElement newRealConstant(String value) {
+    public NumericRealConstant newRealConstant(String value) {
         return new NumericRealConstant(value, this);
     }
 
-    AssignableElement newStringConstant(String value) {
+    public StringConstant newStringConstant(String value) {
         return new StringConstant(value, this);
     }
 
-    Sentence addNewVariableDefinition(String type, String name){
+    public ArithmeticOperation newArithmeticOperation(String value) {return new ArithmeticOperation(value, this);}
+
+    public LogicOperation newLogicalOperation(String value) {return new LogicOperation(value, this);}
+
+    public FunctionCall newFunctionCall(String functionName) {
+        if (this.hasThisSymbol(functionName)) {
+            Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
+            return new InnerFunctionCall(function, this);
+        } else
+            return new OuterFunctionCall(functionName, this);
+    }
+
+    public Sentence addNewVariableDefinition(String type, String name){
         Variable variable = this.createNewVariable(type, name);
 
         if (variable != null) {
@@ -43,7 +57,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             return variableDefinition;
         } else return null;
     }
-    Sentence addNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement){
+    public Sentence addNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement){
         Variable variable = this.createNewVariable(type, name);
 
         if (variable != null) {
@@ -54,7 +68,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             } else return null;
         } else return null;
     }
-    Sentence addNewVariableAssign(String name, AssignableElement assignableElement){
+    public Sentence addNewVariableAssign(String name, AssignableElement assignableElement){
         ProgramElement variable = this.getSymbolByNameAndElement(name, Element.VARIABLE);
         if (variable instanceof Variable) {
             if (((Variable) variable).setValue(assignableElement)) {
@@ -65,24 +79,24 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         } else return null;
     }
 
-    Sentence addNewIfBranch(LogicOperation logicOperation) {
+    public Sentence addNewIfBranch(LogicOperation logicOperation) {
         IfBranch ifBranch = new IfBranch(logicOperation, this);
         this.sentences.add(ifBranch);
         return ifBranch;
     }
 
-    Sentence addNewElseIfBranch(LogicOperation logicOperation, ConditionalBranch previous) {
+    public Sentence addNewElseIfBranch(LogicOperation logicOperation, ConditionalBranch previous) {
         IfElseBranch ifElseBranch = new IfElseBranch(logicOperation, previous,  this);
         this.sentences.add(ifElseBranch);
         return ifElseBranch;
     }
 
-    Sentence addNewElse(LogicOperation logicOperation, ConditionalBranch previous) {
-        ElseBranch elseBranch = new ElseBranch(logicOperation, previous,  this);
+    public Sentence addNewElse(ConditionalBranch previous) {
+        ElseBranch elseBranch = new ElseBranch(previous,  this);
         this.sentences.add(elseBranch);
         return elseBranch;
     }
-    Sentence addNewForLoop(String indexVariableName, NumericIntegerConstant startValue,
+    public Sentence addNewForLoop(String indexVariableName, NumericIntegerConstant startValue,
                            LogicOperation conditionStop,
                            ArithmeticOperation afterIteration){
 
@@ -96,7 +110,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         } else return null;
     }
 
-    Sentence addNewForLoop(String indexVariableType, String indexVariableName, NumericIntegerConstant startValue,
+    public Sentence addNewForLoop(String indexVariableType, String indexVariableName, NumericIntegerConstant startValue,
                            LogicOperation conditionStop,
                            ArithmeticOperation afterIteration){
         if (!this.hasThisSymbol(indexVariableName) && Type.valueOf(indexVariableType.toUpperCase()).equals(startValue.getType())) {
@@ -105,7 +119,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             return forLoop;
         } else return null;
     }
-    Sentence addNewWhileLoop(LogicOperation logicOperation){
+    public Sentence addNewWhileLoop(LogicOperation logicOperation){
         WhileLoop whileLoop = new WhileLoop(logicOperation, this);
         this.sentences.add(whileLoop);
         return whileLoop;
@@ -114,11 +128,11 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return new DoWhileLoop(this);
     }
 
-    Sentence addNewDoWhileLoop() {
+    public Sentence addNewDoWhileLoop() {
         return getNewDoWhileSentenceContainer();
     }
 
-    Sentence addNewDoWhileLoop(DoWhileLoop doWhileLoopSentenceContainer, LogicOperation logicOperation) {
+    public Sentence addNewDoWhileLoop(DoWhileLoop doWhileLoopSentenceContainer, LogicOperation logicOperation) {
         if (doWhileLoopSentenceContainer == null || logicOperation == null)
             return addNewDoWhileLoop();
         else {
@@ -127,21 +141,13 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             return doWhileLoopSentenceContainer;
         }
     }
-    Sentence addNewFunctionCall(String functionName, List<AssignableElement> params){
-        if (this.hasThisSymbol(functionName)){
-            Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
-            if (function.checkCallingParams(params)) {
-                FunctionCall functionCall = new FunctionCall(function, params, this);
-                this.sentences.add(functionCall);
-                return functionCall;
-            } else return null;
-        } else {
-            OuterFunctionCall outerFunctionCall = new OuterFunctionCall(functionName, params, this);
-            this.sentences.add(outerFunctionCall);
-            return outerFunctionCall;
-        }
+
+    public Sentence addNewFunctionCall(FunctionCall functionCall){
+        this.sentences.add((MasterFunctionCall) functionCall);
+        return (MasterFunctionCall) functionCall;
     }
-    Sentence addNewReturnPoint(AssignableElement returnElement){
+
+    public Sentence addNewReturnPoint(AssignableElement returnElement){
         if (this.getSuperContext().getType().equals(returnElement.getType())) {
             ReturnPoint returnPoint = new ReturnPoint((Function) this.getSuperContext(), returnElement, this);
             this.sentences.add(returnPoint);
@@ -149,7 +155,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         } else return null;
     }
 
-    List<Sentence> getSentences() {
+    public List<Sentence> getSentences() {
         return sentences;
     }
 }

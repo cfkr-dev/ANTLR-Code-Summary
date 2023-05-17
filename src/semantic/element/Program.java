@@ -51,6 +51,10 @@ public class Program extends MasterProgrammableElement {
         }
     }
 
+    public Function createNewMainFunction(List<Param> params) {
+        return this.createNewFunction("void", "Main", params);
+    }
+
     public Constant createNewConstant(String name, Literal value) {
         if (!this.hasThisSymbol(name)) {
             Constant constant = new Constant(name, value, this);
@@ -63,8 +67,8 @@ public class Program extends MasterProgrammableElement {
         }
     }
 
+    // TODO HACER QUE STRUCT SEA DIRECTAMENTE UN TIPO DE VARIABLE (SE CREA STRUCT Y SE ASIGNA A VARIABLE)
     public Struct createNewStruct(String name) {
-        if (!this.hasThisSymbol(name)) {
             Struct struct = new Struct(name, this, null);
             this.addToSymbolTable(struct);
             this.programElements.add(struct);

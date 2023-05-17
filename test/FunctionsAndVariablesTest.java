@@ -1,7 +1,10 @@
 import semantic.element.Function;
 import semantic.element.Program;
-import semantic.element.Variable;
-import semantic.enums.Element;
+import semantic.element.sentence.ElseBranch;
+import semantic.element.sentence.IfBranch;
+import semantic.element.sentence.literal.NumericIntegerConstant;
+import semantic.element.sentence.operation.ArithmeticOperation;
+import semantic.element.sentence.operation.LogicOperation;
 import semantic.utils.Constants;
 import semantic.utils.Param;
 
@@ -10,43 +13,86 @@ import java.util.List;
 
 public class FunctionsAndVariablesTest {
     public static void runTest() throws InstantiationException {
-        Constants.FILE_NAME = "new_program";
+        /*
 
+                integer calc_fact(integer number) {
+                    if (number == 0)  {
+                        return 0;
+                    } else {
+                        return number * calc_fact(number - 1);
+                    }
+                }
+
+                void Main () {
+                    integer resultado;
+
+                    resultado = assert_equals(6, calc_fact(3));
+
+                    if (resultado == 1) {
+                        print("TEST PASADO CON EXITO");
+                        exit(0);
+                    } else {
+                        print("TEST PASADO CON EXITO");
+                        exit(1);
+                    }
+                }
+
+         */
+
+        Constants.FILE_NAME = "new_program";
 
         Program program = new Program();
 
+            // integer calc_fact(integer number) {
+                List<Param> paramList = new ArrayList<>();
+                paramList.add(new Param("integer", "number"));
+                Function calc_fact_function = program.createNewFunction("integer", "calc_fact", paramList);
 
-        Variable variable_1 = program.createNewVariable("integer", "variable_1");
-        program.createNewVariable("float", "variable_2");
-        Variable variable_3 = program.createNewVariable("string", "variable_3");
+                // if (number == 0)  {
+                    IfBranch calc_fact_function_if = (IfBranch) calc_fact_function.addNewIfBranch(calc_fact_function.newLogicalOperation()
+                            .equal(calc_fact_function.newSymbolReference("number"), calc_fact_function.newIntegerConstant("0")));
+
+                    // return 0;
+                        calc_fact_function_if.addNewReturnPoint(calc_fact_function_if.newIntegerConstant("0"));
+
+                // } else {
+                    ElseBranch calc_fact_function_else = (ElseBranch) calc_fact_function.addNewElse(calc_fact_function_if);
+
+                    // return number * calc_fact(number - 1);
+                        calc_fact_function_else.addNewReturnPoint(
+                                calc_fact_function_else.newArithmeticOperation()
+                                        .mult(
+                                                calc_fact_function_else.newSymbolReference("number"),
+                                                calc_fact_function_else.newFunctionCall("calc_fact")
+                                                        .addNewParam(
+                                                                calc_fact_function_else.newArithmeticOperation()
+                                                                        .sub(
+                                                                            calc_fact_function_else.newSymbolReference("number"),
+                                                                            calc_fact_function_else.newIntegerConstant("1")
+                                                                        )
+                                                        )
+                                        )
+                        );
+
+                // }
+            // }
 
 
-        variable_1.setValue("12", "NUMERIC_INTEGER_CONST");
+            // void Main () {
+                List<Param> paramList_main = new ArrayList<>();
+                Function mainFunction = program.createNewMainFunction(paramList);
 
-        Variable variable_2 = (Variable) program.getSymbolByNameAndElement("variable_2", Element.VARIABLE);
-        variable_2.setValue("-5.23", "NUMERIC_REAL_CONST");
+                // integer resultado;
+                    mainFunction.createNewVariable("integer", "resultado");
 
-        variable_3.setValue("Hello World!", "STRING_CONST");
+                // resultado = assert_equals(6, calc_fact(3));
+                    mainFunction.addNewVariableAssign("resultado",
+                            mainFunction.newFunctionCall("assert_equals")
+                                    .addNewParam(mainFunction.newIntegerConstant("6"))
+                                    .addNewParam(mainFunction.newFunctionCall("calc_fact")
+                                            .addNewParam(mainFunction.newIntegerConstant("3"))));
 
-
-        // Error -> Variable 1 ya está declarada
-        program.createNewVariable("integer", "variable_1");
-
-        // Error -> Variable 1 es de tipo integer
-        variable_1.setValue("Hola, soy un fallo", "STRING_CONST");
-
-
-        Variable variable_assign = program.createNewVariable("float", "variable_assign");
-        variable_assign.setValue("-0.56E56", "NUMERIC_REAL_CONST");
-        variable_assign.setValue(variable_2);
-
-        // Error -> tipos no iguales
-        variable_assign.setValue(variable_1);
-
-        List<Param> paramList = new ArrayList<>();
-        paramList.add(new Param("integer", "param_1"));
-
-        Function function_1 = program.createNewFunction("integer", "function_1", paramList);
-        function_1.createNewVariable("float", "local_variable");
+                // if (resultado == 1) {
+                    mainFunction.addNewIfBranch()
     }
 }

@@ -13,6 +13,7 @@ public class StringConstant extends Literal {
         this.name = "STRING_CONST_" + value;
         this.elementType = Element.LITERAL;
         this.context = context;
+        this.superContext = context.getSuperContext();
     }
 
     @Override

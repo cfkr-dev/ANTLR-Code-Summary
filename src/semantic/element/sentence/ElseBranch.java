@@ -2,7 +2,6 @@ package semantic.element.sentence;
 
 import semantic.element.sentence.conditional_branch.ConditionalBranch;
 import semantic.element.sentence.conditional_branch.MasterConditionalBranch;
-import semantic.element.sentence.operation.LogicOperation;
 import semantic.element_interfaces.ProgramElement;
 import semantic.element_interfaces.ProgrammableElement;
 import semantic.enums.Element;
@@ -14,19 +13,17 @@ import java.util.Map;
 
 public class ElseBranch extends MasterConditionalBranch {
 
-    LogicOperation logicOperation;
     ConditionalBranch previous;
 
-    public ElseBranch(LogicOperation logicOperation, ConditionalBranch previous, ProgrammableElement context) {
+    public ElseBranch(ConditionalBranch previous, ProgrammableElement context) {
         this.type = null;
-        this.name = logicOperation.getExpression() + "_ELSE_BRANCH";
+        this.name = "_ELSE_BRANCH";
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.ELSE;
         this.context = context;
         this.superContext = context.getSuperContext();
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
-        this.logicOperation = logicOperation;
         this.previous = previous;
     }
 

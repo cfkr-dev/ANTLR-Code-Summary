@@ -1,20 +1,18 @@
 package semantic.element.sentence;
 
 import semantic.element.Function;
-import semantic.element_interfaces.AssignableElement;
-import semantic.element.sentence.sentence_master.MasterSimpleSentence;
+import semantic.element.sentence.function_call.master_function_call.MasterFunctionCall;
 import semantic.element_interfaces.ProgrammableElement;
 import semantic.enums.Element;
 import semantic.enums.Sentence;
 
-import java.util.List;
+import java.util.LinkedList;
 
-public class FunctionCall extends MasterSimpleSentence {
+public class InnerFunctionCall extends MasterFunctionCall {
 
     private Function function;
-    private List<AssignableElement> callingParams;
 
-    public FunctionCall(Function function, List<AssignableElement> callingParams, ProgrammableElement context) {
+    public InnerFunctionCall(Function function, ProgrammableElement context) {
         this.type = function.getType();
         this.name = function.getName() + "_CALL";
         this.elementType = Element.SENTENCE;
@@ -22,7 +20,8 @@ public class FunctionCall extends MasterSimpleSentence {
         this.context = context;
         this.superContext = context.getSuperContext();
         this.function = function;
-        this.callingParams = callingParams;
+        this.functionName = function.getName();
+        this.callingParams = new LinkedList<>();
     }
 
     @Override

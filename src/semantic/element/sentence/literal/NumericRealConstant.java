@@ -13,6 +13,7 @@ public class NumericRealConstant extends Literal {
         this.name = "FLOAT_CONST_" + value;
         this.elementType = Element.LITERAL;
         this.context = context;
+        this.superContext = context.getSuperContext();
     }
 
     @Override

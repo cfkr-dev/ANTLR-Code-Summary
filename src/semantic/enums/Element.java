@@ -6,6 +6,8 @@ public enum Element {
     STRUCT,
     FUNCTION,
     SENTENCE,
-    LITERAL
+    LITERAL,
+    ARITHMETIC_OPERATION,
+    LOGICAL_OPERATION
 
 }

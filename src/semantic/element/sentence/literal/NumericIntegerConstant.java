@@ -13,6 +13,7 @@ public class NumericIntegerConstant extends Literal {
         this.name = "INT_CONST_" + value;
         this.elementType = Element.LITERAL;
         this.context = context;
+        this.superContext = context.getSuperContext();
     }
 
     @Override
