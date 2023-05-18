@@ -1,9 +1,9 @@
 package semantic.element.sentence.literal;
 
 import semantic.element.sentence.literal.literal_master.Literal;
-import semantic.element_interfaces.ProgrammableElement;
-import semantic.enums.Element;
-import semantic.enums.Type;
+import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.utils.enums.Element;
+import semantic.utils.enums.Type;
 
 public class NumericRealConstant extends Literal {
 

@@ -419,7 +419,7 @@ grammar sourceCode;
             for_aux
                 : asig ';' expcond ';' asig ')' '{' sentlist_aux
                 | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
-                | vardef_code ';' expcond ';' asig ')' '{' sentlist_aux
+                | simple_vardef_code ';' expcond ';' asig ')' '{' sentlist_aux
                 ;
 
         /* ---- CONDITIONAL OPERATIONS ---- */

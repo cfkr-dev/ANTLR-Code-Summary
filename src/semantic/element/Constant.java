@@ -1,10 +1,10 @@
 package semantic.element;
 
 import semantic.element.sentence.literal.literal_master.Literal;
-import semantic.element_interfaces.AssignableElement;
-import semantic.element_interfaces.ProgrammableElement;
-import semantic.element_master.MasterProgramElement;
-import semantic.enums.Element;
+import semantic.element.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.element.element_master.MasterProgramElement;
+import semantic.utils.enums.Element;
 
 public class Constant extends MasterProgramElement implements AssignableElement {
 
@@ -24,8 +24,8 @@ public class Constant extends MasterProgramElement implements AssignableElement 
     }
 
     @Override
-    public String getLiteralValue() {
-        return this.value.getLiteralValue();
+    public String getValue() {
+        return this.value.getValue();
     }
 
     @Override

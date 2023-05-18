@@ -1,10 +1,11 @@
 package semantic.element;
 
 import semantic.element.sentence.literal.literal_master.Literal;
-import semantic.element.struct.Struct;
-import semantic.element_interfaces.ProgramElement;
-import semantic.element_master.MasterProgrammableElement;
-import semantic.enums.Element;
+import semantic.element.variable.SimpleVariable;
+import semantic.element.variable.StructVariable;
+import semantic.element.element_interfaces.ProgramElement;
+import semantic.element.element_master.MasterProgrammableElement;
+import semantic.utils.enums.Element;
 import semantic.utils.Constants;
 import semantic.utils.Param;
 
@@ -32,8 +33,8 @@ public class Program extends MasterProgrammableElement {
         return symbolTable;
     }
 
-    public Variable createNewVariable(String type, String name) {
-        Variable variable = super.createNewVariable(type, name);
+    public SimpleVariable createNewVariable(String type, String name) {
+        SimpleVariable variable = (SimpleVariable) super.createNewVariable(type, name);
         if (variable != null)
             this.programElements.add(variable);
         return variable;
@@ -67,9 +68,9 @@ public class Program extends MasterProgrammableElement {
         }
     }
 
-    // TODO HACER QUE STRUCT SEA DIRECTAMENTE UN TIPO DE VARIABLE (SE CREA STRUCT Y SE ASIGNA A VARIABLE)
-    public Struct createNewStruct(String name) {
-            Struct struct = new Struct(name, this, null);
+    public StructVariable createNewStruct(String name) {
+        if (!this.hasThisSymbol(name)) {
+            StructVariable struct = new StructVariable(name, this);
             this.addToSymbolTable(struct);
             this.programElements.add(struct);
             return struct;

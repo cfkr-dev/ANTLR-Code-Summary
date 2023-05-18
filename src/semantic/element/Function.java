@@ -1,16 +1,18 @@
 package semantic.element;
 
-import semantic.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
-import semantic.element_interfaces.ProgramElement;
-import semantic.enums.Element;
-import semantic.enums.Type;
+import semantic.element.variable.SimpleVariable;
+import semantic.utils.Constants;
 import semantic.utils.Param;
+import semantic.utils.enums.Element;
+import semantic.utils.enums.Type;
 
 import java.util.*;
 
 public class Function extends MasterSentenceContainer {
-    private List<Variable> params;
+    private List<SimpleVariable> params;
 
     public Function(String type, String name, Program context, List<Param> params) {
         this.type = Type.valueOf(type.toUpperCase());
@@ -23,10 +25,10 @@ public class Function extends MasterSentenceContainer {
         this.params = addParamsToSymbolTable(params);
     }
 
-    private List<Variable> addParamsToSymbolTable(List<Param> params) {
-        List<Variable> variableList = new ArrayList<>();
+    private List<SimpleVariable> addParamsToSymbolTable(List<Param> params) {
+        List<SimpleVariable> variableList = new ArrayList<>();
         for (Param param: params) {
-            Variable variable = this.createNewVariable(param.getType(), param.getName());
+            SimpleVariable variable = (SimpleVariable) this.createNewVariable(param.getType(), param.getName());
             variableList.add(variable);
         }
         return variableList;
@@ -34,9 +36,8 @@ public class Function extends MasterSentenceContainer {
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {
         Map<Element, Map<String, ProgramElement>> localSymbolTable = new HashMap<>();
-        for (Element e: Element.values())
+        for (Element e: Constants.PROGRAM_SYMBOLS)
             localSymbolTable.put(e, new HashMap<>(symbolTable.get(e)));
-
         return localSymbolTable;
     }
 
@@ -49,7 +50,7 @@ public class Function extends MasterSentenceContainer {
         if (this.params.size() != params.size()) return false;
         else {
             int index = 0;
-            for (Variable param: this.params) {
+            for (SimpleVariable param: this.params) {
                 if (!param.getType().equals(params.get(index).getType()) && !(params.get(index).getType().equals(Type.ANY)))
                     return false;
                 index++;

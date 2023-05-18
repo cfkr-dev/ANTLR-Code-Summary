@@ -1,7 +1,7 @@
 package semantic.element.sentence.sentence_interface;
 
-import semantic.element_interfaces.ProgramElement;
+import semantic.element.element_interfaces.ProgramElement;
 
 public interface Sentence extends ProgramElement {
-    public semantic.enums.Sentence getSentenceType();
+    public semantic.utils.enums.Sentence getSentenceType();
 }
