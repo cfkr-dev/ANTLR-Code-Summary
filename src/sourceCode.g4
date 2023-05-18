@@ -11,13 +11,13 @@ grammar sourceCode;
 
         program
             : sentlist
-            | funlist sentlist
+            | {Program program = new Program();} funlist[program] sentlist
             | dcllist program_aux
             //| program_empty
             ;
 
         program_aux
-            : funlist sentlist
+            : funlist[program] sentlist
             | sentlist
             ;
 
@@ -34,12 +34,12 @@ grammar sourceCode;
             |
             ;
 
-        funlist
-            : funcdef funlist_aux
+        funlist[ProgrammableElement context]
+            : funcdef[program] funlist_aux[program]
             ;
 
-        funlist_aux
-            : funlist
+        funlist_aux[ProgrammableElement context]
+            : funlist[context]
             |
             ;
 
@@ -179,16 +179,16 @@ grammar sourceCode;
 
         /* ---- VARIABLE TYPES ---- */
 
-            tbas
-                : 'integer'
-                | 'float'
-                | 'string'
-                | tvoid
-                | 'struct'
+            tbas returns [String type]
+                : 'integer' {$type = "integer";}
+                | 'float' {$type = "float";}
+                | 'string' {$type = "string";}
+                | tvoid {$type = $tvoid.void;}
+                | 'struct' {$type = "struct";}
                 ;
 
-            tvoid
-                : 'void'
+            tvoid returns [String void]
+                : 'void' {$type = "void";}
                 ;
 
 
@@ -197,24 +197,24 @@ grammar sourceCode;
     // **** FUNCTION IMPLEMENTATION SECTION ****
     // -----------------------------------------
 
-        funcdef
-            : funchead /*curly_open*/ '{' funcdef_aux
+        funcdef [ProgrammableElement context]
+            : funchead[context] /*curly_open*/ '{' funcdef_aux[$funchead.returnFunction]
             ;
 
-        funcdef_aux
+        funcdef_aux[ProgrammableElement functionContext]
             : code /*curly_close*/ '}'
             | /*curly_close*/ '}'
             ;
 
         /* ---- FUNCTION HEAD ---- */
 
-            funchead
-                : tbas IDENTIFIER '(' funchead_aux
-                //| funchead_error '(' funchead_aux
+            funchead [ProgrammableElement context] returns [Function returnFunction]
+                : tbas IDENTIFIER '(' funchead_aux {$funchead.returnFunction = context.addNewFunction($tbas.type, $IDENTIFIER.text, $funchead_aux.paramList);}
+                //| funchead_error '(' funchead_auxList<Param> auxList = new ArrayList<>();}
                 ;
 
-            funchead_aux
-                : typedef /*paren_close*/ ')'
+            funchead_aux returns [List<Param> paramList]
+                : {List<Param> auxList = new ArrayList<>();} typedef[auxList] {$funchead_aux.paramList = $typedef.returnList;} /*paren_close*/ ')'
                 | /*paren_close*/ ')'
                 ;
 
@@ -230,15 +230,15 @@ grammar sourceCode;
 
         /* ---- FUNCTION PARAMETERS ---- */
 
-            typedef
-                : tbas IDENTIFIER typedef_aux
+            typedef [List<Param> auxList] returns [List<Param> returnList]
+                : tbas IDENTIFIER {auxList.add(new Param($tbas.type, $IDENTIFIER.text));} typedef_aux[auxList] {$typedef.returnList = $typedef_aux.returnList;}
                 //| typedef_error typedef_aux
                 ;
 
-            typedef_aux
-                : /*comma*/ ',' typedef
+            typedef_aux [List<Param> auxList] returns [List<Param> returnList]
+                : /*comma*/ ',' typedef[auxList]
                 //| comma_no_var_error
-                |
+                | {$typedef_aux.returnList = $typedef_aux.auxList;}
                 ;
 
             typedef_error
@@ -419,7 +419,7 @@ grammar sourceCode;
             for_aux
                 : asig ';' expcond ';' asig ')' '{' sentlist_aux
                 | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
-                | vardef_code ';' expcond ';' asig ')' '{' sentlist_aux
+                | simple_vardef_code ';' expcond ';' asig ')' '{' sentlist_aux
                 ;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
@@ -435,7 +435,7 @@ grammar sourceCode;
 
             oplog
                 : '||'
-                | '&'
+                | '&&'
                 ;
 
             factorcond
