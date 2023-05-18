@@ -9,6 +9,11 @@ import semantic.utils.enums.Type;
 public abstract class MasterUnaryOperation extends MasterProgramElement implements UnaryOperation {
     protected AssignableElement firstOperand;
     protected String symbol;
+    protected boolean malformedFlag;
+
+    public boolean isMalformed(){
+        return this.malformedFlag;
+    }
 
     @Override
     public String getValue() {
@@ -47,5 +52,23 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
             System.err.println("Los tipos no son iguales");
             return Type.ANY;
         }
+    }
+
+    public Type assertType(AssignableElement firstOperand, AssignableElement secondOperand) {
+        if (!this.malformedFlag) {
+            if (firstOperand.getType().equals(secondOperand.getType()))
+                return firstOperand.getType();
+            else if (firstOperand.getType().equals(Type.ANY) && secondOperand.getType().equals(Type.ANY)) {
+                return Type.ANY;
+            } else if (!firstOperand.getType().equals(Type.ANY) && secondOperand.getType().equals(Type.ANY))
+                return firstOperand.getType();
+            else if (!secondOperand.getType().equals(Type.ANY) && firstOperand.getType().equals(Type.ANY)) {
+                return secondOperand.getType();
+            } else {
+                System.err.println("Los tipos no son iguales");
+                this.malformedFlag = true;
+                return null;
+            }
+        } else return null;
     }
 }

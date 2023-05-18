@@ -4,12 +4,16 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.BinaryOperation;
 import semantic.utils.enums.Element;
-import semantic.utils.enums.Type;
 
 public abstract class MasterBinaryOperation extends MasterProgramElement implements BinaryOperation {
     protected AssignableElement firstOperand;
     protected AssignableElement secondOperand;
     protected String symbol;
+    protected boolean malformedFlag;
+
+    public boolean isMalformed(){
+        return this.malformedFlag;
+    }
 
     @Override
     public String getValue() {
@@ -49,17 +53,5 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
             this.type = this.assertType(firstOperand, secondOperand);
         return this;
     }
-
-    public Type assertType(AssignableElement firstOperand, AssignableElement secondOperand) {
-        if (firstOperand.getType().equals(secondOperand.getType()))
-            return firstOperand.getType();
-        else if (firstOperand.getType().equals(Type.ANY) || secondOperand.getType().equals(Type.ANY))
-            return Type.ANY;
-        else {
-            System.err.println("Los tipos no son iguales");
-            return Type.ANY;
-        }
-    }
-
 
 }
