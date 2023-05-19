@@ -26,6 +26,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         this.superContext = context.getSuperContext();
         this.symbolTable = initializeSymbolTable();
         this.properties = new ArrayList<>();
+        this.malformed = false;
     }
 
     protected Map<Element, Map<String, Variable>> initializeSymbolTable() {
@@ -66,9 +67,11 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
                 SimpleVariable simpleVariable = new SimpleVariable(type, name, this);
                 this.addToSymbolTable(simpleVariable);
                 this.properties.add(simpleVariable);
+                return this;
             }
         }
         System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        this.setMalformed();
         return this;
     }
 
@@ -82,6 +85,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             }
         }
         System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        this.setMalformed();
         return this;
     }
 
@@ -92,16 +96,24 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             this.properties.add(structVariable);
             return structVariable;
         }
+        StructVariable structVariable = new StructVariable(name, this);
+        structVariable.setMalformed();
         System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
-        return null;
+        return structVariable;
 
     }
 
-    /**
-     * Unsupported Method
-     */
     @Override
     public boolean setValue(Variable assignableElement, ProgrammableElement context) {
+        if (this.malformed)
+            return false;
+
+        if (assignableElement.isMalformed()) {
+            System.err.println("No se puede asignar una expresión malformada");
+            this.setMalformed();
+            return false;
+        }
+
         if (assignableElement instanceof StructVariable) {
             this.name = assignableElement.getName();
             this.context = assignableElement.getContext();
@@ -111,12 +123,13 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             return true;
         } else {
             System.err.println("Una variable de tipo struct solo puede ser asignada con otra variable de tipo struct");
+            this.setMalformed();
             return false;
         }
     }
 
     public String getValue() {
-        return this.toString();
+        return this.name;
     }
 
     @Override
@@ -133,7 +146,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     }
 
     /**
-     * Deprecated
+     * Se delega el comportamiento a el método ".addNewSimpleProperty()"
      */
     @Override
     public Variable createNewVariable(String type, String name) {

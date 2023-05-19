@@ -24,7 +24,7 @@ public class SimpleVariable extends MasterVariable {
 
     @Override
     public String getValue() {
-        return this.toString();
+        return this.name;
     }
 
     @Override
@@ -35,17 +35,19 @@ public class SimpleVariable extends MasterVariable {
 
         if (assignableElement.isMalformed()) {
             System.err.println("No se puede asignar una expresión malformada");
-            this.malformed = true;
+            this.setMalformed();
             return false;
         }
 
         if (!context.hasThisSymbol(this.name)) {
             if (!(assignableElement instanceof Variable<?> || assignableElement instanceof Constant)) {
                 System.err.println("No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+                this.setMalformed();
                 return false;
             }
 
             System.err.println("No se puede asignar " + assignableElement.getName() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            this.setMalformed();
             return false;
         }
 
@@ -53,12 +55,14 @@ public class SimpleVariable extends MasterVariable {
 
             if (!context.hasThisSymbol(assignableElement.getName())) {
                 System.err.println("No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
+                this.setMalformed();
                 return false;
             }
         }
 
         if (!Type.checkTypeConsistency(assignableElement.getType(), this.type)) {
             System.err.println("No se puede asignar un elemento de tipo \"" + assignableElement.getType() + "\" a una variable de tipo " + this.type.name().toLowerCase());
+            this.setMalformed();
             return false;
         }
 

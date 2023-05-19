@@ -3,7 +3,6 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.BinaryOperation;
-import semantic.utils.enums.Element;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
@@ -25,17 +24,7 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
 
     @Override
     public String toString() {
-        String firstOpStr, secondOpStr;
-        
-        if (this.firstOperand.getElementType().equals(Element.VARIABLE) || this.firstOperand.getElementType().equals(Element.CONSTANT))
-             firstOpStr = firstOperand.getName();
-        else firstOpStr = firstOperand.getValue();
-
-        if (this.secondOperand.getElementType().equals(Element.VARIABLE) || this.secondOperand.getElementType().equals(Element.CONSTANT))
-            secondOpStr = secondOperand.getName();
-        else secondOpStr = secondOperand.getValue();
-        
-        return firstOpStr + " " + symbol + " " + secondOpStr;
+        return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
     }
 
     @Override

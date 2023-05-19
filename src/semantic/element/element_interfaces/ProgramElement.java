@@ -16,4 +16,8 @@ public interface ProgramElement {
     public ProgrammableElement getSuperContext();
 
     public String toHTML();
+
+    public boolean isMalformed();
+
+    public void setMalformed();
 }

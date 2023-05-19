@@ -1,6 +1,6 @@
 package semantic.element;
 
-import semantic.element.sentence.literal.literal_master.Literal;
+import semantic.element.literal.literal_master.Literal;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.element_master.MasterProgramElement;
@@ -19,11 +19,6 @@ public class Constant extends MasterProgramElement implements AssignableElement 
         this.superContext = context.getSuperContext();
         this.value = value;
         this.malformed = false;
-    }
-
-    @Override
-    public boolean isMalformed() {
-        return false;
     }
 
     public AssignableElement getValueTarget() {

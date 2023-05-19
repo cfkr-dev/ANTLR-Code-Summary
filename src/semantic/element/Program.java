@@ -1,13 +1,14 @@
 package semantic.element;
 
-import semantic.element.sentence.literal.literal_master.Literal;
-import semantic.element.variable.SimpleVariable;
-import semantic.element.variable.StructVariable;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
-import semantic.utils.enums.Element;
+import semantic.element.literal.literal_master.Literal;
+import semantic.element.variable.SimpleVariable;
+import semantic.element.variable.StructVariable;
+import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
-import semantic.utils.Param;
+import semantic.utils.enums.Element;
+import semantic.utils.enums.Type;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -24,6 +25,7 @@ public class Program extends MasterProgrammableElement {
         this.superContext = this;
         this.symbolTable = this.initializeSymbolTable();
         this.programElements = new LinkedList<>();
+        this.malformed = false;
     }
 
     private Map<Element, Map<String, ProgramElement>> initializeSymbolTable () {
@@ -33,27 +35,37 @@ public class Program extends MasterProgrammableElement {
         return symbolTable;
     }
 
-    public SimpleVariable createNewVariable(String type, String name) {
-        SimpleVariable variable = (SimpleVariable) super.createNewVariable(type, name);
+    public Variable createNewVariable(String type, String name) {
+        Variable variable = super.createNewVariable(type, name);
         if (variable != null)
             this.programElements.add(variable);
+        else {
+            if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
+                variable = new SimpleVariable(type, name, this);
+            } else {
+                variable = new StructVariable(type, this);
+            }
+            variable.setMalformed();
+        }
         return variable;
     }
 
-    public Function createNewFunction(String type, String name, List<Param> params) {
+    public Function createNewFunction(String type, String name) {
         if (!this.hasThisSymbol(name)) {
-            Function function = new Function(type, name, this, params);
+            Function function = new Function(type, name, this);
             this.addToSymbolTable(function);
             this.programElements.add(function);
             return function;
         } else {
             System.err.println("This element has been previously declared");
-            return null;
+            Function function = new Function(type, name, this);
+            function.setMalformed();
+            return function;
         }
     }
 
-    public Function createNewMainFunction(List<Param> params) {
-        return this.createNewFunction("void", "Main", params);
+    public Function createNewMainFunction() {
+        return this.createNewFunction("void", "Main");
     }
 
     public Constant createNewConstant(String name, Literal value) {
@@ -64,19 +76,9 @@ public class Program extends MasterProgrammableElement {
             return constant;
         } else {
             System.err.println("This element has been previously declared");
-            return null;
-        }
-    }
-
-    public StructVariable createNewStruct(String name) {
-        if (!this.hasThisSymbol(name)) {
-            StructVariable struct = new StructVariable(name, this);
-            this.addToSymbolTable(struct);
-            this.programElements.add(struct);
-            return struct;
-        } else {
-            System.err.println("This element has been previously declared");
-            return null;
+            Constant constant = new Constant(name, value, this);
+            constant.setMalformed();
+            return constant;
         }
     }
 

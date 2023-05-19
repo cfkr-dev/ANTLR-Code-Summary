@@ -1,6 +1,6 @@
-package semantic.element.sentence.literal;
+package semantic.element.literal;
 
-import semantic.element.sentence.literal.literal_master.Literal;
+import semantic.element.literal.literal_master.Literal;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;

@@ -1,4 +1,4 @@
-package semantic.element.sentence.literal.literal_master;
+package semantic.element.literal.literal_master;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
@@ -14,10 +14,5 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     @Override
     public String toString() {
         return value;
-    }
-
-    @Override
-    public boolean isMalformed() {
-        return false;
     }
 }

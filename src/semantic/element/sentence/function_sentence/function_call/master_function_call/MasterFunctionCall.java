@@ -52,7 +52,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
             } else
                 s.append(", ").append(param.getName());
         }
-        return s.toString();
+        return s.append(')').toString();
     }
 
     @Override

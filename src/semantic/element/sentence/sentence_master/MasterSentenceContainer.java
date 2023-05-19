@@ -13,9 +13,7 @@ import semantic.element.sentence.function_sentence.function_call.FunctionCall;
 import semantic.element.sentence.function_sentence.function_call.InnerFunctionCall;
 import semantic.element.sentence.function_sentence.function_call.OuterFunctionCall;
 import semantic.element.sentence.function_sentence.function_call.master_function_call.MasterFunctionCall;
-import semantic.element.sentence.literal.NumericIntegerConstant;
-import semantic.element.sentence.literal.NumericRealConstant;
-import semantic.element.sentence.literal.StringConstant;
+import semantic.element.literal.NumericIntegerConstant;
 import semantic.element.sentence.loop_sentence.DoWhileLoop;
 import semantic.element.sentence.loop_sentence.ForLoop;
 import semantic.element.sentence.loop_sentence.WhileLoop;
@@ -35,19 +33,6 @@ import java.util.List;
 public abstract class MasterSentenceContainer extends MasterProgrammableElement {
 
     protected List<Sentence> sentences;
-
-    public NumericIntegerConstant newIntegerConstant(String value) {
-        return new NumericIntegerConstant(value, this);
-    }
-
-    public NumericRealConstant newRealConstant(String value) {
-        return new NumericRealConstant(value, this);
-    }
-
-    public StringConstant newStringConstant(String value) {
-        return new StringConstant(value, this);
-    }
-
     public ArithmeticalOperationFactory newArithmeticOperation() {return new ArithmeticalOperationFactory(this);}
     public ComparisonOperationFactory newComparisonOperation() {return new ComparisonOperationFactory(this);}
 

@@ -3,7 +3,6 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.UnaryOperation;
-import semantic.utils.enums.Element;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
@@ -24,13 +23,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
 
     @Override
     public String toString() {
-        String firstOpStr;
-
-        if (this.firstOperand.getElementType().equals(Element.VARIABLE) || this.firstOperand.getElementType().equals(Element.CONSTANT))
-            firstOpStr = firstOperand.getName();
-        else firstOpStr = firstOperand.getValue();
-
-        return symbol + firstOpStr;
+        return symbol + firstOperand.getValue();
     }
 
     @Override

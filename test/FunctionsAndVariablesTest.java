@@ -3,10 +3,6 @@ import semantic.element.Program;
 import semantic.element.sentence.conditional_branch.ElseBranch;
 import semantic.element.sentence.conditional_branch.IfBranch;
 import semantic.utils.Constants;
-import semantic.utils.Param;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class FunctionsAndVariablesTest {
     public static void runTest() throws InstantiationException {
@@ -42,11 +38,10 @@ public class FunctionsAndVariablesTest {
 
 
             // integer calc_fact(integer number) {
-                List<Param> paramList = new ArrayList<>();
-                paramList.add(new Param("integer", "number"));
-                Function calc_fact_function = program.createNewFunction("integer", "calc_fact", paramList);
-//                        .addNewParam("tipo", "nombre")
-//                        .addNewParam();
+//                List<Param> paramList = new ArrayList<>();
+//                paramList.add(new Param("integer", "number"));
+                Function calc_fact_function = program.createNewFunction("integer", "calc_fact")
+                        .addParam("integer", "number");
 
                 // if (number == 0)  {
                     IfBranch calc_fact_function_if = (IfBranch) calc_fact_function.addNewIfBranch(
