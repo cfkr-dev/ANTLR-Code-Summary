@@ -13,5 +13,6 @@ public class ArithmeticOperation extends MasterBinaryOperation {
         this.elementType = Element.ARITHMETIC_OPERATION;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.hasParenthesis = false;
     }
 }

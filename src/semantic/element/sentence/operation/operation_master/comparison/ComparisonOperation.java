@@ -13,5 +13,6 @@ public class ComparisonOperation extends MasterBinaryOperation {
         this.elementType = Element.COMPARISON_OPERATION;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.hasParenthesis = false;
     }
 }

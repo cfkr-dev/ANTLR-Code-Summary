@@ -10,6 +10,7 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     protected AssignableElement firstOperand;
     protected AssignableElement secondOperand;
     protected String symbol;
+    protected Boolean hasParenthesis;
 
     @Override
     public String getValue() {
@@ -27,8 +28,16 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
         if (this.secondOperand.getElementType().equals(Element.VARIABLE) || this.secondOperand.getElementType().equals(Element.CONSTANT))
             secondOpStr = secondOperand.getName();
         else secondOpStr = secondOperand.getValue();
-        
+
+        if(hasParenthesis){
+            return "(" + firstOpStr + " " + symbol + " " + secondOpStr + ")";
+        }
         return firstOpStr + " " + symbol + " " + secondOpStr;
+    }
+
+    public MasterBinaryOperation setParenthesis(Boolean hasParenthesis) {
+        this.hasParenthesis = hasParenthesis;
+        return this;
     }
 
     @Override
