@@ -43,7 +43,7 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
             this.addToSymbolTable(variable);
             return variable;
         } else {
-            System.err.println("This element has been previously declared");
+            System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
             return null;
         }
     }

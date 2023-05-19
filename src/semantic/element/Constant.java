@@ -9,6 +9,7 @@ import semantic.utils.enums.Element;
 public class Constant extends MasterProgramElement implements AssignableElement {
 
     private Literal value;
+    private boolean malformed;
 
     public Constant(String name, Literal value, ProgrammableElement context) {
         this.type = value.getType();
@@ -17,6 +18,12 @@ public class Constant extends MasterProgramElement implements AssignableElement 
         this.context = context;
         this.superContext = context.getSuperContext();
         this.value = value;
+        this.malformed = false;
+    }
+
+    @Override
+    public boolean isMalformed() {
+        return false;
     }
 
     public AssignableElement getValueTarget() {

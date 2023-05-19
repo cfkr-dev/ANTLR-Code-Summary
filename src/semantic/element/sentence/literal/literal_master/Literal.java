@@ -15,4 +15,9 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     public String toString() {
         return value;
     }
+
+    @Override
+    public boolean isMalformed() {
+        return false;
+    }
 }

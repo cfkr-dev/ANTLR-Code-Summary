@@ -1,8 +1,8 @@
 package semantic.element.sentence.function_sentence.function_call.master_function_call;
 
+import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.sentence.function_sentence.function_call.FunctionCall;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
-import semantic.element.element_interfaces.AssignableElement;
 
 import java.util.List;
 
@@ -10,6 +10,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
     protected String functionName;
     protected List<AssignableElement> callingParams;
+    protected boolean malformed;
 
     @Override
     public List<AssignableElement> getCallingParams() {
@@ -18,6 +19,15 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
     @Override
     public FunctionCall addNewParam(AssignableElement param) {
+        if (this.isMalformed())
+            return this;
+
+        if (param.isMalformed()) {
+            System.err.println("No es posible llamar a una función con una expresión malformada (" + param.getValue() + ")");
+            this.malformed = true;
+            return this;
+        }
+
         this.callingParams.add(param);
         return this;
     }
@@ -45,5 +55,11 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         return s.toString();
     }
 
+    @Override
+    public boolean isMalformed() {
+        return this.malformed;
+    }
 
+    @Override
+    public abstract FunctionCall call();
 }

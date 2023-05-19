@@ -60,8 +60,6 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         return this.symbolTable.get(element).get(name);
     }
 
-
-
     public StructVariable addNewSimpleProperty(String type, String name) {
         if (!this.hasThisSymbol(name)) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)){
@@ -70,7 +68,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
                 this.properties.add(simpleVariable);
             }
         }
-        System.err.println("This element has been previously declared");
+        System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         return this;
     }
 
@@ -78,12 +76,12 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         if (!this.hasThisSymbol(name)) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
                 SimpleVariable simpleVariable = new SimpleVariable(type, name, this);
-                simpleVariable.setValue(value);
+                simpleVariable.setValue(value, this);
                 this.addToSymbolTable(simpleVariable);
                 this.properties.add(simpleVariable);
             }
         }
-        System.err.println("This element has been previously declared");
+        System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         return this;
     }
 
@@ -94,7 +92,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             this.properties.add(structVariable);
             return structVariable;
         }
-        System.err.println("This element has been previously declared");
+        System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         return null;
 
     }
@@ -103,9 +101,18 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
      * Unsupported Method
      */
     @Override
-    public boolean setValue(Variable assignableElement) {
-        System.err.println("Unsupported");
-        return false;
+    public boolean setValue(Variable assignableElement, ProgrammableElement context) {
+        if (assignableElement instanceof StructVariable) {
+            this.name = assignableElement.getName();
+            this.context = assignableElement.getContext();
+            this.superContext = assignableElement.getSuperContext();
+            this.symbolTable = ((StructVariable) assignableElement).getSymbolTable();
+            this.properties = ((StructVariable) assignableElement).getProperties();
+            return true;
+        } else {
+            System.err.println("Una variable de tipo struct solo puede ser asignada con otra variable de tipo struct");
+            return false;
+        }
     }
 
     public String getValue() {
@@ -119,6 +126,10 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             s.append(property.getValue());
         }
         return s.append("} ").append(this.name).toString();
+    }
+
+    public List<Variable<? extends AssignableElement>> getProperties() {
+        return properties;
     }
 
     /**

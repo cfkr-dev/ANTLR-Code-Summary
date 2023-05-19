@@ -47,12 +47,20 @@ public class Function extends MasterSentenceContainer {
     }
 
     public boolean checkCallingParams(List<AssignableElement> params) {
-        if (this.params.size() != params.size()) return false;
+        if (this.params.size() != params.size()) {
+            if (this.params.size() < params.size())
+                System.err.println("Parámetros insuficientes para la función" + this.name + ". Se esperaban " + this.params.size());
+            else
+                System.err.println("Más parámetros de lo esperado para la función" + this.name + ". Se esperaban " + this.params.size());
+            return false;
+        }
         else {
             int index = 0;
             for (SimpleVariable param: this.params) {
-                if (!param.getType().equals(params.get(index).getType()) && !(params.get(index).getType().equals(Type.ANY)))
+                if (!Type.checkTypeConsistency(param.getType(), params.get(index).getType())){
+                    System.err.println("Los tipos no coinciden. Esperado " + param.getName() + " (" + param.getType() + ") pero pero recibido " + params.get(index).getType());
                     return false;
+                }
                 index++;
             }
             return true;

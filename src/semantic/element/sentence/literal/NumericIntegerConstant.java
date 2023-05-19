@@ -14,6 +14,7 @@ public class NumericIntegerConstant extends Literal {
         this.elementType = Element.LITERAL;
         this.context = context;
         this.superContext = context.getSuperContext();
+
     }
 
     @Override

@@ -60,7 +60,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
      */
     public AssignableElement newSymbolReference(String tokenID, String name) {
         if (!this.hasThisSymbol(name)) {
-            System.err.println("No existe el símbolo al que se hace referencia");
+            System.err.println("No existe el símbolo al que se hace referencia (" + name + ")");
             return null;
         }
 
@@ -72,6 +72,9 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return null;
     }
 
+    /**
+     * IMPORTANTE: UNA VEZ TERMINADO DE COLOCAR TODOS LOS PARAMETROS DE LLAMADA, EJECUTAR EL MÉTODO ".call()"
+     */
     public FunctionCall newFunctionCall(String functionName) {
         if (this.hasThisSymbol(functionName)) {
             Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
@@ -97,7 +100,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         if (variable == null)
             return null;
 
-        if (!variable.setValue(assignableElement))
+        if (!variable.setValue(assignableElement, this))
             return null;
 
         VariableDefinitionAndAssign variableDefinitionAndAssign = new VariableDefinitionAndAssign(variable, this);
@@ -108,7 +111,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public Sentence addNewVariableAssign(String name, AssignableElement assignableElement){
         ProgramElement variable = this.getSymbolByNameAndElement(name, Element.VARIABLE);
 
-        if (!((SimpleVariable) variable).setValue(assignableElement))
+        if (!((SimpleVariable) variable).setValue(assignableElement, this))
             return null;
 
         VariableAssignation variableAssignation = new VariableAssignation((SimpleVariable) variable, this);
@@ -120,8 +123,8 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
      * Usar para definir el tercer parametro del bucle for
      */
     public VariableAssignation newFictionalVariableAssign(String name, AssignableElement assignableElement){
-        SimpleVariable variable = new SimpleVariable("ANY", name, this);
-        variable.setValue(assignableElement);
+        SimpleVariable variable = new SimpleVariable("integer", name, this);
+        variable.setValue(assignableElement, this);
         return new VariableAssignation(variable, this);
     }
 
@@ -157,14 +160,14 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
                            VariableAssignation assignationAfterIteration) {
 
         if (!this.hasThisSymbol(indexVariableName)) {
-            System.err.println("La variable indice del bucle tiene que estar declarada anteriormente una variable de tipo integer");
+            System.err.println("La variable índice del bucle tiene que estar declarada anteriormente una variable de tipo integer");
             return null;
         }
 
         ProgramElement variable = this.getSymbolByNameAndElement(indexVariableName, Element.VARIABLE);
 
         if (!variable.getType().equals(Type.INTEGER)) {
-            System.err.println("La variable indice debe ser de tipo integer");
+            System.err.println("La variable índice debe ser de tipo integer");
             return null;
         }
 
@@ -174,11 +177,11 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         }
 
         if (!assignationAfterIteration.getVariable().getName().equals(indexVariableName)) {
-            System.err.println("La variable indice nunca es actualizada");
+            System.err.println("La variable índice nunca es actualizada");
             return null;
         }
 
-        if (!((SimpleVariable) variable).setValue(startValue))
+        if (!((SimpleVariable) variable).setValue(startValue, this))
             return null;
 
         ForLoop forLoop = new ForLoop((SimpleVariable) variable, conditionStop, assignationAfterIteration, this);
@@ -192,7 +195,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
                                   VariableAssignation assignationAfterIteration){
 
         if (!Type.valueOf(indexVariableType.toUpperCase()).equals(Type.INTEGER)) {
-            System.err.println("La variable indice debe ser de tipo integer");
+            System.err.println("La variable índice debe ser de tipo integer");
             return null;
         }
 
@@ -204,12 +207,12 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         }
 
         if (!assignationAfterIteration.getVariable().getName().equals(indexVariableName)) {
-            System.err.println("La variable indice nunca es actualizada");
+            System.err.println("La variable índice nunca es actualizada");
             return null;
         }
 
-        if (!(variable).setValue(startValue)) {
-            System.err.println("Imposible asignar valor de inicio a la variable indice");
+        if (!(variable).setValue(startValue, this)) {
+            System.err.println("Imposible asignar valor de inicio a la variable índice");
             return null;
         }
 
@@ -251,6 +254,9 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     }
 
     public Sentence addNewFunctionCall(FunctionCall functionCall){
+        if (functionCall.isMalformed())
+            return null;
+
         this.sentences.add((MasterFunctionCall) functionCall);
         return (MasterFunctionCall) functionCall;
     }

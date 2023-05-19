@@ -19,6 +19,12 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.superContext = context.getSuperContext();
         this.functionName = functionName;
         this.callingParams = new LinkedList<>();
+        this.malformed = true;
+    }
+    @Override
+    public FunctionCall call() {
+        this.malformed = false;
+        return this;
     }
 
     @Override

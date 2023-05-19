@@ -22,10 +22,25 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.function = function;
         this.functionName = function.getName();
         this.callingParams = new LinkedList<>();
+        this.malformed = true;
+    }
+
+    public Function getFunction() {
+        return function;
+    }
+
+    public void setMalformed() {
+        this.malformed = true;
     }
 
     @Override
     public String toHTML() {
         return null;
+    }
+    @Override
+    public FunctionCall call() {
+        if (this.function.checkCallingParams(this.callingParams))
+            this.malformed = false;
+        return this;
     }
 }

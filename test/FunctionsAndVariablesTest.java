@@ -42,11 +42,11 @@ public class FunctionsAndVariablesTest {
 
 
             // integer calc_fact(integer number) {
-//                List<Param> paramList = new ArrayList<>();
-//                paramList.add(new Param("integer", "number"));
-                Function calc_fact_function = program.createNewFunction("integer", "calc_fact", paramList)
-                        .addNewParam("tipo", "nombre")
-                        .addNewParam();
+                List<Param> paramList = new ArrayList<>();
+                paramList.add(new Param("integer", "number"));
+                Function calc_fact_function = program.createNewFunction("integer", "calc_fact", paramList);
+//                        .addNewParam("tipo", "nombre")
+//                        .addNewParam();
 
                 // if (number == 0)  {
                     IfBranch calc_fact_function_if = (IfBranch) calc_fact_function.addNewIfBranch(
@@ -71,7 +71,7 @@ public class FunctionsAndVariablesTest {
                                 .secondOperand(calc_fact_function_else.newFunctionCall("calc_fact").addNewParam(calc_fact_function_else.newArithmeticOperation().subtraction()
                                         .firstOperand(calc_fact_function_else.newSymbolReference("VARIABLE", "number"))
                                         .secondOperand(calc_fact_function_if.newIntegerConstant("0"))
-                                ))
+                                ).call())
                         );
 
                 // }
