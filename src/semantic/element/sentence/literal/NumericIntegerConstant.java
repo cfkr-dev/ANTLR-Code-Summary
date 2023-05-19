@@ -16,8 +16,4 @@ public class NumericIntegerConstant extends Literal {
         this.superContext = context.getSuperContext();
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
 }

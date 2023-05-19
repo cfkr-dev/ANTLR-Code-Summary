@@ -75,9 +75,9 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public FunctionCall newFunctionCall(String functionName) {
         if (this.hasThisSymbol(functionName)) {
             Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
-            return new InnerFunctionCall(function, this);
+            return new InnerFunctionCall(function, this, true);
         } else
-            return new OuterFunctionCall(functionName, this);
+            return new OuterFunctionCall(functionName, this, true);
     }
 
     public Sentence addNewVariableDefinition(String type, String name){
@@ -251,6 +251,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     }
 
     public Sentence addNewFunctionCall(FunctionCall functionCall){
+        functionCall.notPartOfExpression();
         this.sentences.add((MasterFunctionCall) functionCall);
         return (MasterFunctionCall) functionCall;
     }
@@ -269,4 +270,24 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public List<Sentence> getSentences() {
         return sentences;
     }
+
+    protected String toHTMLBrackets () {
+
+        String HTMLAux = new String();
+
+        HTMLAux = "\t<DIV style=\"text-indent: 2cm\"><p>\n";
+
+        for (semantic.element.sentence.sentence_interface.Sentence line : this.sentences) {
+
+            HTMLAux += line.toHTML().replace("\n", "\n\t\t");
+
+        }
+
+        HTMLAux += "\t</DIV>\n";
+        HTMLAux += "<p>}</p>\n";
+
+        return HTMLAux;
+
+    }
+
 }

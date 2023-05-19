@@ -53,7 +53,12 @@ public class SimpleVariable extends MasterVariable {
 
     @Override
     public String toHTML() {
-        return null;
+
+        if (this.value == null)
+            return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
+        else
+            return "<p>" + this.type.name() + " " + this.name + " = " + this.value + ";</p>\n";
+
     }
 
 }

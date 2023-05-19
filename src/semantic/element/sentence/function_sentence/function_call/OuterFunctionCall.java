@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class OuterFunctionCall extends MasterFunctionCall {
 
-    public OuterFunctionCall(String functionName, ProgrammableElement context) {
+    public OuterFunctionCall(String functionName, ProgrammableElement context, Boolean partOfExpression) {
         this.type = Type.ANY;
         this.name = functionName + "_CALL";
         this.elementType = Element.SENTENCE;
@@ -19,10 +19,7 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.superContext = context.getSuperContext();
         this.functionName = functionName;
         this.callingParams = new LinkedList<>();
+        this.partOfExpression = partOfExpression;
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
 }

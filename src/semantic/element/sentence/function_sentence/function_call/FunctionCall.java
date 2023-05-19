@@ -11,4 +11,9 @@ public interface FunctionCall extends AssignableElement {
     String getFunctionName();
 
     FunctionCall addNewParam(AssignableElement param);
+
+    public Boolean getPartOfExpression();
+
+    public void notPartOfExpression();
+
 }

@@ -11,6 +11,8 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     protected String functionName;
     protected List<AssignableElement> callingParams;
 
+    protected Boolean partOfExpression;
+
     @Override
     public List<AssignableElement> getCallingParams() {
         return this.callingParams;
@@ -45,5 +47,23 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         return s.toString();
     }
 
+    public Boolean getPartOfExpression() {
+        return partOfExpression;
+    }
+
+    public void notPartOfExpression() {
+        this.partOfExpression = false;
+    }
+
+    public String toHTML() {
+
+        String HTMLFunction = new String();
+
+        if (partOfExpression)
+            return HTMLFunction;
+        else
+            return "<p>" + HTMLFunction + ";</p>\n";
+
+    }
 
 }

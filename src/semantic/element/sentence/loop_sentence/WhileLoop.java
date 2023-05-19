@@ -37,6 +37,13 @@ public class WhileLoop extends MasterConditionalBranch {
 
     @Override
     public String toHTML() {
-        return null;
+
+        String HTMLWhile = new String();
+
+        HTMLWhile = "<p>while(" + this.logicOperation.toHTML() + ") {</p>\n";
+        HTMLWhile += this.toHTMLBrackets();
+
+        return HTMLWhile;
+
     }
 }

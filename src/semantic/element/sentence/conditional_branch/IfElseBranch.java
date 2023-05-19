@@ -39,6 +39,13 @@ public class IfElseBranch extends MasterConditionalBranch {
 
     @Override
     public String toHTML() {
-        return null;
+
+        String HTMLElseIf = new String();
+
+        HTMLElseIf = "<p>else if(" + this.logicOperation.toHTML() + ") {</p>\n";
+        HTMLElseIf += this.toHTMLBrackets();
+
+        return HTMLElseIf;
+
     }
 }

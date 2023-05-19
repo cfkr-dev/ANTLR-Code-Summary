@@ -41,6 +41,15 @@ public class DoWhileLoop extends MasterConditionalBranch {
 
     @Override
     public String toHTML() {
-        return null;
+
+        String HTMLDoWhile = new String();
+
+        HTMLDoWhile = "<p>do {</p>\n";
+
+        HTMLDoWhile += this.toHTMLBrackets();
+        HTMLDoWhile = HTMLDoWhile.substring(0, HTMLDoWhile.length() - 5) + " while(" + this.logicOperation.toHTML() + ");</p>\n";
+
+        return HTMLDoWhile;
+
     }
 }

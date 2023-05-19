@@ -15,4 +15,10 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     public String toString() {
         return value;
     }
+
+    public String toHTML() {
+
+        return value;
+
+    }
 }

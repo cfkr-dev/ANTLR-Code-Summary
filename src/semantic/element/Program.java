@@ -82,6 +82,75 @@ public class Program extends MasterProgrammableElement {
 
     @Override
     public String toHTML() {
-        return null;
+
+        //if (this.malformed)
+          //throw new RuntimeException("No es posible crear el resumen de programa");
+
+        String HTMLCabecera = new String();
+        String HTMLFuncitonsCabecera = new String();
+        String HTMLFunctions = new String();
+        String HTMLGlobalVariables = new String();
+
+        String HTMLMain = new String();
+        String HTMLFinal = new String();
+
+        HTMLCabecera = "<!doctype html>\n" +
+                       "<html>\n" +
+                       "\t<head>\n" +
+                       "\t\t<title>" + this.name + ".html" + "</title>\n" +
+                       "\t</head>\n" +
+                       "\t<body>\n" +
+                       "\t\t<A NAME=\"INICIO\">\n" +
+                       "\t\t<h1>Programa: " + this.name + "</h1>\n" +
+                       "\t\t<h2>Funciones</h2>\n" +
+                       "\t\t<ul>\n";
+
+        HTMLFinal = "\t</body>\n" +
+                    "</html>";
+
+        // HTMLFunction and HTMLMain
+        for (ProgramElement element : programElements) {
+
+            if (element instanceof Function) {
+
+                if (element.getName() == "Main") { //HTMLMain
+
+                    HTMLCabecera += "\t\t\t<li><A HREF=\"#" + element.getName() + "\">Programa principal</A></li>\n";
+
+                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\">\n" + HTMLGlobalVariables;
+                    HTMLGlobalVariables = "\t\t<h2>Funciones</h2>\n" +
+                                          //"\t\t</br>\n" +
+                                          HTMLGlobalVariables;
+                    HTMLMain = element.toHTML();
+                    HTMLMain += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
+                    HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
+                    HTMLMain += "\t\t</hr>\n";
+
+                } else { //HTMLFunction
+
+                    HTMLFuncitonsCabecera = "\t\t\t<li><A HREF=\"#" + element.getName() + "\">" + ((Function) element).toStringCabecera() + "</A></li>\n";
+
+                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\">\n";
+                    HTMLFunctions += element.toHTML().replace("\n", "\n\t\t");
+                    HTMLFunctions += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
+                    HTMLFunctions += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
+                    HTMLFunctions += "\t\t</hr>\n";
+
+                }
+
+            } else { // Constants and global variables
+
+                HTMLGlobalVariables += element.toHTML().replace("\n", "\n\t\t");
+
+            }
+
+        }
+
+        HTMLCabecera += HTMLFuncitonsCabecera;
+        HTMLCabecera += "\t\t</ul>\n";
+        HTMLCabecera += "\t\t</hr>\n";
+
+        return HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + HTMLMain + HTMLFinal;
+
     }
 }

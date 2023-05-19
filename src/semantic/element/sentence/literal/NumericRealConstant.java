@@ -16,8 +16,4 @@ public class NumericRealConstant extends Literal {
         this.superContext = context.getSuperContext();
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
 }

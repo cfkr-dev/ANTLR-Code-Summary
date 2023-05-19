@@ -2,6 +2,7 @@ package semantic.element;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
+import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element.variable.SimpleVariable;
 import semantic.utils.Constants;
@@ -43,7 +44,31 @@ public class Function extends MasterSentenceContainer {
 
     @Override
     public String toHTML() {
-        return null;
+
+        String HTMLFunction = new String();
+
+        HTMLFunction = "<p>" + this.toStringCabecera() + " {</p>\n";
+
+        HTMLFunction += this.toHTMLBrackets();
+
+        return HTMLFunction;
+
+    }
+
+    public String toStringCabecera() {
+
+        String cabecera = new String();
+
+        cabecera = this.type + " " + this.name + "(";
+
+        for (SimpleVariable param : params) {
+
+            cabecera += param.getType() + " " + param.getName() + ",";
+
+        }
+
+        return cabecera.substring(0, cabecera.length()-1) + ")";
+
     }
 
     public boolean checkCallingParams(List<AssignableElement> params) {

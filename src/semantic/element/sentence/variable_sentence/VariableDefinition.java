@@ -22,6 +22,7 @@ public class VariableDefinition extends MasterSimpleSentence {
 
     @Override
     public String toHTML() {
-        return null;
+
+        return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
     }
 }

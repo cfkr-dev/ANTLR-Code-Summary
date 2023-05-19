@@ -25,6 +25,9 @@ public class ReturnPoint extends MasterSimpleSentence {
 
     @Override
     public String toHTML() {
-        return null;
+
+
+        return "return " + this.returnElement.toHTML();
+
     }
 }
