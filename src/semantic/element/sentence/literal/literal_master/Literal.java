@@ -18,7 +18,7 @@ public abstract class Literal extends MasterProgramElement implements Assignable
 
     public String toHTML() {
 
-        return value;
+        return "<SPAN CLASS=\"cte\">" + value + "</SPAN>";
 
     }
 }
