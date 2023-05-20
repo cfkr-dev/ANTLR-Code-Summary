@@ -9,7 +9,7 @@ grammar sourceCode;
     // **** MAIN SECTION ****
     // ------------------------
         program_prime
-            : {Program program = new Program();$program_prime.context = program;}  program[$program_prime.context]
+            : {Program program = new Program();}  program[program]
             ;
         program[Program context]
             : sentlist[$context]
@@ -155,7 +155,7 @@ grammar sourceCode;
             simpvalue[ProgrammableElement context] returns[AssignableElement value]
                 : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text);}
                 | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text);}
-                | STRING_CONST {$value=$context.newStringConstant($NUMERIC_STRING_CONST.text);}
+                | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text);}
 
                 ;
 
@@ -164,15 +164,15 @@ grammar sourceCode;
         /* ---- VARIABLE TYPES ---- */
 
             tbas returns [String type]
-                : 'integer' {$tbas.type = "integer";}
-                | 'float' {$tbas.type = "float";}
-                | 'string' {$tbas.type = "string";}
-                | tvoid {$tbas.type = $tvoid.void;}
-                | 'struct' {$tbas.type = "struct";}
+                : 'integer' {$type = "integer";}
+                | 'float' {$type = "float";}
+                | 'string' {$type = "string";}
+                | tvoid {$type = $tvoid.void;}
+                | 'struct' {$type = "struct";}
                 ;
 
             tvoid returns [String void]
-                : 'void' {$tvoid.void = "void";}
+                : 'void' {$void = "void";}
                 ;
 
 
@@ -182,18 +182,18 @@ grammar sourceCode;
     // -----------------------------------------
 
         funcdef [Program context]
-            : funchead[$context] /*curly_open*/ '{' funcdef_aux[$funchead.returnFunction]
+            : funchead[$context] '{' funcdef_aux[$funchead.returnFunction]
             ;
 
         funcdef_aux[Function context]
-            : code[$context] /*curly_close*/ '}'
-            | /*curly_close*/ '}'
+            : code[$context]  '}'
+            | '}'
             ;
 
         /* ---- FUNCTION HEAD ---- */
 
             funchead [ProgrammableElement context] returns [Function returnFunction]
-                : tbas IDENTIFIER '('{$funchead.returnFunction = context.addNewFunction($tbas.type, $IDENTIFIER.text);} funchead_aux [$funchead.returnFunction]
+                : tbas IDENTIFIER '('{$returnFunction = context.addNewFunction($tbas.type, $IDENTIFIER.text);} funchead_aux [$returnFunction]
                 ;
 
             funchead_aux[Function context]
@@ -222,10 +222,9 @@ grammar sourceCode;
         /* ---- FUNCION PRINCIPAL ---- */
 
             mainhead[Program context] returns [Function contextMain]
-                : tvoid 'Main' '(' {Function newContext = context.createNewMainFunction();
-                                    $context=newContext;}
-                 mainhead_aux[$context]
-                {$contextMain = $context;}
+                : tvoid 'Main' '(' {$contextMain= context.createNewMainFunction();}
+                 mainhead_aux[$contextMain]
+
                 ;
 
             mainhead_aux[Function context]
@@ -251,25 +250,25 @@ grammar sourceCode;
             sent[MasterSentenceContainer context]
 
                 : asig[$context]  ';'{$context.addNewVariableAssign($asig.name,$asig.value);}
-                | vardef_and_asig  ';'
+                | vardef_and_asig[$context]  ';'
                 | vardef_code[$context]  ';'
                 | funccall[$context]   ';' {$context.addNewFunctionCall($funccall.return_function);}
-                | return_func ';'
-                | if
-                | while
-                | dowhile
-                | for
+                | return_func[$context]';'
+                | if[$context]
+                | while[$context]
+                | dowhile[$context]
+                | for[$context]
                 ;
 
         /* ---- VARIABLE DEFINITIONS ---- */
         
             vardef_code[MasterSentenceContainer context]
-                : simple_vardef_code
+                : simple_vardef_code[$context] {$context.addNewVariableDefinition($simple_vardef_code.type,$simple_vardef_code.name);}
                 | struct_vardef[$context]
                 ;
 
-            simple_vardef_code
-                : tbas IDENTIFIER
+            simple_vardef_code [MasterSentenceContainer context] returns [String type,String name]
+                : tbas IDENTIFIER {$type=$tbas.type; $name= $IDENTIFIER.text ;}
                 ;
     
 
@@ -277,31 +276,36 @@ grammar sourceCode;
         /* ---- ASSIGNMENTS ---- */
 
             asig[MasterSentenceContainer context] returns [ String name, AssignableElement value]
-                : IDENTIFIER {$name=$IDENTIFIER.text;} '=' exp[$context]
+                : IDENTIFIER {$name=$IDENTIFIER.text;} '=' exp[$context] {$value=$exp.value;}
                 ;
 
 
 
-            vardef_and_asig
-                : simple_vardef_code  '=' exp
+            vardef_and_asig[MasterSentenceContainer context] returns[String type,String name,AssignableElement value]
+                : simple_vardef_code[$context]  '=' exp[$context]
+                {$context.addNewVariableDefinitionAndAssign($simple_vardef_code.type,$simple_vardef_code.name, $exp.value);
+                  $type=$simple_vardef_code.type;
+                  $name=$simple_vardef_code.name;
+                  $value=$exp.value;
+                }
                 ;
 
         /* ---- FUNCTION CALLS ---- */
 
             funccall[ProgrammableElement context] returns [FunctionCall return_function]
                 : IDENTIFIER  funccall_aux[$context,$IDENTIFIER.text] {$return_function=$funccall_aux.return_function;}
-                | CONST_DEF_IDENTIFIER
+                | CONST_DEF_IDENTIFIER funccall_aux[$context,$CONST_DEF_IDENTIFIER.text] {$return_function=$funccall_aux.return_function;}
                 ;
 
 
 
             funccall_aux[ProgrammableElement context, String name] returns [FunctionCall return_function]
                 :  subpparamlist[$context,$name] {$return_function=$subpparamlist.return_function;}
-                |
+                | {$return_function= $context.newFunctionCall($name);}
                 ;
 
             subpparamlist[ProgrammableElement context, String name] returns [FunctionCall return_function]
-                : '(' { $subpparamlist.reference=$context.newFunctionCall($name)} explist[$context,$function]
+                : '(' {FunctionCall  reference=$context.newFunctionCall($name);} explist[$context,reference]
                     {$return_function=$explist.return_function;}  ')'
                 ;
 
@@ -314,130 +318,145 @@ grammar sourceCode;
                 |  ',' explist[$context,$function]
                 ;
 
+
+
         //todo completar recuperación desde este punto
         /* ---- FUNCTION-RETURN SECTION ---- */
 
-            return_func
-                : 'return' return_func_aux
+            return_func[MasterSentenceContainer context]
+                : 'return' exp[$context] {$context.addNewReturnPoint($exp.value);}
                 ;
 
-            return_func_aux
-                : '(' explist ')'
-                | explist
-                ;
+
 
         /* ---- IF-ELSE SENTENCE ---- */
 
-            if
-                : 'if' expcond '{' sentlist_aux[context] if_aux
+            if [MasterSentenceContainer context]
+                : 'if' expcond[$context] {MasterSentenceContainer ifContext=$context.addNewIfBranch($expcond.value);}'{' sentlist_aux[ifContext] if_aux[$context,ifContext]
                 ;
 
-            if_aux
-                : else
+            if_aux[MasterSentenceContainer context,MasterSentenceContainer context_if]
+                : else[$context,$context_if]
                 |
                 ;
 
-            else
-                : 'else' else_aux
+            else[MasterSentenceContainer context,MasterSentenceContainer context_if]
+                : 'else' else_aux[$context,$context_if]
                 ;
 
-            else_aux
-                : '{' sentlist_aux[context]
-                | if
+            else_aux[MasterSentenceContainer context,MasterSentenceContainer context_if]
+                : '{'{MasterSentenceContainer elseC=$context.addNewElse($context_if);} sentlist_aux[elseC]
+                | if_else[$context,$context_if]
+                ;
+            if_else[MasterSentenceContainer context,MasterSentenceContainer context_if]
+                : 'if' expcond[$context] {MasterSentenceContainer newContext=$context.addNewElseIfBranch($expcond.value,$context_if);}'{' sentlist_aux[newContext] if_aux[newContext]
                 ;
 
         /* ---- WHILE SENTENCE ---- */
 
-            while
-                : 'while' '(' expcond ')' '{' sentlist_aux[context]
+            while[MasterSentenceContainer context]
+                : 'while' '(' expcond[$context] {MasterSentenceContainer newContext=$context.addNewWhileLoop($expcond.value);}')' '{' sentlist_aux[newContext]
                 ;
 
-        /* ---- DO-WHILE SENTENCE ---- */
+        /* ---- DO-WHILE SENTENCE ----*/
 
-            dowhile
-                : 'do' '{' sentlist_aux[context] 'while' '(' expcond ')' ';'
+            dowhile[MasterSentenceContainer context]
+                : 'do' '{' {MasterSentenceContainer newContext=$context.addNewDoWhileLoop();} sentlist_aux[newContext]
+                'while' '(' expcond[newContext] {newContext.createDoWhileLoop($expcond.value);} ')' ';'
                 ;
 
         /* ---- FOR SENTENCE ---- */
 
-            for
-                : 'for' '(' for_aux
+            for[MasterSentenceContainer context]
+                : 'for' '(' for_aux[$context]
                 ;
 
-            for_aux
-                : asig ';' expcond ';' asig ')' '{' sentlist_aux[context]
-                | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux[context]
-                | simple_vardef_code ';' expcond ';' asig ')' '{' sentlist_aux[context]
+            for_aux[MasterSentenceContainer context]
+                : asig1=asig[$context] ';' expcond[$context] ';' asig2=asig[$context] ')' '{'
+                  {MasterSentenceContainer forContext=$context.addNewForLoop($asig1.name,$asig1.value,$expcond.value,$asig2.name,
+                  $asig2.value);}
+                  sentlist_aux[forContext]
+
+                | vardef_and_asig[$context] ';' expcond[$context] ';' asig[$context] ')' '{'
+                  {MasterSentenceContainer forContext=$context.addNewForLoop($vardef_and_asig.type,$vardef_and_asig.name,
+                  $vardef_and_asig.value,$expcond.value,$asig.name,$asig.value);}
+                  sentlist_aux[forContext]
+
+                | simple_vardef_code[$context] ';' expcond[$context] ';' asig[$context] ')' '{'
+                  {MasterSentenceContainer forContext=$context.addNewForLoop($simple_vardef_code.type,$simple_vardef_code.name,
+                  $expcond.value,$asig.name,$asig.value);}
+                  sentlist_aux[forContext]
+
                 ;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
 
-            expcond
-                : factorcond expcond_aux
+            expcond[MasterSentenceContainer context] returns[AssignableElement value]
+                : factorcond[$context] expcond_aux[$context,$factorcond.value] {$value=$expcond_aux.value;}
                 ;
 
-            expcond_aux
-                : oplog expcond expcond_aux
-                |
+            expcond_aux[MasterSentenceContainer context,AssignableElement left] returns[AssignableElement value]
+                : oplog[$context,$left] expcond[$context]{AssignableElement valueH=$oplog.operation.secondOperand($expcond.value);}
+                expcond_aux1=expcond_aux[$context,valueH] {$value=$expcond_aux1.value ;}
+                | {$value=$left;}
                 ;
 
-            oplog
-                : '||'
-                | '&&'
+            oplog[MasterSentenceContainer context ,AssignableElement left ] returns[BinaryLogicalOperation operation]
+                : '||'{$operation=$context.newLogicalOperation().or().firstOperand($left);}
+                | '&&'{$operation=$context.newLogicalOperation().and().firstOperand($left);}
                 ;
 
-            factorcond
-                : '(' expcond ')'
-                | exp factorcond_aux
-                | '!' factorcond
+            factorcond[MasterSentenceContainer context] returns [AssignableElement value]
+                : '(' expcond[$context] ')'  {$value=($expcond.value).setParenthesis();}
+                | exp[$context] factorcond_aux[$context,$exp.value] {$value=$factorcond_aux.value ;}
+                | '!' factorcond[$context] {$value=$context.newLogicalOperation().not().firstOperand($factorcond.value);}
                 ;
 
-            factorcond_aux
-                : opcomp exp
-                |
+            factorcond_aux[MasterSentenceContainer context ,AssignableElement left ] returns [AssignableElement value]
+                : opcomp[$context,$left] exp[$context] {$value=$opcomp.operation.secondOperand($exp.value);}
+                | {$value=$left;}
                 ;
 
-            opcomp
-                : '<'
-                | '>'
-                | '<='
-                | '>='
-                | '=='
-                | '!='
+            opcomp[MasterSentenceContainer context ,AssignableElement left ] returns[ComparisonOperation operation]
+                : '<' {$operation=$context.newComparisonOperation().lower().firstOperand($left);}
+                | '>' {$operation=$context.newComparisonOperation().greater().firstOperand($left);}
+                | '<='{$operation=$context.newComparisonOperation().lowerEqual().firstOperand($left);}
+                | '>='{$operation=$context.newComparisonOperation().greaterEqual().firstOperand($left);}
+                | '=='{$operation=$context.newComparisonOperation().equal().firstOperand($left);}
+                | '!='{$operation=$context.newComparisonOperation().notEqual().firstOperand($left);}
                 ;
 
         /* ---- ARITHMETIC OPERATIONS ---- */
 
             exp[MasterSentenceContainer context] returns[AssignableElement value]
-                :
-                factor[$context] exp_aux[$context,$factor.value] {$value=$exp_aux.value}
+                :factor[$context] exp_aux[$context,$factor.value] {$value=$exp_aux.value;}
                 ;
 
             exp_aux[MasterSentenceContainer context,AssignableElement left] returns[AssignableElement value]
-                : op[$context,$left] exp[$context] {$exp_aux.value=$op.operation.secondOperand($exp.value);}
-                 exp_aux[$context,$exp_aux.value]
+                : op[$context,$left] exp[$context] {AssignableElement valueH=$op.operation.secondOperand($exp.value);}
+                 exp_aux1=exp_aux[$context,valueH] {$value=$exp_aux1.value ;}
                 | {$value=$left; }
 
                 ;
 
             op[MasterSentenceContainer context ,AssignableElement left ] returns[ArithmeticOperation operation]
                 : '+' {$operation=$context.newArithmeticOperation().sum().firstOperand($left);}
-                | '-' {$operation=$factory.newArithmeticOperation().subtraction().firstOperand($left);}
-                | '*' {$operation=$factory.newArithmeticOperation().multiplication().firstOperand($left);}
-                | 'DIV' {$operation=$factory.newArithmeticOperation().division().firstOperand($left);}
-                | 'MOD' {$operation=$factory.newArithmeticOperation().modulus().firstOperand($left);}
+                | '-' {$operation=$context.newArithmeticOperation().subtraction().firstOperand($left);}
+                | '*' {$operation=$context.newArithmeticOperation().multiplication().firstOperand($left);}
+                | 'DIV' {$operation=$context.newArithmeticOperation().division().firstOperand($left);}
+                | 'MOD' {$operation=$context.newArithmeticOperation().modulus().firstOperand($left);}
                 ;
 
             factor[MasterSentenceContainer context] returns [AssignableElement value]
                 : simpvalue_code[$context]{$value=$simpvalue_code.value;}
                 | '(' exp[$context] ')' {$value=($exp.value).setParenthesis();}
-                | funccall[$context] {$value=$funcall.return_function;}
+                | funccall[$context] {$value=$funccall.return_function;}
                 ;
 
             simpvalue_code[MasterSentenceContainer context] returns [AssignableElement value]
                 : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text);}
                 | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text);}
-                | STRING_CONST {$value=$context.newStringConstant($NUMERIC_STRING_CONST.text);}
+                | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text);}
                 | IDENTIFIER {$value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text);}
                 | CONST_DEF_IDENTIFIER{$value=$context.newSymbolReference("CONSTANT",$CONST_DEF_IDENTIFIER.text);}
                 ;
