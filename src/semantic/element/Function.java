@@ -59,11 +59,11 @@ public class Function extends MasterSentenceContainer {
 
         String cabecera = new String();
 
-        cabecera = this.type + " " + this.name + "(";
+        cabecera = this.type + " " + this.toHTMLIdentifier() + "(";
 
         for (SimpleVariable param : params) {
 
-            cabecera += param.getType() + " " + param.getName() + ",";
+            cabecera += param.getType() + " " + param.toHTMLIdentifier() + ",";
 
         }
 

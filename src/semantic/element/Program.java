@@ -121,7 +121,7 @@ public class Program extends MasterProgrammableElement {
                     HTMLGlobalVariables = "\t\t<h2>Funciones</h2>\n" +
                                           //"\t\t</br>\n" +
                                           HTMLGlobalVariables;
-                    HTMLMain = element.toHTML();
+                    HTMLMain = element.toHTML().replace("\n", "\n\t\t");
                     HTMLMain += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
                     HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
                     HTMLMain += "\t\t</hr>\n";

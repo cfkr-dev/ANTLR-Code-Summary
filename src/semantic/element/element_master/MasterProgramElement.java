@@ -45,4 +45,12 @@ public abstract class MasterProgramElement implements ProgramElement {
 
     @Override
     public abstract String toHTML();
+
+    @Override
+    public String toHTMLIdentifier () {
+
+        return "<SPAN CLASS=\"ident\">" + this.name + "</SPAN>";
+
+    }
+
 }

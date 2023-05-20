@@ -42,7 +42,7 @@ public class IfBranch extends MasterConditionalBranch {
 
         String HTMLIf = new String();
 
-        HTMLIf = "<p>if(" + this.logicOperation.toHTML() + ") {</p>\n";
+        HTMLIf = "<p><SPAN CLASS=\"ident\">if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
         HTMLIf += this.toHTMLBrackets();
 
         return HTMLIf;

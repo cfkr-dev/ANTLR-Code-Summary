@@ -8,187 +8,171 @@ grammar sourceCode;
 
     // **** MAIN SECTION ****
     // ------------------------
-
-        program
-            : sentlist
-            | {Program program = new Program();} funlist[program] sentlist
-            | dcllist program_aux
-            //| program_empty
+        program_prime
+            : {Program program = new Program();$program_prime.context = program;}  program[$program_prime.context]
+            ;
+        program[Program context]
+            : sentlist[$context]
+            | funlist[$context] sentlist[$context]
+            | dcllist[$context] program_aux[$context]
             ;
 
-        program_aux
-            : funlist[program] sentlist
-            | sentlist
+        program_aux[Program context]
+            : funlist[$context] sentlist[$context]
+            | sentlist[$context]
             ;
 
-        program_empty
-            :
+        dcllist[Program context]
+            : dcl[$context] dcllist_aux[$context]
             ;
 
-        dcllist
-            : dcl dcllist_aux
-            ;
-
-        dcllist_aux
-            : dcllist
+        dcllist_aux[Program context]
+            : dcllist[$context]
             |
             ;
 
         funlist[ProgrammableElement context]
-            : funcdef[program] funlist_aux[program]
+            : funcdef[$context] funlist_aux[$context]
             ;
 
         funlist_aux[ProgrammableElement context]
-            : funlist[context]
+            : funlist[$context]
             |
             ;
 
-        sentlist
-            : mainhead /*curly_open*/ '{' sentlist_aux
-            //| sentlist_error
+        sentlist[Program context]
+            : mainhead[$context] '{' sentlist_aux[$mainhead.contextMain]
+
             ;
 
-        sentlist_aux
-            : code /*curly_close*/ '}'
-            | /*curly_close*/ '}'
+        sentlist_aux[MasterSentenceContainer context]
+            : code[$context] '}'
+            |  '}'
             ;
 
-        sentlist_error
-            :
-            ;
 
     // **** DECLARATIONS SECTION ****
     // ------------------------------
 
-        dcl
-            : cte
-            | var
-            //| cte_error_semicolon
+        dcl[Program context]
+            : cte[$context]
+            | var[$context]
             ;
 
         /* ---- CONSTANTS DECLARATION ---- */
 
-            cte
-                : '#define' CONST_DEF_IDENTIFIER simpvalue
-                //| cte_error
+            cte[Program context]
+                : '#define' CONST_DEF_IDENTIFIER simpvalue[$context]
+                {$context.createNewConstant($CONST_DEF_IDENTIFIER.text,$simpvalue.value);}
                 ;
 
-            cte_error
-                : HASHTAG_TEXT cte_error_aux
-                | '#define' cte_error_aux
-                ;
 
-            cte_error_aux
-                : simpvalue
-                | cte_error_aux_1
-                |
-                ;
-
-            cte_error_aux_1
-                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) cte_error_aux_1_aux
-                ;
-
-            cte_error_aux_1_aux
-                : simpvalue
-                |
-                ;
-
-            cte_error_semicolon
-                : cte ';'
-                ;
 
         /* ---- SIMPLE VARIABLES DECLARATION ---- */
 
-            var
-                : vardef
+            var[ProgrammableElement context]
+                : vardef[$context]
                 ;
 
-            vardef
-                : simple_vardef
-                | struct_vardef
+            vardef[ProgrammableElement context]
+                : simple_vardef[$context]
+                | struct_vardef[$context]
                 ;
 
-            vardef_aux
-                :
-                | /*equal_asig*/ '=' simpvalue
-                //| vardef_aux_error
+            vardef_aux[ProgrammableElement context,String type,String name]
+                :{
+                     if($context instanceof Program ){
+                         $context.createNewVariable($type,$name);
+                     }
+                     else if($context instanceof MasterSentenceContainer ){
+                         $context.addNewVariableDefinition($type,$name);
+                     }
+                     else{
+                         $context.addNewSimpleProperty($type, $name);
+                     }
+
+                 }
+                | '=' simpvalue[$context]
+                {
+                     if($context instanceof Program ){
+                         $context.createNewVariable($type,$name).setValue($simpvalue.value);
+                     }
+                     else if($context instanceof MasterSentenceContainer ){
+                         $context.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value);
+                     }
+                     else{
+                         $context.addNewSimpleProperty($type,$name,$simpvalue.value);
+                     }
+
+                 }
                 ;
 
-            vardef_aux_error
-                : /*equal_asig*/ '=' exp
+
+
+            simple_vardef[ProgrammableElement context]
+                : tbas IDENTIFIER vardef_aux[$context,$tbas.type,$IDENTIFIER.text] ';'
                 ;
 
-            simple_vardef
-                : tbas IDENTIFIER vardef_aux /*semicolon*/ ';'
-                //| error_simple_vardef vardef_aux semicolon
-                ;
 
-            error_simple_vardef
-                : tbas error_simple_vardef_aux
-                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                ;
-
-            error_simple_vardef_aux
-                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                |
-                ;
 
         /* ---- STRUCTS DECLARATION ---- */
 
-            struct_vardef
-                : struct_def IDENTIFIER /*semicolon*/ ';'
-                //| error_struct_vardef semicolon
+            struct_vardef[ProgrammableElement context]
+                : struct_def[$context] IDENTIFIER {$struct_def.struct.createStruct($IDENTIFIER.text);} ';'
                 ;
 
-            error_struct_vardef
-                : struct_def
+
+
+            struct_def[ProgrammableElement context] returns [StructVariable struct]
+                : 'struct' '{'
+                 {
+                    if( $context instanceof Program){
+                        $struct=$context.createNewVariable("struct");
+                    }else{
+                        $struct=$context.addNewNestedStructProperty("struct");
+                    }
+                }
+                dcllist_struct[$struct] '}'
                 ;
 
-            struct_def
-                : 'struct' /*curly_open*/ '{' dcllist_struct /*curly_close*/ '}'
-                ;
-
-            dcllist_struct
-                : dcl_struct dcllist_struct_aux
+            dcllist_struct[ProgrammableElement context]
+                : dcl_struct[$context] dcllist_struct_aux[$context]
                 |
                 ;
 
-            dcllist_struct_aux
-                : dcllist_struct
+            dcllist_struct_aux[ProgrammableElement context]
+                : dcllist_struct[$context]
                 |
                 ;
 
-            dcl_struct
-                : var
+            dcl_struct[ProgrammableElement context]
+                : var[$context]
                 ;
 
 
         /* ---- ASSIGNABLE VALUES ---- */
 
-            simpvalue
-                : NUMERIC_INTEGER_CONST
-                | NUMERIC_REAL_CONST
-                | STRING_CONST
-                //| simpvalue_error
+            simpvalue[ProgrammableElement context] returns[AssignableElement value]
+                : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text);}
+                | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text);}
+                | STRING_CONST {$value=$context.newStringConstant($NUMERIC_STRING_CONST.text);}
+
                 ;
 
-            simpvalue_error
-                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                |
-                ;
+
 
         /* ---- VARIABLE TYPES ---- */
 
             tbas returns [String type]
-                : 'integer' {$type = "integer";}
-                | 'float' {$type = "float";}
-                | 'string' {$type = "string";}
-                | tvoid {$type = $tvoid.void;}
-                | 'struct' {$type = "struct";}
+                : 'integer' {$tbas.type = "integer";}
+                | 'float' {$tbas.type = "float";}
+                | 'string' {$tbas.type = "string";}
+                | tvoid {$tbas.type = $tvoid.void;}
+                | 'struct' {$tbas.type = "struct";}
                 ;
 
             tvoid returns [String void]
-                : 'void' {$type = "void";}
+                : 'void' {$tvoid.void = "void";}
                 ;
 
 
@@ -197,99 +181,80 @@ grammar sourceCode;
     // **** FUNCTION IMPLEMENTATION SECTION ****
     // -----------------------------------------
 
-        funcdef [ProgrammableElement context]
-            : funchead[context] /*curly_open*/ '{' funcdef_aux[$funchead.returnFunction]
+        funcdef [Program context]
+            : funchead[$context] /*curly_open*/ '{' funcdef_aux[$funchead.returnFunction]
             ;
 
-        funcdef_aux[ProgrammableElement functionContext]
-            : code /*curly_close*/ '}'
+        funcdef_aux[Function context]
+            : code[$context] /*curly_close*/ '}'
             | /*curly_close*/ '}'
             ;
 
         /* ---- FUNCTION HEAD ---- */
 
             funchead [ProgrammableElement context] returns [Function returnFunction]
-                : tbas IDENTIFIER '(' funchead_aux {$funchead.returnFunction = context.addNewFunction($tbas.type, $IDENTIFIER.text, $funchead_aux.paramList);}
-                //| funchead_error '(' funchead_auxList<Param> auxList = new ArrayList<>();}
+                : tbas IDENTIFIER '('{$funchead.returnFunction = context.addNewFunction($tbas.type, $IDENTIFIER.text);} funchead_aux [$funchead.returnFunction]
                 ;
 
-            funchead_aux returns [List<Param> paramList]
-                : {List<Param> auxList = new ArrayList<>();} typedef[auxList] {$funchead_aux.paramList = $typedef.returnList;} /*paren_close*/ ')'
-                | /*paren_close*/ ')'
+            funchead_aux[Function context]
+                : typedef[$context]   ')'
+                |  ')'
                 ;
 
-            funchead_error
-                : tbas funchead_error_aux
-                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                ;
-
-            funchead_error_aux
-                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                |
-                ;
 
         /* ---- FUNCTION PARAMETERS ---- */
 
-            typedef [List<Param> auxList] returns [List<Param> returnList]
-                : tbas IDENTIFIER {auxList.add(new Param($tbas.type, $IDENTIFIER.text));} typedef_aux[auxList] {$typedef.returnList = $typedef_aux.returnList;}
-                //| typedef_error typedef_aux
+            typedef [Function context]
+                : tbas IDENTIFIER {$context.addParam($tbas.type, $IDENTIFIER.text);} typedef_aux[$context]
+
                 ;
 
-            typedef_aux [List<Param> auxList] returns [List<Param> returnList]
-                : /*comma*/ ',' typedef[auxList]
-                //| comma_no_var_error
-                | {$typedef_aux.returnList = $typedef_aux.auxList;}
-                ;
-
-            typedef_error
-                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) typedef_error_aux
-                | tbas typedef_error_aux
-                ;
-
-            typedef_error_aux
-                : TEXT
+            typedef_aux [Function context]
+                : ',' typedef[$context]
                 |
                 ;
+
+
 
     // **** MAIN-PROGRAM-SENTENCES SECTION ****
     // ----------------------------------------
 
         /* ---- FUNCION PRINCIPAL ---- */
 
-            mainhead
-                : tvoid 'Main' '(' mainhead_aux
-                //| mainhead_error 'Main' '(' mainhead_aux
+            mainhead[Program context] returns [Function contextMain]
+                : tvoid 'Main' '(' {Function newContext = context.createNewMainFunction();
+                                    $context=newContext;}
+                 mainhead_aux[$context]
+                {$contextMain = $context;}
                 ;
 
-            mainhead_aux
-                : typedef /*paren_close*/ ')'
-                | /*paren_close*/ ')'
+            mainhead_aux[Function context]
+                : typedef[$context]  ')'
+                | ')'
                 ;
 
-            mainhead_error
-                : tbas
-                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                ;
+
 
         /* ---- CODE BLOCK ---- */
 
-            code
-                : sent code_aux
+            code[MasterSentenceContainer context]
+                : sent[$context] code_aux[$context]
                 ;
 
-            code_aux
-                : code
+            code_aux[MasterSentenceContainer context]
+                : code[$context]
                 |
                 ;
 
         /* ---- SENTENCES ---- */
 
-            sent
-                : asig /*semicolon*/ ';'
-                | vardef_and_asig /*semicolon*/ ';'
-                | vardef_code /*semicolon*/ ';'
-                | funccall /*semicolon*/ ';'
-                | return_func /*semicolon*/ ';'
+            sent[MasterSentenceContainer context]
+
+                : asig[$context]  ';'{$context.addNewVariableAssign($asig.name,$asig.value);}
+                | vardef_and_asig  ';'
+                | vardef_code[$context]  ';'
+                | funccall[$context]   ';' {$context.addNewFunctionCall($funccall.return_function);}
+                | return_func ';'
                 | if
                 | while
                 | dowhile
@@ -297,73 +262,56 @@ grammar sourceCode;
                 ;
 
         /* ---- VARIABLE DEFINITIONS ---- */
-        
-            vardef_code
+
+            vardef_code[MasterSentenceContainer context]
                 : simple_vardef_code
-                | struct_vardef
+                | struct_vardef[$context]
                 ;
 
             simple_vardef_code
                 : tbas IDENTIFIER
-                //| error_simple_vardef_code
                 ;
-    
-            error_simple_vardef_code
-                : tbas error_simple_vardef_code_aux
-                | (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER) (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                ;
-    
-            error_simple_vardef_code_aux
-                : (TEXT | IDENTIFIER | CONST_DEF_IDENTIFIER)
-                |
-                ;
-        
+
+
+
         /* ---- ASSIGNMENTS ---- */
 
-            asig
-                : IDENTIFIER /*equal_asig_no_empty*/ '=' exp
-                //| asig_error equal_asig_no_empty exp
+            asig[MasterSentenceContainer context] returns [ String name, AssignableElement value]
+                : IDENTIFIER {$name=$IDENTIFIER.text;} '=' exp[$context]
                 ;
 
-            asig_error
-                : (TEXT | CONST_DEF_IDENTIFIER | IDENTIFIER)
-                |
-                ;
+
 
             vardef_and_asig
-                : simple_vardef_code /*equal_asig_no_empty*/ '=' exp
+                : simple_vardef_code '=' exp
                 ;
 
         /* ---- FUNCTION CALLS ---- */
 
-            funccall
-                : IDENTIFIER funccall_aux
+            funccall[ProgrammableElement context] returns [FunctionCall return_function]
+                : IDENTIFIER  funccall_aux[$context,$IDENTIFIER.text] {$return_function=$funccall_aux.return_function;}
                 | CONST_DEF_IDENTIFIER
-                //| funccall_error funccall_aux
                 ;
 
-            funccall_error
-                : TEXT
-                ;
 
-            funccall_aux
-                : subpparamlist
+
+            funccall_aux[ProgrammableElement context, String name] returns [FunctionCall return_function]
+                :  subpparamlist[$context,$name] {$return_function=$subpparamlist.return_function;}
                 |
                 ;
 
-            subpparamlist
-                : '(' explist /*paren_close*/ ')'
+            subpparamlist[ProgrammableElement context, String name] returns [FunctionCall return_function]
+                : '(' { $subpparamlist.reference=$context.newFunctionCall($name)} explist[$context,$function]
+                    {$return_function=$explist.return_function;}  ')'
                 ;
 
-            explist
-                : exp explist_aux
-                |
+            explist[ProgrammableElement context,FunctionCall function] returns [FunctionCall return_function]
+                : exp[$context] {$function.addParam($exp.value);} explist_aux[$context,$function] {$return_function=$function;}
                 ;
 
-            explist_aux
+            explist_aux[ProgrammableElement context,FunctionCall function]
                 :
-                | /*comma*/ ',' explist
-                //| comma_no_var_error
+                |  ',' explist[$context,$function]
                 ;
 
         //todo completar recuperación desde este punto
@@ -381,7 +329,7 @@ grammar sourceCode;
         /* ---- IF-ELSE SENTENCE ---- */
 
             if
-                : 'if' expcond '{' sentlist_aux if_aux
+                : 'if' expcond '{' sentlist_aux[context] if_aux
                 ;
 
             if_aux
@@ -394,20 +342,20 @@ grammar sourceCode;
                 ;
 
             else_aux
-                : '{' sentlist_aux
+                : '{' sentlist_aux[context]
                 | if
                 ;
 
         /* ---- WHILE SENTENCE ---- */
 
             while
-                : 'while' '(' expcond ')' '{' sentlist_aux
+                : 'while' '(' expcond ')' '{' sentlist_aux[context]
                 ;
 
         /* ---- DO-WHILE SENTENCE ---- */
 
             dowhile
-                : 'do' '{' sentlist_aux 'while' '(' expcond ')' ';'
+                : 'do' '{' sentlist_aux[context] 'while' '(' expcond ')' ';'
                 ;
 
         /* ---- FOR SENTENCE ---- */
@@ -417,9 +365,9 @@ grammar sourceCode;
                 ;
 
             for_aux
-                : asig ';' expcond ';' asig ')' '{' sentlist_aux
-                | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux
-                | simple_vardef_code ';' expcond ';' asig ')' '{' sentlist_aux
+                : asig ';' expcond ';' asig ')' '{' sentlist_aux[context]
+                | vardef_and_asig ';' expcond ';' asig ')' '{' sentlist_aux[context]
+                | simple_vardef_code ';' expcond ';' asig ')' '{' sentlist_aux[context]
                 ;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
@@ -460,134 +408,40 @@ grammar sourceCode;
 
         /* ---- ARITHMETIC OPERATIONS ---- */
 
-            exp
-                : factor exp_aux
-                ;
-
-            exp_aux
-                : op exp exp_aux
-                |
-                ;
-
-            op
-                : '+'
-                | '-'
-                | '*'
-                | 'DIV'
-                | 'MOD'
-                ;
-
-            factor
-                : simpvalue_code
-                | '(' exp ')'
-                | funccall
-                ;
-
-            simpvalue_code
-                : NUMERIC_INTEGER_CONST
-                | NUMERIC_REAL_CONST
-                | STRING_CONST
-                | IDENTIFIER
-                | CONST_DEF_IDENTIFIER
-                //| simpvalue_code_error
-                ;
-
-            simpvalue_code_error
-                : TEXT
-                ;
-
-
-    // **** ERROR-RECOBERY-CONTROL PRODUCTIONS ****
-    // ------------------------------------
-
-        /* ---- OPEN AND CLOSE PARENTHESIS ---- */
-
-            paren_open
-                : '('
-                | paren_open_error
-                ;
-
-            paren_open_error
+            exp[MasterSentenceContainer context] returns[AssignableElement value]
                 :
+                factor[$context] exp_aux[$context,$factor.value] {$value=$exp_aux.value}
                 ;
 
-            paren_close
-                : ')'
-                | paren_close_error
+            exp_aux[MasterSentenceContainer context,AssignableElement left] returns[AssignableElement value]
+                : op[$context,$left] exp[$context] {$exp_aux.value=$op.operation.secondOperand($exp.value);}
+                 exp_aux[$context,$exp_aux.value]
+                | {$value=$left; }
+
                 ;
 
-            paren_close_error
-                :
+            op[MasterSentenceContainer context ,AssignableElement left ] returns[ArithmeticOperation operation]
+                : '+' {$operation=$context.newArithmeticOperation().sum().firstOperand($left);}
+                | '-' {$operation=$factory.newArithmeticOperation().subtraction().firstOperand($left);}
+                | '*' {$operation=$factory.newArithmeticOperation().multiplication().firstOperand($left);}
+                | 'DIV' {$operation=$factory.newArithmeticOperation().division().firstOperand($left);}
+                | 'MOD' {$operation=$factory.newArithmeticOperation().modulus().firstOperand($left);}
                 ;
 
-        /* ---- OPEN AND CLOSE CURLY-BRACKETS ---- */
-
-            curly_open
-                : '{'
-                | curly_open_error
+            factor[MasterSentenceContainer context] returns [AssignableElement value]
+                : simpvalue_code[$context]{$value=$simpvalue_code.value;}
+                | '(' exp[$context] ')' {$value=($exp.value).setParenthesis();}
+                | funccall[$context] {$value=$funcall.return_function;}
                 ;
 
-            curly_open_error
-                :
+            simpvalue_code[MasterSentenceContainer context] returns [AssignableElement value]
+                : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text);}
+                | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text);}
+                | STRING_CONST {$value=$context.newStringConstant($NUMERIC_STRING_CONST.text);}
+                | IDENTIFIER {$value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text);}
+                | CONST_DEF_IDENTIFIER{$value=$context.newSymbolReference("CONSTANT",$CONST_DEF_IDENTIFIER.text);}
                 ;
 
-            curly_close
-                : '}'
-                | curly_close_error
-                ;
-
-            curly_close_error
-                :
-                ;
-
-        /* ---- COMMA-SYMBOL ---- */
-
-            comma
-                : ','
-                | comma_error
-                ;
-
-            comma_error
-                :
-                ;
-
-            comma_no_var_error
-                : ','
-                ;
-
-        /* ---- SEMICOLON-SYMBOL ---- */
-
-            semicolon
-                : ';'
-                | semicolon_error
-                ;
-
-            semicolon_error
-                :
-                ;
-
-        /* ---- EQUAL-SYMBOL FOR ASSIGNMENTS ---- */
-
-            equal_asig
-                : '='
-                | equal_asig_error
-                ;
-
-            equal_asig_error
-                : '=='
-                | EQ_MORE_ONE_ERROR
-                |
-                ;
-
-            equal_asig_no_empty
-                : '='
-                | equal_asig_no_empty_error
-                ;
-
-            equal_asig_no_empty_error
-                : '=='
-                | EQ_MORE_ONE_ERROR
-                ;
 
 /*
 |-----------------------------------|

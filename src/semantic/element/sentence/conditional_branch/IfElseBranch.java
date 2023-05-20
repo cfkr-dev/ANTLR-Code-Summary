@@ -42,7 +42,7 @@ public class IfElseBranch extends MasterConditionalBranch {
 
         String HTMLElseIf = new String();
 
-        HTMLElseIf = "<p>else if(" + this.logicOperation.toHTML() + ") {</p>\n";
+        HTMLElseIf = "<p><SPAN CLASS=\"ident\">else if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
         HTMLElseIf += this.toHTMLBrackets();
 
         return HTMLElseIf;

@@ -2,10 +2,10 @@ import java.io.*;
 
 import static semantic.utils.Constants.FILE_NAME;
 
-public abstract class HTMLFileGen {
+public class HTMLFileGen {
 
-    private File fichero;
-    public HTMLFileGen () {
+    private static File fichero;
+    public static void starter () {
 
         // Comprobar que el fichero no existe
             // Si existe excepcion
@@ -25,7 +25,7 @@ public abstract class HTMLFileGen {
 
     }
 
-    public void generate (String HTML) {
+    public static void generate (String HTML) {
 
         // Introducir string en el fichero
         try {

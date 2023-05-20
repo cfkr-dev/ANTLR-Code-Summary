@@ -46,7 +46,7 @@ public class sourceCodeLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'{'", "'}'", "'#define'", "';'", "'='", "'struct'", "'integer'", 
+			null, "'{'", "'}'", "'#define'", "'='", "';'", "'struct'", "'integer'", 
 			"'float'", "'string'", "'void'", "'('", "')'", "','", "'Main'", "'return'", 
 			"'if'", "'else'", "'while'", "'do'", "'for'", "'||'", "'&&'", "'!'", 
 			"'<'", "'>'", "'<='", "'>='", "'=='", "'!='", "'+'", "'-'", "'*'", "'DIV'", 
@@ -232,7 +232,7 @@ public class sourceCodeLexer extends Lexer {
 		"cd\u0005}\u0000\u0000d\u0004\u0001\u0000\u0000\u0000ef\u0005#\u0000\u0000"+
 		"fg\u0005d\u0000\u0000gh\u0005e\u0000\u0000hi\u0005f\u0000\u0000ij\u0005"+
 		"i\u0000\u0000jk\u0005n\u0000\u0000kl\u0005e\u0000\u0000l\u0006\u0001\u0000"+
-		"\u0000\u0000mn\u0005;\u0000\u0000n\b\u0001\u0000\u0000\u0000op\u0005="+
+		"\u0000\u0000mn\u0005=\u0000\u0000n\b\u0001\u0000\u0000\u0000op\u0005;"+
 		"\u0000\u0000p\n\u0001\u0000\u0000\u0000qr\u0005s\u0000\u0000rs\u0005t"+
 		"\u0000\u0000st\u0005r\u0000\u0000tu\u0005u\u0000\u0000uv\u0005c\u0000"+
 		"\u0000vw\u0005t\u0000\u0000w\f\u0001\u0000\u0000\u0000xy\u0005i\u0000"+

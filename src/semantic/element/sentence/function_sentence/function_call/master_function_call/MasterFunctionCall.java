@@ -59,6 +59,16 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
         String HTMLFunction = new String();
 
+        HTMLFunction = "<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(";
+
+        for (AssignableElement elem : callingParams) {
+
+            HTMLFunction += elem.getName() + ", ";
+
+        }
+
+        HTMLFunction = HTMLFunction.substring(0, HTMLFunction.length() -1) + ")";
+
         if (partOfExpression)
             return HTMLFunction;
         else
