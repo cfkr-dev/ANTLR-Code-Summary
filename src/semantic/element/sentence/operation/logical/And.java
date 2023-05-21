@@ -10,5 +10,6 @@ public class And extends BinaryLogicalOperation {
         this.name = "AND";
         this.symbol = "&";
         this.operationType = Operation.AND;
+
     }
 }

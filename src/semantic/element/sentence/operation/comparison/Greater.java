@@ -10,5 +10,6 @@ public class Greater extends ComparisonOperation {
         this.name = "GREATER";
         this.symbol = ">";
         this.operationType = Operation.GREATER;
+
     }
 }

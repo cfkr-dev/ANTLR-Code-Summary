@@ -10,5 +10,6 @@ public class Multiplication extends ArithmeticOperation {
         this.name = "MULTIPLICATION";
         this.symbol = "*";
         this.operationType = Operation.MULTIPLICATION;
+
     }
 }

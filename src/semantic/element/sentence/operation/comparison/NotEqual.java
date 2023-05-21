@@ -10,5 +10,6 @@ public class NotEqual extends ComparisonOperation {
         this.name = "NotEqual";
         this.symbol = "!=";
         this.operationType = Operation.NOT_EQUAL;
+
     }
 }

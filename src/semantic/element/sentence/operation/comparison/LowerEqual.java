@@ -10,5 +10,6 @@ public class LowerEqual extends ComparisonOperation {
         this.name = "LowerEqual";
         this.symbol = "<=";
         this.operationType = Operation.LOWER_EQUAL;
+
     }
 }

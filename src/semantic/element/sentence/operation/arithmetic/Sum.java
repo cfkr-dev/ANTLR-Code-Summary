@@ -10,5 +10,6 @@ public class Sum extends ArithmeticOperation {
         this.name = "SUM";
         this.symbol = "+";
         this.operationType = Operation.SUM;
+
     }
 }

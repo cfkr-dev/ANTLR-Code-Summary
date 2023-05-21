@@ -10,5 +10,6 @@ public class Subtraction extends ArithmeticOperation {
         this.name = "SUBTRACTION";
         this.symbol = "-";
         this.operationType = Operation.SUBTRACTION;
+
     }
 }

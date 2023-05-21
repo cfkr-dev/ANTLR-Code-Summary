@@ -10,5 +10,6 @@ public class Or extends BinaryLogicalOperation {
         this.name = "OR";
         this.symbol = "||";
         this.operationType = Operation.OR;
+
     }
 }

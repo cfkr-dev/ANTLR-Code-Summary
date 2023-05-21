@@ -10,5 +10,6 @@ public class Lower extends ComparisonOperation {
         this.name = "LOWER";
         this.symbol = "<";
         this.operationType = Operation.LOWER;
+
     }
 }

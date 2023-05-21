@@ -10,5 +10,6 @@ public class Not extends UnaryLogicalOperation {
         this.name = "NOT";
         this.symbol = "!";
         this.operationType = Operation.NOT;
+
     }
 }

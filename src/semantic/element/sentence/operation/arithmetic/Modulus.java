@@ -10,5 +10,6 @@ public class Modulus extends ArithmeticOperation {
         this.name = "MODULUS";
         this.symbol = "MOD";
         this.operationType = Operation.MODULUS;
+
     }
 }

@@ -10,5 +10,6 @@ public class Division extends ArithmeticOperation {
         this.name = "DIVISION";
         this.symbol = "DIV";
         this.operationType = Operation.DIVISION;
+
     }
 }

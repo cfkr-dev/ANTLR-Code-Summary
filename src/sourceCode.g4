@@ -31,18 +31,17 @@ grammar sourceCode;
             |
             ;
 
-        funlist[ProgrammableElement context]
+        funlist[Program context]
             : funcdef[$context] funlist_aux[$context]
             ;
 
-        funlist_aux[ProgrammableElement context]
+        funlist_aux[Program context]
             : funlist[$context]
             |
             ;
 
         sentlist[Program context]
             : mainhead[$context] '{' sentlist_aux[$mainhead.contextMain]
-
             ;
 
         sentlist_aux[MasterSentenceContainer context]
@@ -63,7 +62,8 @@ grammar sourceCode;
 
             cte[Program context]
                 : '#define' CONST_DEF_IDENTIFIER simpvalue[$context]
-                {$context.createNewConstant($CONST_DEF_IDENTIFIER.text,$simpvalue.value,$start.line,$start.pos);}
+                {$context.createNewConstant($CONST_DEF_IDENTIFIER.text,(Literal)$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());}
+
                 ;
 
         /* ---- SIMPLE VARIABLES DECLARATION ---- */
@@ -80,26 +80,31 @@ grammar sourceCode;
             vardef_aux[ProgrammableElement context,String type,String name]
                 :{
                      if($context instanceof Program ){
-                         $context.createNewVariable($type,$name,$start.line,$start.pos);
+                         $context.createNewVariable($type,$name,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else if($context instanceof MasterSentenceContainer ){
-                         $context.addNewVariableDefinition($type,$name,$start.line,$start.pos);
+                         MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
+                         newContext.addNewVariableDefinition($type,$name,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else{
-                         $context.addNewSimpleProperty($type, $name,$start.line,$start.pos);
+                        StructVariable newContext=(StructVariable)$context;
+                         newContext.addNewSimpleProperty($type, $name,$start.getLine(),$start.getCharPositionInLine());
                      }
 
                  }
                 | '=' simpvalue[$context]
                 {
                      if($context instanceof Program ){
-                         $context.createNewVariable($type,$name,$start.line,$start.pos).setValue($simpvalue.value);
+                     Program newContext=(Program)$context;
+                         newContext.createNewVariable($type,$name,$start.getLine(),$start.getCharPositionInLine()).setValue($simpvalue.value,newContext,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else if($context instanceof MasterSentenceContainer ){
-                         $context.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value,$start.line,$start.pos);
+                         MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
+                         newContext.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else{
-                         $context.addNewSimpleProperty($type,$name,$simpvalue.value,$start.line,$start.pos);
+                        StructVariable newContext=(StructVariable)$context;
+                         newContext.addNewSimpleProperty($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
                      }
 
                  }
@@ -119,9 +124,12 @@ grammar sourceCode;
                 : 'struct' '{'
                  {
                     if( $context instanceof Program){
-                        $struct=$context.createNewVariable("struct",$start.line,$start.pos);
+                        Program newContext=(Program)$context;
+
+                        $struct=newContext.createNewVariable("struct",$start.getLine(),$start.getCharPositionInLine());
                     }else{
-                        $struct=$context.addNewNestedStructProperty("struct",$start.line,$start.pos);
+                        StructVariable newContext=(StructVariable)$context;
+                        $struct=newContext.addNewNestedStructProperty("struct",$start.getLine(),$start.getCharPositionInLine());
                     }
                 }
                 dcllist_struct[$struct] '}'
@@ -145,10 +153,9 @@ grammar sourceCode;
         /* ---- ASSIGNABLE VALUES ---- */
 
             simpvalue[ProgrammableElement context] returns[AssignableElement value]
-                : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.line,$start.pos);}
-                | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.line,$start.pos);}
-                | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.line,$start.pos);}
-
+                : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
+                | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
+                | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 
 
@@ -182,8 +189,8 @@ grammar sourceCode;
 
         /* ---- FUNCTION HEAD ---- */
 
-            funchead [ProgrammableElement context] returns [Function returnFunction]
-                : tbas IDENTIFIER '('{$returnFunction = context.addNewFunction($tbas.type, $IDENTIFIER.text,$start.line,$start.pos);} funchead_aux [$returnFunction]
+            funchead [Program context] returns [Function returnFunction]
+                : tbas IDENTIFIER '('{$returnFunction = $context.createNewFunction($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} funchead_aux [$returnFunction] {$returnFunction = $returnFunction;}
                 ;
 
             funchead_aux[Function context]
@@ -195,7 +202,7 @@ grammar sourceCode;
         /* ---- FUNCTION PARAMETERS ---- */
 
             typedef [Function context]
-                : tbas IDENTIFIER {$context.addParam($tbas.type, $IDENTIFIER.text);} typedef_aux[$context]
+                : tbas IDENTIFIER {$context.addParam($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} typedef_aux[$context]
 
                 ;
 
@@ -212,7 +219,7 @@ grammar sourceCode;
         /* ---- FUNCION PRINCIPAL ---- */
 
             mainhead[Program context] returns [Function contextMain]
-                : tvoid 'Main' '(' {$contextMain= context.createNewMainFunction($start.line,$start.pos);}
+                : tvoid 'Main' '(' {$contextMain= context.createNewMainFunction($start.getLine(),$start.getCharPositionInLine());}
                  mainhead_aux[$contextMain]
 
                 ;
@@ -239,10 +246,10 @@ grammar sourceCode;
 
             sent[MasterSentenceContainer context]
 
-                : asig[$context]  ';'{$context.addNewVariableAssign($asig.name,$asig.value,$start.line,$start.pos);}
+                : asig[$context]  ';'{$context.addNewVariableAssign($asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
                 | vardef_and_asig[$context]  ';'
                 | vardef_code[$context]  ';'
-                | funccall[$context]   ';' {$context.addNewFunctionCall($funccall.return_function,$start.line,$start.pos);}
+                | funccall[$context]   ';' {$context.addNewFunctionCall(($funccall.return_function).call());}
                 | return_func[$context]';'
                 | if[$context]
                 | while[$context]
@@ -253,7 +260,7 @@ grammar sourceCode;
         /* ---- VARIABLE DEFINITIONS ---- */
         
             vardef_code[MasterSentenceContainer context]
-                : simple_vardef_code[$context] {$context.addNewVariableDefinition($simple_vardef_code.type,$simple_vardef_code.name,$start.line,$start.pos);}
+                : simple_vardef_code[$context] {$context.addNewVariableDefinition($simple_vardef_code.type,$simple_vardef_code.name,$start.getLine(),$start.getCharPositionInLine());}
                 | struct_vardef[$context]
                 ;
 
@@ -273,7 +280,7 @@ grammar sourceCode;
 
             vardef_and_asig[MasterSentenceContainer context] returns[String type,String name,AssignableElement value]
                 : simple_vardef_code[$context]  '=' exp[$context]
-                {$context.addNewVariableDefinitionAndAssign($simple_vardef_code.type,$simple_vardef_code.name, $exp.value,$start.line,$start.pos);
+                {$context.addNewVariableDefinitionAndAssign($simple_vardef_code.type,$simple_vardef_code.name, $exp.value,$start.getLine(),$start.getCharPositionInLine());
                   $type=$simple_vardef_code.type;
                   $name=$simple_vardef_code.name;
                   $value=$exp.value;
@@ -282,26 +289,26 @@ grammar sourceCode;
 
         /* ---- FUNCTION CALLS ---- */
 
-            funccall[ProgrammableElement context] returns [FunctionCall return_function]
+            funccall[MasterSentenceContainer context] returns [FunctionCall return_function]
                 : IDENTIFIER  funccall_aux[$context,$IDENTIFIER.text] {$return_function=$funccall_aux.return_function;}
                 | CONST_DEF_IDENTIFIER funccall_aux[$context,$CONST_DEF_IDENTIFIER.text] {$return_function=$funccall_aux.return_function;}
                 ;
 
-            funccall_aux[ProgrammableElement context, String name] returns [FunctionCall return_function]
+            funccall_aux[MasterSentenceContainer context, String name] returns [FunctionCall return_function]
                 :  subpparamlist[$context,$name] {$return_function=$subpparamlist.return_function;}
-                | {$return_function= $context.newFunctionCall($name,$start.line,$start.pos);}
+                | {$return_function= $context.newFunctionCall($name,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 
-            subpparamlist[ProgrammableElement context, String name] returns [FunctionCall return_function]
-                : '(' {FunctionCall  reference=$context.newFunctionCall($name,$start.line,$start.pos);} explist[$context,reference]
+            subpparamlist[MasterSentenceContainer context, String name] returns [FunctionCall return_function]
+                : '(' {FunctionCall  reference=$context.newFunctionCall($name,$start.getLine(),$start.getCharPositionInLine());} explist[$context,reference]
                     {$return_function=$explist.return_function;}  ')'
                 ;
 
-            explist[ProgrammableElement context,FunctionCall function] returns [FunctionCall return_function]
+            explist[MasterSentenceContainer context,FunctionCall function] returns [FunctionCall return_function]
                 : exp[$context] {$function.addParam($exp.value);} explist_aux[$context,$function] {$return_function=$function;}
                 ;
 
-            explist_aux[ProgrammableElement context,FunctionCall function]
+            explist_aux[MasterSentenceContainer context,FunctionCall function]
                 :
                 |  ',' explist[$context,$function]
                 ;
@@ -311,13 +318,13 @@ grammar sourceCode;
         /* ---- FUNCTION-RETURN SECTION ---- */
 
             return_func[MasterSentenceContainer context]
-                : 'return' exp[$context] {$context.addNewReturnPoint($exp.value,$start.line,$start.pos);}
+                : 'return' exp[$context] {$context.addNewReturnPoint($exp.value,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 
         /* ---- IF-ELSE SENTENCE ---- */
 
             if [MasterSentenceContainer context]
-                : 'if' expcond[$context] {MasterSentenceContainer ifContext=$context.addNewIfBranch($expcond.value,$start.line,$start.pos);}'{' sentlist_aux[ifContext] if_aux[$context,ifContext]
+                : 'if' expcond[$context] {MasterSentenceContainer ifContext=$context.addNewIfBranch($expcond.value,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[ifContext] if_aux[$context,ifContext]
                 ;
 
             if_aux[MasterSentenceContainer context,MasterSentenceContainer context_if]
@@ -326,28 +333,30 @@ grammar sourceCode;
                 ;
 
             else[MasterSentenceContainer context,MasterSentenceContainer context_if]
-                : 'else' else_aux[$context,$context_if]
+                : 'else' else_aux[$context,(ConditionalBranch)context_if]
                 ;
 
-            else_aux[MasterSentenceContainer context,MasterSentenceContainer context_if]
-                : '{'{MasterSentenceContainer elseC=$context.addNewElse($context_if,$start.line,$start.pos);} sentlist_aux[elseC]
-                | if_else[$context,$context_if]
+            else_aux[MasterSentenceContainer context,ConditionalBranch context_if]
+                : '{'{MasterSentenceContainer elseC=$context.addNewElseBranch($context_if,$start.getLine(),$start.getCharPositionInLine());} sentlist_aux[elseC]
+                | if_else[$context,(ConditionalBranch)$context_if]
                 ;
-            if_else[MasterSentenceContainer context,MasterSentenceContainer context_if]
-                : 'if' expcond[$context] {MasterSentenceContainer newContext=$context.addNewElseIfBranch($expcond.value,$context_if,$start.line,$start.pos);}'{' sentlist_aux[newContext] if_aux[newContext]
+
+            if_else[MasterSentenceContainer context,ConditionalBranch context_if]
+                : 'if' expcond[$context] {MasterSentenceContainer newContext=$context.addNewElseIfBranch($expcond.value,$context_if,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[newContext] if_aux[$context,newContext]
                 ;
 
         /* ---- WHILE SENTENCE ---- */
 
             while[MasterSentenceContainer context]
-                : 'while' '(' expcond[$context] {MasterSentenceContainer newContext=$context.addNewWhileLoop($expcond.value,$start.line,$start.pos);}')' '{' sentlist_aux[newContext]
+                : 'while' '(' expcond[$context] {MasterSentenceContainer newContext=$context.addNewWhileLoop($expcond.value,$start.getLine(),$start.getCharPositionInLine());}')' '{' sentlist_aux[newContext]
                 ;
 
         /* ---- DO-WHILE SENTENCE ----*/
 
             dowhile[MasterSentenceContainer context]
-                : 'do' '{' {MasterSentenceContainer newContext=$context.addNewDoWhileLoop($start.line,$start.pos);} sentlist_aux[newContext]
-                'while' '(' expcond[newContext] {newContext.createDoWhileLoop($expcond.value,$start.line,$start.pos);} ')' ';'
+                : 'do' '{' {MasterSentenceContainer newContext=$context.addNewDoWhileLoop($start.getLine(),$start.getCharPositionInLine());} sentlist_aux[newContext]
+                'while' '(' expcond[newContext] {DoWhileLoop doWhileContext=(DoWhileLoop)newContext;
+                                                doWhileContext.createDoWhileLoop($expcond.value);} ')' ';'
                 ;
 
         /* ---- FOR SENTENCE ---- */
@@ -359,17 +368,17 @@ grammar sourceCode;
             for_aux[MasterSentenceContainer context]
                 : asig1=asig[$context] ';' expcond[$context] ';' asig2=asig[$context] ')' '{'
                   {MasterSentenceContainer forContext=$context.addNewForLoop($asig1.name,$asig1.value,$expcond.value,$asig2.name,
-                  $asig2.value,$start.line,$start.pos);}
+                  $asig2.value,$start.getLine(),$start.getCharPositionInLine());}
                   sentlist_aux[forContext]
 
                 | vardef_and_asig[$context] ';' expcond[$context] ';' asig[$context] ')' '{'
                   {MasterSentenceContainer forContext=$context.addNewForLoop($vardef_and_asig.type,$vardef_and_asig.name,
-                  $vardef_and_asig.value,$expcond.value,$asig.name,$asig.value,$start.line,$start.pos);}
+                  $vardef_and_asig.value,$expcond.value,$asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
                   sentlist_aux[forContext]
 
                 | simple_vardef_code[$context] ';' expcond[$context] ';' asig[$context] ')' '{'
                   {MasterSentenceContainer forContext=$context.addNewForLoop($simple_vardef_code.type,$simple_vardef_code.name,
-                  $expcond.value,$asig.name,$asig.value,$start.line,$start.pos);}
+                  $expcond.value,$asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
                   sentlist_aux[forContext]
                 ;
 
@@ -386,14 +395,14 @@ grammar sourceCode;
                 ;
 
             oplog[MasterSentenceContainer context ,AssignableElement left ] returns[BinaryLogicalOperation operation]
-                : '||'{$operation=$context.newLogicalOperation().or($start.line,$start.pos).firstOperand($left);}
-                | '&'{$operation=$context.newLogicalOperation().and($start.line,$start.pos).firstOperand($left);}
+                : '||'{$operation=(BinaryLogicalOperation)$context.newLogicalOperation().or($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '&'{$operation=(BinaryLogicalOperation)$context.newLogicalOperation().and($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 ;
 
             factorcond[MasterSentenceContainer context] returns [AssignableElement value]
                 : '(' expcond[$context] ')'  {$value=($expcond.value).setParenthesis();}
                 | exp[$context] factorcond_aux[$context,$exp.value] {$value=$factorcond_aux.value ;}
-                | '!' factorcond[$context] {$value=$context.newLogicalOperation().not($start.line,$start.pos).firstOperand($factorcond.value);}
+                | '!' factorcond[$context] {$value=$context.newLogicalOperation().not($start.getLine(),$start.getCharPositionInLine()).firstOperand($factorcond.value);}
                 ;
 
             factorcond_aux[MasterSentenceContainer context ,AssignableElement left ] returns [AssignableElement value]
@@ -402,12 +411,12 @@ grammar sourceCode;
                 ;
 
             opcomp[MasterSentenceContainer context ,AssignableElement left ] returns[ComparisonOperation operation]
-                : '<' {$operation=$context.newComparisonOperation().lower($start.line,$start.pos).firstOperand($left);}
-                | '>' {$operation=$context.newComparisonOperation().greater($start.line,$start.pos).firstOperand($left);}
-                | '<='{$operation=$context.newComparisonOperation().lowerEqual($start.line,$start.pos).firstOperand($left);}
-                | '>='{$operation=$context.newComparisonOperation().greaterEqual($start.line,$start.pos).firstOperand($left);}
-                | '=='{$operation=$context.newComparisonOperation().equal($start.line,$start.pos).firstOperand($left);}
-                | '!='{$operation=$context.newComparisonOperation().notEqual($start.line,$start.pos).firstOperand($left);}
+                : '<' {$operation=(ComparisonOperation)$context.newComparisonOperation().lower($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '>' {$operation=(ComparisonOperation)$context.newComparisonOperation().greater($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '<='{$operation=(ComparisonOperation)$context.newComparisonOperation().lowerEqual($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '>='{$operation=(ComparisonOperation)$context.newComparisonOperation().greaterEqual($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '=='{$operation=(ComparisonOperation)$context.newComparisonOperation().equal($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '!='{$operation=(ComparisonOperation)$context.newComparisonOperation().notEqual($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 ;
 
         /* ---- ARITHMETIC OPERATIONS ---- */
@@ -423,11 +432,11 @@ grammar sourceCode;
                 ;
 
             op[MasterSentenceContainer context ,AssignableElement left ] returns[ArithmeticOperation operation]
-                : '+' {$operation=$context.newArithmeticOperation().sum($start.line,$start.pos).firstOperand($left);}
-                | '-' {$operation=$context.newArithmeticOperation().subtraction($start.line,$start.pos).firstOperand($left);}
-                | '*' {$operation=$context.newArithmeticOperation().multiplication($start.line,$start.pos).firstOperand($left);}
-                | 'DIV' {$operation=$context.newArithmeticOperation().division($start.line,$start.pos).firstOperand($left);}
-                | 'MOD' {$operation=$context.newArithmeticOperation().modulus($start.line,$start.pos).firstOperand($left);}
+                : '+' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().sum($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '-' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().subtraction($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | '*' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().multiplication($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | 'DIV' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().division($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
+                | 'MOD' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().modulus($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 ;
 
             factor[MasterSentenceContainer context] returns [AssignableElement value]
@@ -437,19 +446,21 @@ grammar sourceCode;
                 ;
 
             simpvalue_code[MasterSentenceContainer context] returns [AssignableElement value]
-                : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.line,$start.pos);}
-                | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.line,$start.pos);}
-                | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.line,$start.pos);}
+                : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
+                | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
+                | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
                 | IDENTIFIER
                 {
                     if($context instanceof ForLoop){
-                        $value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,true,$start.line,$start.pos);
+                        ForLoop newContext=(ForLoop)$context;
+                        $value=newContext.newSymbolReference("VARIABLE",$IDENTIFIER.text,true,$start.getLine(),$start.getCharPositionInLine());
                     }else{
-                        $value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,$start.line,$start.pos);
+                        MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
+                        $value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());
                     }
 
                 }
-                | CONST_DEF_IDENTIFIER{$value=$context.newSymbolReference("CONSTANT",$CONST_DEF_IDENTIFIER.text,$start.line,$start.pos);}
+                | CONST_DEF_IDENTIFIER{$value=$context.newSymbolReference("CONSTANT",$CONST_DEF_IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 
 

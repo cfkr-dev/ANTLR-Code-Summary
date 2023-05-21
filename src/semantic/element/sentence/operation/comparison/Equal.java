@@ -10,5 +10,6 @@ public class Equal extends ComparisonOperation {
         this.name = "EQUAL";
         this.symbol = "==";
         this.operationType = Operation.EQUAL;
+
     }
 }
