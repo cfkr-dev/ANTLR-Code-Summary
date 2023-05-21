@@ -39,6 +39,13 @@ public class ElseBranch extends MasterConditionalBranch {
 
     @Override
     public String toHTML() {
-        return null;
+
+        String HTMLElse = new String();
+
+        HTMLElse = "<p><SPAN CLASS=\"ident\">else</SPAN> {</p>\n";
+        HTMLElse += this.toHTMLBrackets();
+
+        return HTMLElse;
+
     }
 }

@@ -12,6 +12,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     protected List<AssignableElement> callingParams;
     protected boolean malformed;
     protected boolean errorOnCreation;
+    protected Boolean partOfExpression;
 
     @Override
     public List<AssignableElement> getCallingParams() {
@@ -39,17 +40,35 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         return this.toString();
     }
 
-    public String toString() {
-        StringBuilder s = new StringBuilder(this.functionName + '(');
-        boolean first = true;
-        for (AssignableElement param: this.callingParams) {
-            if (first) {
-                s.append(param.getName());
-                first = false;
-            } else
-                s.append(", ").append(param.getName());
+    public Boolean getPartOfExpression() {
+        return partOfExpression;
+    }
+
+    public void notPartOfExpression() {
+        this.partOfExpression = false;
+    }
+
+    public String toHTML() {
+
+        String HTMLFunction = new String();
+
+        HTMLFunction = "<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(";
+
+        for (AssignableElement elem : callingParams) {
+
+            if (elem != callingParams.get(0))
+                HTMLFunction += ", ";
+
+            HTMLFunction += elem.getName();
+
         }
-        return s.append(')').toString();
+        HTMLFunction += ")";
+
+        if (partOfExpression)
+            return HTMLFunction;
+        else
+            return "<p>" + HTMLFunction + ";</p>\n";
+
     }
 
     @Override

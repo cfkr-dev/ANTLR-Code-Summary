@@ -79,9 +79,9 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public FunctionCall newFunctionCall(String functionName, int line, int column) {
         if (this.hasThisSymbol(functionName)) {
             Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
-            return new InnerFunctionCall(function, this, line, column);
+            return new InnerFunctionCall(function, this, true, line, column);
         } else
-            return new OuterFunctionCall(functionName, this, line, column);
+            return new OuterFunctionCall(functionName, this, true, line, column);
     }
 
     public VariableDefinition addNewVariableDefinition(String type, String name, int line, int column){
@@ -190,7 +190,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         }
 
         IfBranch ifBranch = new IfBranch(logicOperation, this, line, column);
-        
+
         if (error) {
             ifBranch.setMalformed();
             return ifBranch;
@@ -231,7 +231,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         boolean error = previous.isMalformed();
 
         ElseBranch elseBranch = new ElseBranch(previous, this, line, column);
-        
+
         if (error) {
             elseBranch.setMalformed();
             return elseBranch;
@@ -508,7 +508,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     public FunctionCall addNewFunctionCall(FunctionCall functionCall){
         Boolean error = false;
-        
+
         if (functionCall.isMalformed())
             error = true;
 
@@ -516,14 +516,14 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             functionCall.setMalformed();
             return functionCall;
         }
-
+        functionCall.notPartOfExpression();
         this.sentences.add((MasterFunctionCall) functionCall);
         return functionCall;
     }
 
     public ReturnPoint addNewReturnPoint(AssignableElement returnElement, int line, int column){
         boolean error = false;
-        
+
         if (!this.getSuperContext().getType().equals(returnElement.getType())) {
             System.err.println("ERROR " + line + ":" + column + " => " + "El tipo del elemento devuelto debe concordar con el tipo de la función");
             error = true;
@@ -548,4 +548,24 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public List<Sentence> getSentences() {
         return sentences;
     }
+
+    protected String toHTMLBrackets () {
+
+        String HTMLAux = new String();
+
+        HTMLAux = "\t<DIV style=\"text-indent: 2cm\"><p>\n";
+
+        for (semantic.element.sentence.sentence_interface.Sentence line : this.sentences) {
+
+            HTMLAux += line.toHTML().replace("\n", "\n\t\t");
+
+        }
+
+        HTMLAux += "\t</DIV>\n";
+        HTMLAux += "<p>}</p>\n";
+
+        return HTMLAux;
+
+    }
+
 }

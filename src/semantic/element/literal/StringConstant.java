@@ -20,7 +20,10 @@ public class StringConstant extends Literal {
     }
 
     @Override
-    public String toHTML() {
-        return null;
+     public String toHTML() {
+
+        return "<SPAN CLASS=\"cte\">\"" + value + "\"</SPAN>";
+
     }
+
 }

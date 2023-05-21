@@ -16,11 +16,15 @@ public interface ProgramElement {
     public ProgrammableElement getSuperContext();
 
     public int getLine();
-    public int getColumn();
 
-    public String toHTML();
+    public int getColumn();
 
     public boolean isMalformed();
 
     public void setMalformed();
+
+    public String toHTML();
+
+    public abstract String toHTMLIdentifier ();
+
 }

@@ -19,8 +19,4 @@ public class NumericIntegerConstant extends Literal {
         this.column = column;
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
 }

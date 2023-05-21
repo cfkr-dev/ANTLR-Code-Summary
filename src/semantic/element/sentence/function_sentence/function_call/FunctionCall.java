@@ -10,6 +10,10 @@ public interface FunctionCall extends AssignableElement {
 
     String getFunctionName();
 
+    public Boolean getPartOfExpression();
+
+    public void notPartOfExpression();
+
     FunctionCall addParam(AssignableElement param);
 
     FunctionCall call();

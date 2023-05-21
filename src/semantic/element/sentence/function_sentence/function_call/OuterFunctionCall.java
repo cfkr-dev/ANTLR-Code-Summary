@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class OuterFunctionCall extends MasterFunctionCall {
 
-    public OuterFunctionCall(String functionName, ProgrammableElement context, int line, int column) {
+    public OuterFunctionCall(String functionName, ProgrammableElement context, Boolean partOfExpression, int line, int column) {
         this.type = Type.ANY;
         this.name = functionName + "_CALL";
         this.elementType = Element.SENTENCE;
@@ -19,11 +19,13 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.superContext = context.getSuperContext();
         this.functionName = functionName;
         this.callingParams = new LinkedList<>();
+        this.partOfExpression = partOfExpression;
         this.malformed = true;
         this.errorOnCreation = false;
         this.line = line;
         this.column = column;
     }
+
     @Override
     public FunctionCall call() {
         if (this.errorOnCreation)
@@ -33,8 +35,4 @@ public class OuterFunctionCall extends MasterFunctionCall {
         return this;
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
 }

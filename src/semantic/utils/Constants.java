@@ -1,5 +1,6 @@
 package semantic.utils;
 
+import semantic.element.Program;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
@@ -136,6 +137,8 @@ public static final Map<Type, Set<Type>> TYPE_X_TYPE_RULES = Map.ofEntries(
           Map.entry(Operation.OR,             "OR LÓGICO"),
           Map.entry(Operation.NOT,            "NOT LÓGICO")
   );
+
+  public static Program p;
 
   // RUTA RAIZ PARA TEST
   private static final String TEST_PATH = "./test/";

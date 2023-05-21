@@ -4,6 +4,9 @@ import org.antlr.v4.runtime.CommonTokenStream;
 
 import java.io.IOException;
 
+import static semantic.utils.Constants.FILE_NAME;
+import static semantic.utils.Constants.p;
+
 /*
 El nombre ClasePrincipal es arbitrario, escoge el que prefieras.
 Sustituye Numbers por el nombre del fichero que contiene la especificación de la gramática ANTLR
@@ -14,6 +17,9 @@ public class Main {
         try {
             // Preparar el fichero de entrada para asignarlo al analizador léxico
             CharStream input = CharStreams.fromFileName(args[0]);
+
+            FILE_NAME = args[0];
+            HTMLFileGen.starter();
 
             // Crear el objeto correspondiente al analizador léxico con el fichero de
             // entrada
@@ -48,6 +54,9 @@ public class Main {
 
             // Ejecución del analizador
             anasint.program();
+
+            // Generacion del fichero de Salida
+            HTMLFileGen.generate(p.toHTML());
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             //Fallo al reconocer la entrada
