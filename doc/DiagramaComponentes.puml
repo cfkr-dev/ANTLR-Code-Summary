@@ -1,0 +1,80 @@
+@startuml
+
+
+abstract class  "MasterProgramElement"
+abstract class  "MasterProgrammableElement"
+abstract class  "MasterFunctionCall"
+abstract class  "Literal"
+abstract class  "MasterBinaryOperation"
+abstract class  "MasterUnaryOperation"
+abstract class  "MasterProgrammableSentence"
+abstract class  "MasterSentenceContainer"
+abstract class  "MasterSimpleSentence"
+abstract class  "MasterVariable"
+abstract class  "MasterConditionalBranch"
+interface AssignableElement
+interface ProgramElement
+interface ProgrammableElement
+interface ConditionalBranch
+interface FunctionCall
+interface BinaryOperation
+interface UnaryOperation
+interface Sentence
+interface Variable
+
+
+
+
+hide empty members
+skinparam linetype ortho
+skinparam linetypeCircled false
+skinparam linetypeArced false
+
+left to right direction
+
+
+ProgramElement <|-- ProgrammableElement
+ProgramElement <|-- AssignableElement
+ProgramElement <|-- MasterProgramElement
+
+MasterProgramElement ..> ProgramElement
+
+MasterProgramElement <|-- MasterProgrammableElement
+MasterProgramElement ..> ProgrammableElement
+
+MasterProgrammableElement <|-- MasterConditionalBranch
+MasterConditionalBranch ..> ConditionalBranch
+
+AssignableElement <|-- Variable
+AssignableElement <|-- MasterVariable
+MasterProgramElement <|-- MasterVariable
+
+MasterVariable ..> Variable
+
+MasterSimpleSentence <|-- MasterFunctionCall
+MasterFunctionCall ..> FunctionCall
+AssignableElement <|-- FunctionCall
+
+MasterProgramElement <|-- Literal
+Literal ..> AssignableElement
+
+AssignableElement <|-- BinaryOperation
+AssignableElement <|-- UnaryOperation
+MasterProgramElement <|-- MasterBinaryOperation
+MasterBinaryOperation ..> BinaryOperation
+MasterProgramElement <|-- MasterUnaryOperation
+MasterUnaryOperation ..> UnaryOperation
+
+ProgramElement <|-- Sentence
+
+MasterSentenceContainer <|-- MasterProgrammableSentence
+MasterProgrammableSentence ..> Sentence
+
+MasterProgrammableElement <|-- MasterSentenceContainer
+
+MasterProgramElement <|-- MasterSimpleSentence
+MasterSimpleSentence ..> Sentence
+
+
+@enduml
+

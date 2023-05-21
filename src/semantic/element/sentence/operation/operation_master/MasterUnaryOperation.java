@@ -9,9 +9,9 @@ import semantic.utils.enums.Type;
 public abstract class MasterUnaryOperation extends MasterProgramElement implements UnaryOperation {
     protected AssignableElement firstOperand;
     protected String symbol;
+    protected Boolean hasParenthesis;
     protected Operation operationType;
     protected Boolean hasParenthesis;
-
 
     @Override
     public String getValue() {
@@ -31,7 +31,14 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     public MasterUnaryOperation setParenthesis() {
         this.hasParenthesis = true;
         return this;
+
     }
+
+    public MasterUnaryOperation setParenthesis(Boolean hasParenthesis) {
+        this.hasParenthesis = hasParenthesis;
+        return this;
+    }
+
 
     @Override
     public String toHTML() {

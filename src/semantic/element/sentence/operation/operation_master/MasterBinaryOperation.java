@@ -25,12 +25,16 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
             return "(" + firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue() + ")";
         else
             return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
-
     }
 
     @Override
     public MasterBinaryOperation setParenthesis() {
         this.hasParenthesis = true;
+        return this;
+    }
+
+    public MasterBinaryOperation setParenthesis(Boolean hasParenthesis) {
+        this.hasParenthesis = hasParenthesis;
         return this;
     }
 
