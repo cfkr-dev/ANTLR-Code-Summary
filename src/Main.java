@@ -5,7 +5,6 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import java.io.IOException;
 
 import static semantic.utils.Constants.FILE_NAME;
-import static semantic.utils.Constants.PROGRAM;
 
 public class Main {
     public static void main(String[] args) throws InstantiationException {
@@ -22,7 +21,7 @@ public class Main {
             FILE_NAME = args[0];
 
             // Start HTML generator
-            HTMLFileGen.starter();
+            //HTMLFileGen.starter();
 
             // Create lexer
             sourceCodeLexer lexer = new sourceCodeLexer(input);
@@ -52,7 +51,7 @@ public class Main {
             parser.program_prime();
 
             // Start generation
-            HTMLFileGen.generate(PROGRAM.toHTML());
+            //HTMLFileGen.generate(PROGRAM.toHTML());
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             // Input recognition error

@@ -63,7 +63,6 @@ grammar sourceCode;
             cte[Program context]
                 : '#define' CONST_DEF_IDENTIFIER simpvalue[$context]
                 {$context.createNewConstant($CONST_DEF_IDENTIFIER.text,(Literal)$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());}
-
                 ;
 
         /* ---- SIMPLE VARIABLES DECLARATION ---- */
@@ -194,8 +193,8 @@ grammar sourceCode;
                 ;
 
             funchead_aux[Function context]
-                : typedef[$context]   ')'
-                |  ')'
+                : typedef[$context] ')'
+                | ')'
                 ;
 
 
