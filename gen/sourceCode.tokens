@@ -45,8 +45,8 @@ COMMENT=44
 '{'=1
 '}'=2
 '#define'=3
-';'=4
-'='=5
+'='=4
+';'=5
 'struct'=6
 'integer'=7
 'float'=8

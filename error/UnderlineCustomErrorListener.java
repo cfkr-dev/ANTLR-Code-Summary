@@ -1,13 +1,13 @@
 import org.antlr.v4.runtime.*;
 
-public class UnderlineListener extends BaseErrorListener {
+public class UnderlineCustomErrorListener extends BaseErrorListener {
     public void syntaxError(Recognizer<?, ?> recognizer,
                             Object offendingSymbol,
                             int line, int charPositionInLine,
                             String msg,
                             RecognitionException e)
     {
-        System.err.println("line "+line+":"+charPositionInLine+" "+msg);
+        System.err.println("Línea "+line+":"+charPositionInLine+" "+msg);
         underlineError(recognizer,(Token)offendingSymbol,
                 line, charPositionInLine);
     }

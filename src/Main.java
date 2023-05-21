@@ -1,58 +1,70 @@
-import java.io.*;
-import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
 
-/*
-El nombre ClasePrincipal es arbitrario, escoge el que prefieras.
-Sustituye Numbers por el nombre del fichero que contiene la especificación de la gramática ANTLR
-(extensión .g4)
-*/
+import java.io.IOException;
+
+import static semantic.utils.Constants.FILE_NAME;
+import static semantic.utils.Constants.PROGRAM;
+
 public class Main {
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InstantiationException {
         try {
-            // Preparar el fichero de entrada para asignarlo al analizador léxico
+
+            // Check arguments
+            if (args.length == 0)
+                System.err.println("Argumentos incorrectos: para iniciar el conversor indique la ruta de fichero de entrada");
+
+            // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
 
-            // Crear el objeto correspondiente al analizador léxico con el fichero de
-            // entrada
-            sourceCodeLexer analex = new sourceCodeLexer(input);
+            // Save file name
+            FILE_NAME = args[0];
 
-            // Identificar al analizador léxico como fuente de tokens para el
-            // sintactico
-            CommonTokenStream tokens = new CommonTokenStream(analex);
+            // Start HTML generator
+            HTMLFileGen.starter();
 
-            // Crear el objeto correspondiente al analizador sintáctico
-            sourceCodeParser anasint = new sourceCodeParser(tokens);
+            // Create lexer
+            sourceCodeLexer lexer = new sourceCodeLexer(input);
 
-            anasint.removeErrorListeners(); // remove ConsoleErrorListener
-            anasint.addErrorListener(new UnderlineListener()); // add ours
+            // Create tokens stream
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            /*
-            Si se quiere pasar al analizador algún objeto externo con el que trabajar,
-            este deberá ser de una clase del mismo paquete
-            Aquí se le llama "sintesis", pero puede ser cualquier nombre.
-            NumbersParser anasint = new NumbersParser(tokens, new sintesis());
-            */
+            // Create parser
+            sourceCodeParser parser = new sourceCodeParser(tokens);
 
-            /*
-            Comenzar el análisis llamando al axioma de la gramática
-            Atención, sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu
-            gramática
-            */
+            // Remove default error listener from lexer
+            lexer.removeErrorListeners();
 
-            // Ejecución del analizador
-            anasint.program();
+            // Add custom error listener to lexer
+            lexer.addErrorListener(new UnderlineCustomErrorListener());
+
+            // Remove default error listener from parser
+            parser.removeErrorListeners();
+
+            // Add custom error listener to parser
+            parser.addErrorListener(new UnderlineCustomErrorListener());
+
+            // Add custom error strategy to parser
+            parser.setErrorHandler(new CustomErrorStrategy());
+
+            // Run parser
+            parser.program_prime();
+
+            // Start generation
+            HTMLFileGen.generate(PROGRAM.toHTML());
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
-            //Fallo al reconocer la entrada
-            System.err.println("REC " + e.getMessage());
+            // Input recognition error
+            System.err.println("Error de reconocimiento: " + e.getMessage());
 
         } catch (IOException e) {
-            //Fallo de entrada/salida
-            System.err.println("IO " + e.getMessage());
+            // Input / Output recognition error
+            System.err.println("Error de entrada/salida: " + e.getMessage());
 
         } catch (java.lang.RuntimeException e) {
-            //Cualquier otro fallo
-            System.err.println("RUN " + e.getMessage());
+            // Other fail
+            System.err.println("Error de ejecución: " + e.getMessage());
         }
     }
 }

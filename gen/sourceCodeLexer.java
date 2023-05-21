@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from /data_linux/UNIVERSIDAD/GII_GIS_5/PL/Practicas/practica_obligatoria/src/sourceCode.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.Token;
@@ -10,7 +10,7 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class sourceCodeLexer extends Lexer {
-	static { RuntimeMetaData.checkVersion("4.11.1", RuntimeMetaData.VERSION); }
+	static { RuntimeMetaData.checkVersion("4.12.0", RuntimeMetaData.VERSION); }
 
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
@@ -46,7 +46,7 @@ public class sourceCodeLexer extends Lexer {
 
 	private static String[] makeLiteralNames() {
 		return new String[] {
-			null, "'{'", "'}'", "'#define'", "';'", "'='", "'struct'", "'integer'", 
+			null, "'{'", "'}'", "'#define'", "'='", "';'", "'struct'", "'integer'", 
 			"'float'", "'string'", "'void'", "'('", "')'", "','", "'Main'", "'return'", 
 			"'if'", "'else'", "'while'", "'do'", "'for'", "'||'", "'&'", "'!'", "'<'", 
 			"'>'", "'<='", "'>='", "'=='", "'!='", "'+'", "'-'", "'*'", "'DIV'", 
@@ -231,8 +231,8 @@ public class sourceCodeLexer extends Lexer {
 		"{\u0000\u0000b\u0002\u0001\u0000\u0000\u0000cd\u0005}\u0000\u0000d\u0004"+
 		"\u0001\u0000\u0000\u0000ef\u0005#\u0000\u0000fg\u0005d\u0000\u0000gh\u0005"+
 		"e\u0000\u0000hi\u0005f\u0000\u0000ij\u0005i\u0000\u0000jk\u0005n\u0000"+
-		"\u0000kl\u0005e\u0000\u0000l\u0006\u0001\u0000\u0000\u0000mn\u0005;\u0000"+
-		"\u0000n\b\u0001\u0000\u0000\u0000op\u0005=\u0000\u0000p\n\u0001\u0000"+
+		"\u0000kl\u0005e\u0000\u0000l\u0006\u0001\u0000\u0000\u0000mn\u0005=\u0000"+
+		"\u0000n\b\u0001\u0000\u0000\u0000op\u0005;\u0000\u0000p\n\u0001\u0000"+
 		"\u0000\u0000qr\u0005s\u0000\u0000rs\u0005t\u0000\u0000st\u0005r\u0000"+
 		"\u0000tu\u0005u\u0000\u0000uv\u0005c\u0000\u0000vw\u0005t\u0000\u0000"+
 		"w\f\u0001\u0000\u0000\u0000xy\u0005i\u0000\u0000yz\u0005n\u0000\u0000"+
