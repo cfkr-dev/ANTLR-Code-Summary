@@ -36,7 +36,6 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     protected List<Sentence> sentences;
     public ArithmeticalOperationFactory newArithmeticOperation() {return new ArithmeticalOperationFactory(this);}
     public ComparisonOperationFactory newComparisonOperation() {return new ComparisonOperationFactory(this);}
-
     public LogicalOperationFactory newLogicalOperation() {return new LogicalOperationFactory(this);}
 
     /**

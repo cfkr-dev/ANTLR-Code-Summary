@@ -10,6 +10,11 @@ import static semantic.utils.Constants.PROGRAM;
 public class Main {
     public static void main(String[] args) throws InstantiationException {
         try {
+
+            // Check arguments
+            if (args.length == 0)
+                System.err.println("Argumentos incorrectos: para iniciar el conversor indique la ruta de fichero de entrada");
+
             // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
 
@@ -51,15 +56,15 @@ public class Main {
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             // Input recognition error
-            System.err.println("REC " + e.getMessage());
+            System.err.println("Error de reconocimiento: " + e.getMessage());
 
         } catch (IOException e) {
             // Input / Output recognition error
-            System.err.println("IO " + e.getMessage());
+            System.err.println("Error de entrada/salida: " + e.getMessage());
 
         } catch (java.lang.RuntimeException e) {
             // Other fail
-            System.err.println("RUN " + e.getMessage());
+            System.err.println("Error de ejecución: " + e.getMessage());
         }
     }
 }

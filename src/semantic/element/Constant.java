@@ -10,6 +10,7 @@ public class Constant extends MasterProgramElement implements AssignableElement 
 
     private Literal value;
     private boolean malformed;
+    private boolean hasParenthesis;
 
     public Constant(String name, Literal value, ProgrammableElement context, int line, int column) {
         this.type = value.getType();
@@ -21,6 +22,7 @@ public class Constant extends MasterProgramElement implements AssignableElement 
         this.malformed = false;
         this.line = line;
         this.column = column;
+        this.hasParenthesis = false;
     }
 
     public AssignableElement getValueTarget() {
@@ -28,16 +30,18 @@ public class Constant extends MasterProgramElement implements AssignableElement 
     }
 
     @Override
+    public AssignableElement setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
+    }
+
+    @Override
     public String getValue() {
-        return this.value.getValue();
+        return this.name;
     }
 
     @Override
     public String toHTML() {
-
         return "<p>#define " + this.name + " \"" + this.value.toHTML() + "\"</p>\n";
-
     }
-
-
 }

@@ -11,6 +11,7 @@ import semantic.utils.enums.Type;
 public class SimpleVariable extends MasterVariable {
 
     private AssignableElement value;
+    private boolean hasParenthesis;
 
     public SimpleVariable(String type, String name, ProgrammableElement context, int line, int column) {
         this.type = Type.valueOf(type.toUpperCase());
@@ -22,19 +23,13 @@ public class SimpleVariable extends MasterVariable {
         this.malformed = false;
         this.line = line;
         this.column = column;
+        this.hasParenthesis = false;
     }
-
-
 
     @Override
     public String getValue() {
         return this.name;
     }
-
-//    @Override
-//    public AssignableElement getVariableValue() {
-//        return this.value;
-//    }
 
     @Override
     public void forceSetValue(AssignableElement assignableElement) {
@@ -47,6 +42,12 @@ public class SimpleVariable extends MasterVariable {
         if (this.malformed)
             variable.forceSetMalformed();
         return variable;
+    }
+
+    @Override
+    public AssignableElement setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
     }
 
     @Override

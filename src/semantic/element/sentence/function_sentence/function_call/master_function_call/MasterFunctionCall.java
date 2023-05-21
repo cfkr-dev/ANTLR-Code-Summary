@@ -12,11 +12,18 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     protected List<AssignableElement> callingParams;
     protected boolean malformed;
     protected boolean errorOnCreation;
-    protected Boolean partOfExpression;
+    protected boolean partOfExpression;
+    protected boolean hasParenthesis;
 
     @Override
     public List<AssignableElement> getCallingParams() {
         return this.callingParams;
+    }
+
+    @Override
+    public AssignableElement setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
     }
 
     @Override
@@ -50,7 +57,12 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
     public String toHTML() {
 
-        StringBuilder HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(");
+        StringBuilder HTMLFunction;
+        if (!this.hasParenthesis)
+            HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(");
+        else
+            HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + "(" + this.functionName + "</SPAN>(");
+
 
         for (AssignableElement elem : callingParams) {
 
@@ -61,6 +73,9 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
         }
         HTMLFunction.append(")");
+
+        if (this.hasParenthesis)
+            HTMLFunction.append(")");
 
         if (partOfExpression)
             return HTMLFunction.toString();

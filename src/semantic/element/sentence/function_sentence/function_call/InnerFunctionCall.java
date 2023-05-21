@@ -31,6 +31,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.errorOnCreation = false;
         this.line = line;
         this.column = column;
+        this.hasParenthesis = false;
     }
 
     public Function getFunction() {

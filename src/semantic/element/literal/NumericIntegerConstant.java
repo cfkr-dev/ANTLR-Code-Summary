@@ -17,6 +17,7 @@ public class NumericIntegerConstant extends Literal {
         this.malformed = false;
         this.line = line;
         this.column = column;
+        this.hasParenthesis = false;
     }
 
 }

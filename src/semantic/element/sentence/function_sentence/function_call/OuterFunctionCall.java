@@ -24,6 +24,7 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.errorOnCreation = false;
         this.line = line;
         this.column = column;
+        this.hasParenthesis = false;
     }
 
     @Override

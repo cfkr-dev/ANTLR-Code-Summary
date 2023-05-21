@@ -32,7 +32,7 @@ public class ComparisonOperationFactory {
         return new Lower(this.context, line, column);
     }
 
-    public ComparisonOperation lowerThan(int line, int column) {
+    public ComparisonOperation lowerEqual(int line, int column) {
         return new LowerEqual(this.context, line, column);
     }
 }

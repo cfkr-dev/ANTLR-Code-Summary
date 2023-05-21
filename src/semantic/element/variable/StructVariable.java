@@ -21,6 +21,9 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     protected Map<Element, Map<String, Variable>> symbolTable;
     protected List<Variable<? extends AssignableElement>> properties;
     protected boolean errorOnCreation;
+    private boolean hasParenthesis;
+
+
 
     public StructVariable(ProgrammableElement context, int line, int column) {
         this.type = Type.STRUCT;
@@ -34,6 +37,12 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         this.malformed = true;
         this.line = line;
         this.column = column;
+        this.hasParenthesis = false;
+    }
+
+    @Override
+    public AssignableElement setParenthesis() {
+        return this;
     }
 
     public StructVariable createStruct(String name) {

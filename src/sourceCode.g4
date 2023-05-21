@@ -66,8 +66,6 @@ grammar sourceCode;
                 {$context.createNewConstant($CONST_DEF_IDENTIFIER.text,$simpvalue.value,$start.line,$start.pos);}
                 ;
 
-
-
         /* ---- SIMPLE VARIABLES DECLARATION ---- */
 
             var[ProgrammableElement context]
@@ -107,21 +105,15 @@ grammar sourceCode;
                  }
                 ;
 
-
-
             simple_vardef[ProgrammableElement context]
                 : tbas IDENTIFIER vardef_aux[$context,$tbas.type,$IDENTIFIER.text] ';'
                 ;
-
-
 
         /* ---- STRUCTS DECLARATION ---- */
 
             struct_vardef[ProgrammableElement context]
                 : struct_def[$context] IDENTIFIER {$struct_def.struct.createStruct($IDENTIFIER.text);} ';'
                 ;
-
-
 
             struct_def[ProgrammableElement context] returns [StructVariable struct]
                 : 'struct' '{'
@@ -174,8 +166,6 @@ grammar sourceCode;
             tvoid returns [String void]
                 : 'void' {$void = "void";}
                 ;
-
-
 
 
     // **** FUNCTION IMPLEMENTATION SECTION ****
@@ -297,8 +287,6 @@ grammar sourceCode;
                 | CONST_DEF_IDENTIFIER funccall_aux[$context,$CONST_DEF_IDENTIFIER.text] {$return_function=$funccall_aux.return_function;}
                 ;
 
-
-
             funccall_aux[ProgrammableElement context, String name] returns [FunctionCall return_function]
                 :  subpparamlist[$context,$name] {$return_function=$subpparamlist.return_function;}
                 | {$return_function= $context.newFunctionCall($name,$start.line,$start.pos);}
@@ -320,14 +308,11 @@ grammar sourceCode;
 
 
 
-        //todo completar recuperación desde este punto
         /* ---- FUNCTION-RETURN SECTION ---- */
 
             return_func[MasterSentenceContainer context]
                 : 'return' exp[$context] {$context.addNewReturnPoint($exp.value,$start.line,$start.pos);}
                 ;
-
-
 
         /* ---- IF-ELSE SENTENCE ---- */
 
@@ -386,7 +371,6 @@ grammar sourceCode;
                   {MasterSentenceContainer forContext=$context.addNewForLoop($simple_vardef_code.type,$simple_vardef_code.name,
                   $expcond.value,$asig.name,$asig.value,$start.line,$start.pos);}
                   sentlist_aux[forContext]
-
                 ;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
@@ -434,9 +418,8 @@ grammar sourceCode;
 
             exp_aux[MasterSentenceContainer context,AssignableElement left] returns[AssignableElement value]
                 : op[$context,$left] exp[$context] {AssignableElement valueH=$op.operation.secondOperand($exp.value);}
-                 exp_aux1=exp_aux[$context,valueH] {$value=$exp_aux1.value ;}
-                | {$value=$left; }
-
+                  exp_aux1=exp_aux[$context,valueH] {$value=$exp_aux1.value ;}
+                | {$value=$left;}
                 ;
 
             op[MasterSentenceContainer context ,AssignableElement left ] returns[ArithmeticOperation operation]
@@ -450,7 +433,7 @@ grammar sourceCode;
             factor[MasterSentenceContainer context] returns [AssignableElement value]
                 : simpvalue_code[$context]{$value=$simpvalue_code.value;}
                 | '(' exp[$context] ')' {$value=($exp.value).setParenthesis();}
-                | funccall[$context] {$value=$funccall.return_function;}
+                | funccall[$context] {$value=($funccall.return_function).call();}
                 ;
 
             simpvalue_code[MasterSentenceContainer context] returns [AssignableElement value]
