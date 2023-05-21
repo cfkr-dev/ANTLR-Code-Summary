@@ -63,11 +63,13 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
         for (AssignableElement elem : callingParams) {
 
-            HTMLFunction += elem.getName() + ", ";
+            if (elem != callingParams.get(0))
+                HTMLFunction += ", ";
+
+            HTMLFunction += elem.getName();
 
         }
-
-        HTMLFunction = HTMLFunction.substring(0, HTMLFunction.length() -1) + ")";
+        HTMLFunction += ")";
 
         if (partOfExpression)
             return HTMLFunction;
