@@ -1,17 +1,16 @@
 package semantic.element.sentence.variable_sentence;
 
-import semantic.element.sentence.sentence_master.MasterSimpleSentence;
-import semantic.element.variable.SimpleVariable;
 import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.element.sentence.sentence_master.MasterSimpleSentence;
+import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
 public class VariableDefinitionAndAssign extends MasterSimpleSentence {
 
-    private SimpleVariable variable;
-    private String value;
+    private Variable variable;
 
-    public VariableDefinitionAndAssign(SimpleVariable variable, ProgrammableElement context) {
+    public VariableDefinitionAndAssign(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();
         this.name = variable.getName() + "_DEF_AND_ASSIG";
         this.elementType = Element.SENTENCE;
@@ -19,7 +18,12 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence {
         this.context = context;
         this.superContext = context.getSuperContext();
         this.variable = variable;
-        this.value = variable.getValue();
+        this.line = line;
+        this.column = column;
+    }
+
+    public Variable getVariable () {
+        return this.variable;
     }
 
     @Override

@@ -1,13 +1,14 @@
 package semantic.element;
 
-import semantic.element.sentence.literal.literal_master.Literal;
-import semantic.element.variable.SimpleVariable;
-import semantic.element.variable.StructVariable;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
-import semantic.utils.enums.Element;
+import semantic.element.literal.literal_master.Literal;
+import semantic.element.variable.SimpleVariable;
+import semantic.element.variable.StructVariable;
+import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
-import semantic.utils.Param;
+import semantic.utils.enums.Element;
+import semantic.utils.enums.Type;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -24,6 +25,9 @@ public class Program extends MasterProgrammableElement {
         this.superContext = this;
         this.symbolTable = this.initializeSymbolTable();
         this.programElements = new LinkedList<>();
+        this.malformed = false;
+        this.line = 0;
+        this.column = 0;
     }
 
     private Map<Element, Map<String, ProgramElement>> initializeSymbolTable () {
@@ -33,50 +37,51 @@ public class Program extends MasterProgrammableElement {
         return symbolTable;
     }
 
-    public SimpleVariable createNewVariable(String type, String name) {
-        SimpleVariable variable = (SimpleVariable) super.createNewVariable(type, name);
+    @Override
+    public Variable createNewVariable(String type, String name, int line, int column) {
+        Variable variable = super.createNewVariable(type, name, line, column);
         if (variable != null)
             this.programElements.add(variable);
+        else {
+            if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
+                variable = new SimpleVariable(type, name, this, line, column);
+            } else {
+                variable = new StructVariable(this, line, column);
+            }
+            variable.setMalformed();
+        }
         return variable;
     }
 
-    public Function createNewFunction(String type, String name, List<Param> params) {
+    public Function createNewFunction(String type, String name, int line, int column) {
         if (!this.hasThisSymbol(name)) {
-            Function function = new Function(type, name, this, params);
+            Function function = new Function(type, name, this, line, column);
             this.addToSymbolTable(function);
             this.programElements.add(function);
             return function;
         } else {
-            System.err.println("This element has been previously declared");
-            return null;
+            System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+            Function function = new Function(type, name, this, line, column);
+            function.setMalformed();
+            return function;
         }
     }
 
-    public Function createNewMainFunction(List<Param> params) {
-        return this.createNewFunction("void", "Main", params);
+    public Function createNewMainFunction(int line, int column) {
+        return this.createNewFunction("void", "Main", line, column);
     }
 
-    public Constant createNewConstant(String name, Literal value) {
+    public Constant createNewConstant(String name, Literal value, int line, int column) {
         if (!this.hasThisSymbol(name)) {
-            Constant constant = new Constant(name, value, this);
+            Constant constant = new Constant(name, value, this, line, column);
             this.addToSymbolTable(constant);
             this.programElements.add(constant);
             return constant;
         } else {
-            System.err.println("This element has been previously declared");
-            return null;
-        }
-    }
-
-    public StructVariable createNewStruct(String name) {
-        if (!this.hasThisSymbol(name)) {
-            StructVariable struct = new StructVariable(name, this);
-            this.addToSymbolTable(struct);
-            this.programElements.add(struct);
-            return struct;
-        } else {
-            System.err.println("This element has been previously declared");
-            return null;
+            System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+            Constant constant = new Constant(name, value, this, line, column);
+            constant.setMalformed();
+            return constant;
         }
     }
 

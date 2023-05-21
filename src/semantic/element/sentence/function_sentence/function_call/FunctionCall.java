@@ -10,5 +10,7 @@ public interface FunctionCall extends AssignableElement {
 
     String getFunctionName();
 
-    FunctionCall addNewParam(AssignableElement param);
+    FunctionCall addParam(AssignableElement param);
+
+    FunctionCall call();
 }

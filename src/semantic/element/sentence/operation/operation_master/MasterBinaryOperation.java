@@ -4,12 +4,14 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.BinaryOperation;
 import semantic.utils.enums.Element;
+import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
 public abstract class MasterBinaryOperation extends MasterProgramElement implements BinaryOperation {
     protected AssignableElement firstOperand;
     protected AssignableElement secondOperand;
     protected String symbol;
+    protected Operation operationType;
     protected Boolean hasParenthesis;
 
     @Override
@@ -19,20 +21,16 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
 
     @Override
     public String toString() {
-        String firstOpStr, secondOpStr;
-        
-        if (this.firstOperand.getElementType().equals(Element.VARIABLE) || this.firstOperand.getElementType().equals(Element.CONSTANT))
-             firstOpStr = firstOperand.getName();
-        else firstOpStr = firstOperand.getValue();
+        if (this.hasParenthesis)
+            return "(" + firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue() + ")";
+        else
+            return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
+    }
 
-        if (this.secondOperand.getElementType().equals(Element.VARIABLE) || this.secondOperand.getElementType().equals(Element.CONSTANT))
-            secondOpStr = secondOperand.getName();
-        else secondOpStr = secondOperand.getValue();
-
-        if(hasParenthesis){
-            return "(" + firstOpStr + " " + symbol + " " + secondOpStr + ")";
-        }
-        return firstOpStr + " " + symbol + " " + secondOpStr;
+    @Override
+    public MasterBinaryOperation setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
     }
 
     public MasterBinaryOperation setParenthesis(Boolean hasParenthesis) {
@@ -46,29 +44,69 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     }
 
     public MasterBinaryOperation firstOperand(AssignableElement firstOperand) {
+        if (firstOperand.isMalformed())
+            this.setMalformed();
         this.firstOperand = firstOperand;
-        if (this.firstOperand != null && this.secondOperand != null)
+        if (this.secondOperand != null)
             this.type = this.assertType(firstOperand, secondOperand);
         return this;
     }
 
     public MasterBinaryOperation secondOperand(AssignableElement secondOperand) {
+        if (secondOperand.isMalformed())
+            this.setMalformed();
         this.secondOperand = secondOperand;
-        if (this.firstOperand != null && this.secondOperand != null)
+        if (this.firstOperand != null)
             this.type = this.assertType(firstOperand, secondOperand);
         return this;
     }
 
     public Type assertType(AssignableElement firstOperand, AssignableElement secondOperand) {
-        if (firstOperand.getType().equals(secondOperand.getType()))
-            return firstOperand.getType();
-        else if (firstOperand.getType().equals(Type.ANY) || secondOperand.getType().equals(Type.ANY))
-            return Type.ANY;
-        else {
-            System.err.println("Los tipos no son iguales");
-            return Type.ANY;
+        if (this.malformed){
+            this.setMalformed();
+            return null;
         }
+
+        if (firstOperand.isMalformed()) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            this.setMalformed();
+            return null;
+        }
+
+        if (secondOperand.isMalformed()) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + secondOperand.getValue() + ")");
+            this.setMalformed();
+            return null;
+        }
+
+        if (!Type.checkTypeOperationRules(firstOperand.getType(), this.operationType)){
+            errorHelper(firstOperand);
+            return null;
+        }
+
+        if (!Type.checkTypeOperationRules(secondOperand.getType(), this.operationType)){
+            errorHelper(secondOperand);
+            return null;
+        }
+
+        if (!Type.checkTypeConsistency(firstOperand.getType(), secondOperand.getType())) {
+            errorHelper(firstOperand, secondOperand);
+        }
+
+        if (this.elementType.equals(Element.LOGICAL_OPERATION) || this.elementType.equals(Element.COMPARISON_OPERATION))
+            return Type.INTEGER;
+        else
+            return Type.typeConversion(firstOperand.getType(), secondOperand.getType());
     }
 
+    private void errorHelper(AssignableElement operand) {
+        this.setMalformed();
+        System.err.println("ERROR " + line + ":" + column + " => " + operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
+    }
+
+    private void errorHelper(AssignableElement operandA, AssignableElement operandB) {
+        this.setMalformed();
+        System.err.println("ERROR " + line + ":" + column + " => " + operandA.getName() + " (" + operandA.getType() + ") no es operable con " + operandB.getName() + " (" + operandB.getType() + ")");
+    }
 
 }

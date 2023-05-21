@@ -403,7 +403,7 @@ grammar sourceCode;
 
             oplog[MasterSentenceContainer context ,AssignableElement left ] returns[BinaryLogicalOperation operation]
                 : '||'{$operation=$context.newLogicalOperation().or($start.line,$start.pos).firstOperand($left);}
-                | '&&'{$operation=$context.newLogicalOperation().and($start.line,$start.pos).firstOperand($left);}
+                | '&'{$operation=$context.newLogicalOperation().and($start.line,$start.pos).firstOperand($left);}
                 ;
 
             factorcond[MasterSentenceContainer context] returns [AssignableElement value]

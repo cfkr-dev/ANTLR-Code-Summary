@@ -12,27 +12,27 @@ public class ComparisonOperationFactory {
         this.context = context;
     }
 
-    public ComparisonOperation equal() {
-        return new Equal(this.context);
+    public ComparisonOperation equal(int line, int column) {
+        return new Equal(this.context, line, column);
     }
 
-    public ComparisonOperation notEqual() {
-        return new NotEqual(this.context);
+    public ComparisonOperation notEqual(int line, int column) {
+        return new NotEqual(this.context, line, column);
     }
 
-    public ComparisonOperation greater() {
-        return new Greater(this.context);
+    public ComparisonOperation greater(int line, int column) {
+        return new Greater(this.context, line, column);
     }
 
-    public ComparisonOperation greaterEqual() {
-        return new GreaterEqual(this.context);
+    public ComparisonOperation greaterEqual(int line, int column) {
+        return new GreaterEqual(this.context, line, column);
     }
 
-    public ComparisonOperation lower() {
-        return new Lower(this.context);
+    public ComparisonOperation lower(int line, int column) {
+        return new Lower(this.context, line, column);
     }
 
-    public ComparisonOperation lowerThan() {
-        return new LowerEqual(this.context);
+    public ComparisonOperation lowerThan(int line, int column) {
+        return new LowerEqual(this.context, line, column);
     }
 }

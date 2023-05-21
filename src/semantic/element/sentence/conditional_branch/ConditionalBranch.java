@@ -1,6 +1,8 @@
 package semantic.element.sentence.conditional_branch;
 
-public interface ConditionalBranch {
+import semantic.element.element_interfaces.ProgrammableElement;
+
+public interface ConditionalBranch extends ProgrammableElement {
 
     ConditionalBranch getPreviousBranch();
 }

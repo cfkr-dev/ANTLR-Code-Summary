@@ -15,13 +15,13 @@ public class LogicalOperationFactory {
         this.context = context;
     }
 
-    public UnaryLogicalOperation not() {
-        return new Not(this.context);
+    public UnaryLogicalOperation not(int line, int column) {
+        return new Not(this.context, line, column);
     }
-    public BinaryLogicalOperation and() {
-        return new And(this.context);
+    public BinaryLogicalOperation and(int line, int column) {
+        return new And(this.context, line, column);
     }
-    public BinaryLogicalOperation or() {
-        return new Or(this.context);
+    public BinaryLogicalOperation or(int line, int column) {
+        return new Or(this.context, line, column);
     }
 }
