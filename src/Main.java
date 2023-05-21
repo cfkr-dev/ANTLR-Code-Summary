@@ -26,6 +26,9 @@ public class Main {
             // Crear el objeto correspondiente al analizador sintáctico
             sourceCodeParser anasint = new sourceCodeParser(tokens);
 
+            analex.removeErrorListeners();
+            analex.addErrorListener(new UnderlineCustomErrorListener());
+
             anasint.removeErrorListeners(); // remove ConsoleErrorListener
             anasint.addErrorListener(new UnderlineCustomErrorListener()); // add ours
             anasint.setErrorHandler(new CustomErrorStrategy()); // add custom error strategy
