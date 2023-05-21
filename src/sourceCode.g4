@@ -457,7 +457,15 @@ grammar sourceCode;
                 : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.line,$start.pos);}
                 | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.line,$start.pos);}
                 | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.line,$start.pos);}
-                | IDENTIFIER {$value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,$start.line,$start.pos);}
+                | IDENTIFIER
+                {
+                    if($context instanceof ForLoop){
+                        $value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,true,$start.line,$start.pos);
+                    }else{
+                        $value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,$start.line,$start.pos);
+                    }
+
+                }
                 | CONST_DEF_IDENTIFIER{$value=$context.newSymbolReference("CONSTANT",$CONST_DEF_IDENTIFIER.text,$start.line,$start.pos);}
                 ;
 
