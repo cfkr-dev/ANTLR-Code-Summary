@@ -9,4 +9,5 @@ public interface Variable<E extends AssignableElement> extends AssignableElement
     public void forceSetValue(AssignableElement assignableElement);
     public Variable variableClone();
     public void forceSetMalformed();
+
 }

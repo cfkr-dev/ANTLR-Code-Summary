@@ -43,12 +43,15 @@ public class IfBranch extends MasterConditionalBranch {
     @Override
     public String toHTML() {
 
-        String HTMLIf = new String();
-
-        HTMLIf = "<p><SPAN CLASS=\"ident\">if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
+        String HTMLIf = "<SPAN CLASS=\"ident\">if</SPAN> (" + this.logicOperation.toHTML() + ") {<br>\n";
         HTMLIf += this.toHTMLBrackets();
 
         return HTMLIf;
 
+    }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
     }
 }

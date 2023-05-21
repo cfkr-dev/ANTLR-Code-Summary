@@ -26,6 +26,12 @@ public class VariableDefinition extends MasterSimpleSentence {
     @Override
     public String toHTML() {
 
-        return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
+        return this.variable.getType() + " " + this.variable.getName();
     }
+
+    public String toHTMLLong() {
+
+        return this.variable.getType() + " " + this.variable.getName() + ";<br>\n";
+    }
+
 }

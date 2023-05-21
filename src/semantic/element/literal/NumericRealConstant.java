@@ -19,4 +19,5 @@ public class NumericRealConstant extends Literal {
         this.column = column;
     }
 
+
 }

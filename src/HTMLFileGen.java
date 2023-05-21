@@ -1,4 +1,6 @@
+import java.awt.*;
 import java.io.*;
+import java.net.URI;
 
 import static semantic.utils.Constants.FILE_NAME;
 
@@ -10,8 +12,10 @@ public class HTMLFileGen {
         // Comprobar que el fichero no existe
             // Si existe excepcion
         fichero = new File(FILE_NAME + ".html");
-        if (fichero.exists())
-            throw new RuntimeException("El fichero de resumen de programa ya existe");
+
+        //TODO quitar este comentario de abajo
+        //if (fichero.exists())
+            //throw new RuntimeException("El fichero de resumen de programa ya existe");
 
         // Abrir fichero
         try {
@@ -41,13 +45,18 @@ public class HTMLFileGen {
             throw new RuntimeException(e);
         }
 
+        //TODO quitar este comentario de abajo
+        /*
         // Ejecutar fichero en navegador
-        Runtime runtime = Runtime.getRuntime();
         try {
-            runtime.exec("Start msedge " + FILE_NAME + ".html");
+
+            Desktop.getDesktop().browse(fichero.toURI());
+
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        //*/
 
     }
 

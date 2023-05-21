@@ -18,4 +18,5 @@ public class BinaryLogicalOperation extends MasterBinaryOperation {
         this.line = line;
         this.column = column;
     }
+
 }

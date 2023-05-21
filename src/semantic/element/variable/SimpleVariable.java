@@ -103,13 +103,18 @@ public class SimpleVariable extends MasterVariable {
             return this.name + " = " + this.value.getValue();
     }
 
-    @Override
-    public String toHTML() {
+    public String toHTML () {
+
+        return this.name;
+
+    }
+
+    public String toHTMLLong() {
 
         if (this.value == null)
-            return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
+            return this.type.name() + " " + this.name + ";<br>\n";
         else
-            return "<p>" + this.type.name() + " " + this.name + " = " + this.value + ";</p>\n";
+            return this.type.name() + " " + this.name + " = " + this.value + ";<br>\n";
 
     }
 

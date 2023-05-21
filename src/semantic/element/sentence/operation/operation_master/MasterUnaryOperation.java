@@ -42,15 +42,18 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     @Override
     public String toHTML() {
 
-        String HTMLOp = new String();
-
-        HTMLOp = this.symbol + " " + this.firstOperand.toHTML();
+        String HTMLOp = this.symbol + " " + this.firstOperand.toHTML();
 
         if (this.hasParenthesis)
             return "(" + HTMLOp + ")";
         else
             return HTMLOp;
 
+    }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
     }
 
     public MasterUnaryOperation firstOperand(AssignableElement firstOperand) {

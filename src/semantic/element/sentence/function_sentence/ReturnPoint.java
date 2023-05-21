@@ -32,4 +32,9 @@ public class ReturnPoint extends MasterSimpleSentence {
         return "<SPAN CLASS=\"ident\">return</SPAN>  " + this.returnElement.toHTML();
 
     }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
+    }
 }

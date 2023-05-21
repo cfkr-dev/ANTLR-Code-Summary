@@ -41,10 +41,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.malformed = true;
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
+
     @Override
     public FunctionCall call() {
         if (this.errorOnCreation) {

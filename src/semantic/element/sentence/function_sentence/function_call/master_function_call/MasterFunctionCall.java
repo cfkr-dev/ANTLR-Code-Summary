@@ -62,10 +62,28 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         }
         HTMLFunction.append(")");
 
-        if (partOfExpression)
-            return HTMLFunction.toString();
-        else
-            return "<p>" + HTMLFunction + ";</p>\n";
+        if (this.getSuperContext().hasThisSymbol(this.functionName)) {
+
+            if (partOfExpression)
+                return "<A HREF=\"#" + this.functionName + "\">" + HTMLFunction.toString() + "</A>\n";
+            else
+                return "<A HREF=\"#" + this.functionName + "\">" + HTMLFunction.toString() + "</A>\n" + ";<br>\n";
+
+        } else {
+
+            if (partOfExpression)
+                return HTMLFunction.toString();
+            else
+                return HTMLFunction.toString() + ";<br>\n";
+
+        }
+
+    }
+
+    @Override
+    public String toHTMLLong() {
+
+        return this.toHTML();
 
     }
 

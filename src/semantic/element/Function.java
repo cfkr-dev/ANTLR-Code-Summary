@@ -64,12 +64,17 @@ public class Function extends MasterSentenceContainer {
 
         String HTMLFunction = new String();
 
-        HTMLFunction = "<p>" + this.toStringCabecera() + " {</p>\n";
+        HTMLFunction = "<p>\n" + this.toStringCabecera() + " {<br>\n";
 
         HTMLFunction += this.toHTMLBrackets();
 
-        return HTMLFunction;
+        return HTMLFunction + "</p>\n";
 
+    }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
     }
 
     public String toStringCabecera() {

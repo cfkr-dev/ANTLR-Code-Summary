@@ -219,7 +219,7 @@ public class FunctionsAndVariablesTest {
         //  string nombre = "alumno1";
         program.createNewVariable("string", "nombre",5,1).setValue(program.newStringConstant("alumno1", 5, 17), program, 5,15);
 
-
+        ///*
         //  struct {
         StructVariable program_struct = program.createNewVariable("STRUCT", 99, 99);
 
@@ -238,10 +238,10 @@ public class FunctionsAndVariablesTest {
         //  } alumno;
         program_struct.createStruct("alumno");
 
+        //*/
 
 
-
-
+        ///*
         //  string codificar_cadena(string cadena, integer desplazamiento){
         Function program_function_codificar_cadena = program.createNewFunction("string", "codificar_cadena", 99, 99)
                 .addParam("string", "cadena", 99, 99)
@@ -268,8 +268,9 @@ public class FunctionsAndVariablesTest {
 
         //  }
 
+        //*/
 
-
+        ///*
         //  void save(string nombre){
         Function program_function_save = program.createNewFunction("void", "save", 99, 99)
                 .addParam("string", "nombre", 99, 99);
@@ -288,6 +289,7 @@ public class FunctionsAndVariablesTest {
             );
 
         //  }
+        //*/
 
         //  void Main (){
         Function program_function_main = program.createNewMainFunction(99, 99);

@@ -35,7 +35,13 @@ public class Constant extends MasterProgramElement implements AssignableElement 
     @Override
     public String toHTML() {
 
-        return "<p>#define " + this.name + " \"" + this.value.toHTML() + "\"</p>\n";
+        return this.name;
+
+    }
+
+    public String toHTMLLong () {
+
+        return "#define " + this.name + " \"" + this.value.toHTML() + "\"<br>\n";
 
     }
 

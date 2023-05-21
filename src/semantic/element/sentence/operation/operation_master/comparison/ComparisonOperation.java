@@ -18,4 +18,5 @@ public class ComparisonOperation extends MasterBinaryOperation {
         this.line = line;
         this.column = column;
     }
+
 }

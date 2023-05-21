@@ -41,15 +41,18 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     @Override
     public String toHTML() {
 
-        String HTMLOp = new String();
-
-        HTMLOp = this.firstOperand.toHTML() + " " + this.symbol + " " + this.secondOperand.toHTML();
+        String HTMLOp = this.firstOperand.toHTML() + " " + this.symbol + " " + this.secondOperand.toHTML();
 
         if (this.hasParenthesis)
             return "(" + HTMLOp + ")";
         else
             return HTMLOp;
 
+    }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
     }
 
     public MasterBinaryOperation firstOperand(AssignableElement firstOperand) {

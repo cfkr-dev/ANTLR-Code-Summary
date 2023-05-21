@@ -54,11 +54,16 @@ public class ForLoop extends MasterProgrammableSentence {
     @Override
     public String toHTML() {
 
-        String HTMLFor = "<p><SPAN CLASS=\"ident\">for</SPAN> (" + this.indexVariable.toHTML() + "; " + this.conditionStop.toHTML() + "; " + this.assignationAfterIteration.toHTML() + ") {</p>\n";
+        String HTMLFor = "<SPAN CLASS=\"ident\">for</SPAN> (" + this.indexVariable.toHTML() + "; " + this.conditionStop.toHTML() + "; " + this.assignationAfterIteration.toHTML() + ") {<br>\n";
         HTMLFor += this.toHTMLBrackets();
 
         return HTMLFor;
 
+    }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
     }
 
 }

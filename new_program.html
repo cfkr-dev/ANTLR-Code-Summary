@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+	<head>
+		<title>new_program.html</title>
+		<style>
+			.cte {color:rgb(19,189,72);}
+			.parles {font-weight: bold;}
+			.ident {color:rgb(255,0,0);}
+		</style>	</head>
+	<body>
+		<A NAME="INICIO"></A>
+		<h1>Programa: new_program</h1>
+		<h2>Funciones</h2>
+		<ul>
+			<li><A HREF="#Main">Programa principal</A></li>
+			<li><A HREF="#save">VOID <SPAN CLASS="ident">save</SPAN>(STRING <SPAN CLASS="ident">nombre</SPAN>)</A></li>
+		</ul>
+		<hr>
+		<A NAME="save"></A>
+		<p>
+		VOID <SPAN CLASS="ident">save</SPAN>(STRING <SPAN CLASS="ident">nombre</SPAN>) {<br>
+			<DIV style="text-indent: 2cm">
+				<SPAN CLASS="ident">fopen</SPAN>(STRING_CONST_file.text, STRING_CONST_w);<br>
+				<SPAN CLASS="ident">printf</SPAN>(nombre);<br>
+			</DIV>
+		}<br>
+		</p>
+		<A HREF="#save">Inicio de la funcion</A>
+		<A HREF="#INICIO">Inicio del programa</A> </br>
+		<hr>
+		<h2>Programa principal</h2>
+		<A NAME="Main"></A>
+		<p>#define FECHA "<SPAN CLASS="cte">2023</SPAN>"<br>
+		#define CODIGO "<SPAN CLASS="cte">10</SPAN>"<br>
+		INTEGER n_alumnos;<br>
+		FLOAT __valor_real;<br>
+		STRING nombre = alumno1;<br>
+		</p>
+		<p>
+		VOID <SPAN CLASS="ident">Main</SPAN>) {<br>
+			<DIV style="text-indent: 2cm">
+				<SPAN CLASS="ident">while</SPAN> (n_alumnos < CODIGO) {<br>
+					<DIV style="text-indent: 2cm">
+						STRING codificado;<br>
+						codificado = codificado;<br>
+						<A HREF="#save"><SPAN CLASS="ident">save</SPAN>(codificado)</A>
+						;<br>
+						n_alumnos = n_alumnos;<br>
+						codificado = codificado;<br>
+						<SPAN CLASS="ident">if</SPAN> (codificado == __valor_real) {<br>
+							<DIV style="text-indent: 2cm">
+								__valor_real = __valor_real;<br>
+							</DIV>
+						}<br>
+						<SPAN CLASS="ident">if</SPAN> (codificado == __valor_real & n_alumnos > <SPAN CLASS="cte">1</SPAN>) {<br>
+							<DIV style="text-indent: 2cm">
+								<SPAN CLASS="ident">for</SPAN> (i; i > CODIGO; i = i) {<br>
+									<DIV style="text-indent: 2cm">
+										codificado = codificado;<br>
+									</DIV>
+								}<br>
+								<SPAN CLASS="ident">printf</SPAN>(codificado);<br>
+							</DIV>
+						}<br>
+						<SPAN CLASS="ident">else if</SPAN> ((! codificado * CODIGO > FECHA)) {<br>
+							<DIV style="text-indent: 2cm">
+								<SPAN CLASS="ident">printf</SPAN>(n_alumnos);<br>
+							</DIV>
+						}<br>
+						<SPAN CLASS="ident">else</SPAN> {<br>
+							<DIV style="text-indent: 2cm">
+								<SPAN CLASS="ident">printf</SPAN>(STRING_CONST_'fin del \'programa\' con "codificacion" %s', codificado);<br>
+							</DIV>
+						}<br>
+					</DIV>
+				}<br>
+			</DIV>
+		}<br>
+		</p>
+		<A HREF="#Main">Inicio del programa principal</A>
+		<A HREF="#INICIO">Inicio del programa</A> </br>
+		<hr>
+	</body>
+</html>

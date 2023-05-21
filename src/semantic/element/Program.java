@@ -104,9 +104,15 @@ public class Program extends MasterProgrammableElement {
                        "<html>\n" +
                        "\t<head>\n" +
                        "\t\t<title>" + this.name + ".html" + "</title>\n" +
+                       "\t\t<style>\n" +
+                       "\t\t\t.cte {color:rgb(19,189,72);}\n" +
+                       "\t\t\t.parles {font-weight: bold;}\n" +
+                       //"\t\t\t.ident {color:rgb(107,103,189);}\n" +
+                       "\t\t\t.ident {color:rgb(255,0,0);}\n" +
+                       "\t\t</style>" +
                        "\t</head>\n" +
                        "\t<body>\n" +
-                       "\t\t<A NAME=\"INICIO\">\n" +
+                       "\t\t<A NAME=\"INICIO\"></A>\n" +
                        "\t\t<h1>Programa: " + this.name + "</h1>\n" +
                        "\t\t<h2>Funciones</h2>\n" +
                        "\t\t<ul>\n";
@@ -123,30 +129,32 @@ public class Program extends MasterProgrammableElement {
 
                     HTMLCabecera += "\t\t\t<li><A HREF=\"#" + element.getName() + "\">Programa principal</A></li>\n";
 
-                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\">\n" + HTMLGlobalVariables;
-                    HTMLGlobalVariables = "\t\t<h2>Funciones</h2>\n" +
+                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\"></A>\n" +
+                                          "\t\t<p>" + HTMLGlobalVariables;
+                    HTMLGlobalVariables = "\t\t<h2>Programa principal</h2>\n" +
                                           //"\t\t</br>\n" +
                                           HTMLGlobalVariables;
-                    HTMLMain = element.toHTML().replace("\n", "\n\t\t");
-                    HTMLMain += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
+                    HTMLMain = "\t\t" + element.toHTML().replace("\n", "\n\t\t");
+                    HTMLMain += "<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
                     HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-                    HTMLMain += "\t\t</hr>\n";
+                    HTMLMain += "\t\t<hr>\n";
 
                 } else { //HTMLFunction
 
                     HTMLFuncitonsCabecera = "\t\t\t<li><A HREF=\"#" + element.getName() + "\">" + ((Function) element).toStringCabecera() + "</A></li>\n";
 
-                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\">\n";
-                    HTMLFunctions += element.toHTML().replace("\n", "\n\t\t");
-                    HTMLFunctions += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
+                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\"></A>\n";
+                    HTMLFunctions += "\t\t" + element.toHTML().replace("\n", "\n\t\t");
+                    HTMLFunctions += "<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
                     HTMLFunctions += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-                    HTMLFunctions += "\t\t</hr>\n";
+                    HTMLFunctions += "\t\t<hr>\n";
 
                 }
 
             } else { // Constants and global variables
 
-                HTMLGlobalVariables += element.toHTML().replace("\n", "\n\t\t");
+                String aux = element.toHTMLLong().replace("\n", "\n\t\t");
+                HTMLGlobalVariables += (aux);
 
             }
 
@@ -154,9 +162,15 @@ public class Program extends MasterProgrammableElement {
 
         HTMLCabecera += HTMLFuncitonsCabecera;
         HTMLCabecera += "\t\t</ul>\n";
-        HTMLCabecera += "\t\t</hr>\n";
+        HTMLCabecera += "\t\t<hr>\n";
 
-        return HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + HTMLMain + HTMLFinal;
+        String aux = HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + "</p>\n" + HTMLMain + HTMLFinal;
+
+        aux.replaceAll("\r\n", "\n").replaceAll("\n", "\n<BR>\n").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
+
+        return aux;
 
     }
+
+    public String toHTMLLong() {return this.toHTML();}
 }

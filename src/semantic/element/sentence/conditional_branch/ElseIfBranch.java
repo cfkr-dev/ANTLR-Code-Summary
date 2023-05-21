@@ -45,10 +45,15 @@ public class ElseIfBranch extends MasterConditionalBranch {
 
         String HTMLElseIf = new String();
 
-        HTMLElseIf = "<p><SPAN CLASS=\"ident\">else if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
+        HTMLElseIf = "<SPAN CLASS=\"ident\">else if</SPAN> (" + this.logicOperation.toHTML() + ") {<br>\n";
         HTMLElseIf += this.toHTMLBrackets();
 
         return HTMLElseIf;
 
+    }
+
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
     }
 }

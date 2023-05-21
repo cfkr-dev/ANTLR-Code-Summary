@@ -17,4 +17,5 @@ public class UnaryLogicalOperation extends MasterUnaryOperation {
         this.line = line;
         this.column = column;
     }
+
 }

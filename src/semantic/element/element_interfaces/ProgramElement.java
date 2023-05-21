@@ -3,6 +3,8 @@ package semantic.element.element_interfaces;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
+import java.util.Map;
+
 public interface ProgramElement {
 
     public Type getType();
@@ -27,4 +29,5 @@ public interface ProgramElement {
 
     public abstract String toHTMLIdentifier ();
 
+    public String toHTMLLong();
 }

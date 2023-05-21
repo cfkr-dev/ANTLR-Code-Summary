@@ -9,7 +9,9 @@ import static semantic.utils.Constants.PROGRAM;
 
 public class Main {
     public static void main(String[] args) throws InstantiationException {
+        /*
         try {
+
             // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
 
@@ -61,5 +63,18 @@ public class Main {
             // Other fail
             System.err.println("RUN " + e.getMessage());
         }
+        //*/
+
+        // Save file name
+        FILE_NAME = "new_program";
+
+        // Start HTML generator
+        HTMLFileGen.starter();
+
+        FunctionsAndVariablesTest.runTest_2();
+
+        // Start generation
+        HTMLFileGen.generate(PROGRAM.toHTML());
+        //System.out.println(PROGRAM.toHTML());
     }
 }

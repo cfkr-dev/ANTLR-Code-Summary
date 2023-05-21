@@ -26,4 +26,9 @@ public class StringConstant extends Literal {
 
     }
 
+    @Override
+    public String toHTMLLong() {
+        return this.toHTML();
+    }
+
 }
