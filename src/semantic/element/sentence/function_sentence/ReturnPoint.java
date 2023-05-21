@@ -12,7 +12,7 @@ public class ReturnPoint extends MasterSimpleSentence {
     private Function targetFunction;
     private AssignableElement returnElement;
 
-    public ReturnPoint(Function targetFunction, AssignableElement returnElement, ProgrammableElement context) {
+    public ReturnPoint(Function targetFunction, AssignableElement returnElement, ProgrammableElement context, int line, int column) {
         this.type = returnElement.getType();
         this.name = targetFunction.getName() + "_RETURN";
         this.elementType = Element.SENTENCE;
@@ -21,6 +21,8 @@ public class ReturnPoint extends MasterSimpleSentence {
         this.superContext = context.getSuperContext();
         this.targetFunction = targetFunction;
         this.returnElement = returnElement;
+        this.line = line;
+        this.column = column;
     }
 
     @Override

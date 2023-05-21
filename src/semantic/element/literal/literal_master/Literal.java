@@ -1,4 +1,4 @@
-package semantic.element.sentence.literal.literal_master;
+package semantic.element.literal.literal_master;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;

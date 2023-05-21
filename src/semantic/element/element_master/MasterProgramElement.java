@@ -12,6 +12,9 @@ public abstract class MasterProgramElement implements ProgramElement {
     protected Element elementType;
     protected ProgrammableElement context;
     protected ProgrammableElement superContext;
+    protected int line;
+    protected int column;
+    protected boolean malformed;
 
     @Override
     public Type getType() {
@@ -41,6 +44,26 @@ public abstract class MasterProgramElement implements ProgramElement {
     @Override
     public ProgrammableElement getSuperContext() {
         return this.superContext;
+    }
+    @Override
+    public int getLine(){
+        return this.line;
+    }
+    @Override
+    public int getColumn() {
+        return this.column;
+    }
+
+    @Override
+    public boolean isMalformed() {
+        return this.malformed;
+    }
+
+    @Override
+    public void setMalformed() {
+        this.malformed = true;
+        if (this.context != null)
+            this.context.setMalformed();
     }
 
     @Override

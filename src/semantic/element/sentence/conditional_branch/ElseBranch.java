@@ -14,7 +14,7 @@ public class ElseBranch extends MasterConditionalBranch {
 
     ConditionalBranch previous;
 
-    public ElseBranch(ConditionalBranch previous, ProgrammableElement context) {
+    public ElseBranch(ConditionalBranch previous, ProgrammableElement context, int line, int column) {
         this.type = null;
         this.name = "_ELSE_BRANCH";
         this.elementType = Element.SENTENCE;
@@ -24,6 +24,9 @@ public class ElseBranch extends MasterConditionalBranch {
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.previous = previous;
+        this.malformed = false;
+        this.line = line;
+        this.column = column;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {

@@ -1,6 +1,8 @@
-import java.io.*;
-import org.antlr.v4.runtime.*;
-import semantic.element.Program;
+import org.antlr.v4.runtime.CharStream;
+import org.antlr.v4.runtime.CharStreams;
+import org.antlr.v4.runtime.CommonTokenStream;
+
+import java.io.IOException;
 
 import static semantic.utils.Constants.FILE_NAME;
 import static semantic.utils.Constants.p;
@@ -12,8 +14,6 @@ Sustituye Numbers por el nombre del fichero que contiene la especificación de l
 */
 public class Main {
     public static void main(String[] args) throws InstantiationException {
-
-        //FunctionsAndVariablesTest.runTest();
         try {
             // Preparar el fichero de entrada para asignarlo al analizador léxico
             CharStream input = CharStreams.fromFileName(args[0]);
@@ -32,8 +32,12 @@ public class Main {
             // Crear el objeto correspondiente al analizador sintáctico
             sourceCodeParser anasint = new sourceCodeParser(tokens);
 
-            //anasint.removeErrorListeners(); // remove ConsoleErrorListener
-            //anasint.addErrorListener(new UnderlineListener()); // add ours
+            analex.removeErrorListeners();
+            analex.addErrorListener(new UnderlineCustomErrorListener());
+
+            anasint.removeErrorListeners(); // remove ConsoleErrorListener
+            anasint.addErrorListener(new UnderlineCustomErrorListener()); // add ours
+            anasint.setErrorHandler(new CustomErrorStrategy()); // add custom error strategy
 
             /*
             Si se quiere pasar al analizador algún objeto externo con el que trabajar,
@@ -66,7 +70,5 @@ public class Main {
             //Cualquier otro fallo
             System.err.println("RUN " + e.getMessage());
         }
-
     }
-
 }
