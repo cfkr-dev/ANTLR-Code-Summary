@@ -13,6 +13,7 @@ public class BinaryLogicalOperation extends MasterBinaryOperation {
         this.elementType = Element.LOGICAL_OPERATION;
         this.context = context;
         this.superContext = context.getSuperContext();
-        this.malformedFlag = false;
+        this.malformed = false;
+        this.hasParenthesis = false;
     }
 }

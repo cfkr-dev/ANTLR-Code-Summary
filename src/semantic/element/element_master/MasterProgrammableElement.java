@@ -46,11 +46,11 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
         if (!this.hasThisSymbol(name)) {
             Variable variable;
             if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
-                variable = new StructVariable(name, this);
+                variable = this.createNewVariable("STRUCT");
             } else {
                 variable = new SimpleVariable(type, name, this);
+                this.addToSymbolTable(variable);
             }
-            this.addToSymbolTable(variable);
             return variable;
         } else {
             System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
@@ -59,18 +59,28 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
     }
 
     @Override
+    public StructVariable createNewVariable(String type) {
+        if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
+            StructVariable variable = new StructVariable(this);
+            return variable;
+        } else {
+            return null;
+        }
+    }
+
+    @Override
     public ProgramElement getSymbolByNameAndElement(String name, Element element) {
         return this.symbolTable.get(element).get(name);
     }
-
+    @Override
     public NumericIntegerConstant newIntegerConstant(String value) {
         return new NumericIntegerConstant(value, this);
     }
-
+    @Override
     public NumericRealConstant newRealConstant(String value) {
         return new NumericRealConstant(value, this);
     }
-
+    @Override
     public StringConstant newStringConstant(String value) {
         return new StringConstant(value, this);
     }

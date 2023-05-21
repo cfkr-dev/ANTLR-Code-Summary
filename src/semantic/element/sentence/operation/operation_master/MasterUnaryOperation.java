@@ -10,11 +10,8 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     protected AssignableElement firstOperand;
     protected String symbol;
     protected Operation operationType;
-    protected boolean malformedFlag;
+    protected Boolean hasParenthesis;
 
-    public boolean isMalformed(){
-        return this.malformedFlag;
-    }
 
     @Override
     public String getValue() {
@@ -27,24 +24,33 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     }
 
     @Override
+    public MasterUnaryOperation setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
+    }
+
+    @Override
     public String toHTML() {
         return null;
     }
 
     public MasterUnaryOperation firstOperand(AssignableElement firstOperand) {
+        if (firstOperand.isMalformed())
+            this.setMalformed();
         this.firstOperand = firstOperand;
-        if (this.firstOperand != null)
-            this.type = this.assertType(firstOperand);
+        this.type = this.assertType(firstOperand);
         return this;
     }
 
     public Type assertType(AssignableElement firstOperand) {
-        if (this.malformedFlag)
+        if (this.malformed){
+            this.setMalformed();
             return null;
+        }
 
         if (firstOperand.isMalformed()) {
             System.err.println("No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
-            this.malformedFlag = true;
+            this.setMalformed();
             return null;
         }
 
@@ -57,7 +63,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     }
 
     private void errorHelper(AssignableElement operand) {
-        this.malformedFlag = true;
+        this.setMalformed();
         System.err.println(operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 }

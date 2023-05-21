@@ -12,6 +12,7 @@ public class UnaryLogicalOperation extends MasterUnaryOperation {
         this.elementType = Element.LOGICAL_OPERATION;
         this.context = context;
         this.superContext = context.getSuperContext();
-        this.malformedFlag = false;
+        this.malformed = false;
+        this.hasParenthesis = false;
     }
 }

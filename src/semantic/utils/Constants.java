@@ -44,6 +44,9 @@ public class Constants {
           )),
           Map.entry(Type.STRING, Set.of(
                   Operation.SUM,
+                  Operation.SUBTRACTION,
+                  Operation.MULTIPLICATION,
+                  Operation.DIVISION,
 
                   Operation.EQUAL,
                   Operation.NOT_EQUAL,
@@ -79,6 +82,44 @@ public class Constants {
                   Operation.NOT
           ))
   );
+
+public static final Map<Type, Set<Type>> TYPE_X_TYPE_RULES = Map.ofEntries(
+        Map.entry(Type.INTEGER, Set.of(
+                Type.INTEGER,
+                Type.FLOAT,
+                Type.STRING,
+                Type.ANY
+        )),
+        Map.entry(Type.FLOAT, Set.of(
+                Type.INTEGER,
+                Type.FLOAT,
+                Type.STRING,
+                Type.ANY
+        )),
+        Map.entry(Type.STRING, Set.of(
+                Type.INTEGER,
+                Type.FLOAT,
+                Type.STRING,
+                Type.ANY
+        )),
+        Map.entry(Type.STRUCT, Set.of(
+                Type.STRUCT,
+                Type.ANY
+        )),
+        Map.entry(Type.VOID, Set.of(
+                Type.VOID,
+                Type.ANY
+        )),
+        Map.entry(Type.ANY, Set.of(
+                Type.INTEGER,
+                Type.FLOAT,
+                Type.STRING,
+                Type.STRUCT,
+                Type.VOID,
+                Type.ANY
+        ))
+);
+
   public static final Map<Operation, String> OPERATION_NAMES = Map.ofEntries(
           Map.entry(Operation.SUM,            "SUMA"),
           Map.entry(Operation.SUBTRACTION,    "RESTA"),

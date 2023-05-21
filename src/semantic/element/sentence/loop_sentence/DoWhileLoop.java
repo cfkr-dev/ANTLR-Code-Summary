@@ -7,6 +7,7 @@ import semantic.element.sentence.conditional_branch.MasterConditionalBranch;
 import semantic.utils.Constants;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
+import semantic.utils.enums.Type;
 
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -14,6 +15,7 @@ import java.util.Map;
 
 public class DoWhileLoop extends MasterConditionalBranch {
     AssignableElement logicOperation;
+    protected boolean errorOnCreation;
 
     public DoWhileLoop(ProgrammableElement context) {
         this.type = null;
@@ -25,10 +27,7 @@ public class DoWhileLoop extends MasterConditionalBranch {
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = null;
-    }
-
-    public void setLogicOperation(AssignableElement logicOperation) {
-        this.logicOperation = logicOperation;
+        this.malformed = false;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {
@@ -37,6 +36,19 @@ public class DoWhileLoop extends MasterConditionalBranch {
             localSymbolTable.put(e, new HashMap<>(symbolTable.get(e)));
 
         return localSymbolTable;
+    }
+
+    public DoWhileLoop createDoWhileLoop(AssignableElement logicOperation) {
+        if (logicOperation.isMalformed()) {
+            System.err.println("No se puede asignar una expresión malformada");
+            this.setMalformed();
+        } else if (Type.checkTypeConditional(logicOperation)) {
+            System.err.println("Se debe introducir una expresión lógica");
+            this.setMalformed();
+        }
+
+        this.logicOperation = logicOperation;
+        return this;
     }
 
     @Override

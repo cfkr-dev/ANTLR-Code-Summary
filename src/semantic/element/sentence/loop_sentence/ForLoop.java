@@ -5,7 +5,7 @@ import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterProgrammableSentence;
 import semantic.element.sentence.variable_sentence.VariableAssignation;
-import semantic.element.variable.SimpleVariable;
+import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
@@ -16,11 +16,11 @@ import java.util.Map;
 
 public class ForLoop extends MasterProgrammableSentence {
 
-    SimpleVariable indexVariable;
+    Variable indexVariable;
     AssignableElement conditionStop;
     VariableAssignation assignationAfterIteration;
 
-    public ForLoop(SimpleVariable variable,
+    public ForLoop(Variable variable,
                    AssignableElement conditionStop,
                    VariableAssignation assignationAfterIteration,
                    ProgrammableElement context) {
@@ -35,11 +35,12 @@ public class ForLoop extends MasterProgrammableSentence {
         this.indexVariable = variable;
         this.conditionStop = conditionStop;
         this.assignationAfterIteration = assignationAfterIteration;
+        this.malformed = false;
 
         insertIndexVariable();
     }
 
-    public SimpleVariable getIndexVariable() {
+    public Variable getIndexVariable() {
         return this.indexVariable;
     }
 

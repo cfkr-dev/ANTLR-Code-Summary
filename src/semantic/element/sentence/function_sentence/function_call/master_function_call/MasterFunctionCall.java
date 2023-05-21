@@ -11,6 +11,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     protected String functionName;
     protected List<AssignableElement> callingParams;
     protected boolean malformed;
+    protected boolean errorOnCreation;
 
     @Override
     public List<AssignableElement> getCallingParams() {
@@ -18,16 +19,12 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     }
 
     @Override
-    public FunctionCall addNewParam(AssignableElement param) {
-        if (this.isMalformed())
-            return this;
-
+    public FunctionCall addParam(AssignableElement param) {
         if (param.isMalformed()) {
             System.err.println("No es posible llamar a una función con una expresión malformada (" + param.getValue() + ")");
-            this.malformed = true;
+            this.errorOnCreation = true;
             return this;
         }
-
         this.callingParams.add(param);
         return this;
     }

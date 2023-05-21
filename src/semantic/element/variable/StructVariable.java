@@ -1,5 +1,8 @@
 package semantic.element.variable;
 
+import semantic.element.literal.NumericIntegerConstant;
+import semantic.element.literal.NumericRealConstant;
+import semantic.element.literal.StringConstant;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.element.variable.variable_master.MasterVariable;
 import semantic.element.element_interfaces.AssignableElement;
@@ -17,16 +20,30 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
 
     protected Map<Element, Map<String, Variable>> symbolTable;
     protected List<Variable<? extends AssignableElement>> properties;
+    protected boolean errorOnCreation;
 
-    public StructVariable(String name, ProgrammableElement context) {
+    public StructVariable(ProgrammableElement context) {
         this.type = Type.STRUCT;
         this.elementType = Element.VARIABLE;
-        this.name = name;
+        this.name = null;
         this.context = context;
         this.superContext = context.getSuperContext();
         this.symbolTable = initializeSymbolTable();
         this.properties = new ArrayList<>();
-        this.malformed = false;
+        this.errorOnCreation = false;
+        this.malformed = true;
+    }
+
+    public StructVariable createStruct(String name) {
+        if (this.errorOnCreation) {
+            this.setMalformed();
+        } else {
+            this.malformed = false;
+        }
+
+        this.name = name;
+        this.context.addToSymbolTable(this);
+        return this;
     }
 
     protected Map<Element, Map<String, Variable>> initializeSymbolTable() {
@@ -71,7 +88,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             }
         }
         System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
-        this.setMalformed();
+        this.errorOnCreation = true;
         return this;
     }
 
@@ -79,34 +96,35 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         if (!this.hasThisSymbol(name)) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
                 SimpleVariable simpleVariable = new SimpleVariable(type, name, this);
-                simpleVariable.setValue(value, this);
                 this.addToSymbolTable(simpleVariable);
+                simpleVariable.setValue(value, this);
                 this.properties.add(simpleVariable);
+                return this;
             }
         }
         System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
-        this.setMalformed();
+        this.errorOnCreation = true;
         return this;
     }
 
     public StructVariable addNewNestedStructProperty(String name) {
         if (!this.hasThisSymbol(name)) {
-            StructVariable structVariable = new StructVariable(name, this);
-            this.addToSymbolTable(structVariable);
+            StructVariable structVariable = new StructVariable(this);
             this.properties.add(structVariable);
             return structVariable;
         }
-        StructVariable structVariable = new StructVariable(name, this);
-        structVariable.setMalformed();
+        StructVariable structVariable = new StructVariable(this);
+        this.errorOnCreation = true;
         System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         return structVariable;
-
     }
 
     @Override
     public boolean setValue(Variable assignableElement, ProgrammableElement context) {
-        if (this.malformed)
+        if (this.malformed) {
+            this.setMalformed();
             return false;
+        }
 
         if (assignableElement.isMalformed()) {
             System.err.println("No se puede asignar una expresión malformada");
@@ -128,8 +146,31 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         }
     }
 
+    public void forceSetValue(AssignableElement assignableElement) {
+        if (assignableElement instanceof StructVariable) {
+            this.name = assignableElement.getName();
+            this.context = assignableElement.getContext();
+            this.superContext = assignableElement.getSuperContext();
+            this.symbolTable = ((StructVariable) assignableElement).getSymbolTable();
+            this.properties = ((StructVariable) assignableElement).getProperties();
+        }
+    }
+
     public String getValue() {
         return this.name;
+    }
+
+//    @Override
+//    public AssignableElement getVariableValue() {
+//        return this;
+//    }
+
+    @Override
+    public Variable variableClone() {
+        StructVariable structVariable = new StructVariable(this.context).createStruct(this.name);
+        if (this.malformed)
+            structVariable.forceSetMalformed();
+        return structVariable;
     }
 
     @Override
@@ -145,6 +186,19 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         return properties;
     }
 
+    @Override
+    public NumericIntegerConstant newIntegerConstant(String value) {
+        return new NumericIntegerConstant(value, this);
+    }
+    @Override
+    public NumericRealConstant newRealConstant(String value) {
+        return new NumericRealConstant(value, this);
+    }
+    @Override
+    public StringConstant newStringConstant(String value) {
+        return new StringConstant(value, this);
+    }
+
     /**
      * Se delega el comportamiento a el método ".addNewSimpleProperty()"
      */
@@ -152,6 +206,14 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     public Variable createNewVariable(String type, String name) {
         return this.addNewSimpleProperty(type, name);
     }
+
+    @Override
+    public StructVariable createNewVariable(String type) {
+        if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT))
+            return this.addNewNestedStructProperty(type);
+        else return null;
+    }
+
 
     @Override
     public String toHTML() {

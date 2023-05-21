@@ -15,4 +15,10 @@ public abstract class MasterVariable<E extends AssignableElement> extends Master
 
     @Override
     public abstract String toString();
+
+    @Override
+    public void forceSetMalformed() {
+        this.malformed = true;
+    }
+
 }

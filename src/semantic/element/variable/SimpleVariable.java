@@ -22,16 +22,38 @@ public class SimpleVariable extends MasterVariable {
         this.malformed = false;
     }
 
+
+
     @Override
     public String getValue() {
         return this.name;
     }
 
+//    @Override
+//    public AssignableElement getVariableValue() {
+//        return this.value;
+//    }
+
+    @Override
+    public void forceSetValue(AssignableElement assignableElement) {
+        this.value = assignableElement;
+    }
+
+    @Override
+    public Variable variableClone() {
+        Variable variable = new SimpleVariable(this.type.name(), this.name, this.context);
+        if (this.malformed)
+            variable.forceSetMalformed();
+        return variable;
+    }
+
     @Override
     public boolean setValue(AssignableElement assignableElement, ProgrammableElement context) {
 
-        if (this.malformed)
+        if (this.malformed) {
+            this.setMalformed();
             return false;
+        }
 
         if (assignableElement.isMalformed()) {
             System.err.println("No se puede asignar una expresión malformada");

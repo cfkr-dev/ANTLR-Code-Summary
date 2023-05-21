@@ -11,11 +11,7 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     protected AssignableElement secondOperand;
     protected String symbol;
     protected Operation operationType;
-    protected boolean malformedFlag;
-
-    public boolean isMalformed(){
-        return this.malformedFlag;
-    }
+    protected Boolean hasParenthesis;
 
     @Override
     public String getValue() {
@@ -28,37 +24,49 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     }
 
     @Override
+    public MasterBinaryOperation setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
+    }
+
+    @Override
     public String toHTML() {
         return null;
     }
 
     public MasterBinaryOperation firstOperand(AssignableElement firstOperand) {
+        if (firstOperand.isMalformed())
+            this.setMalformed();
         this.firstOperand = firstOperand;
-        if (this.firstOperand != null && this.secondOperand != null)
+        if (this.secondOperand != null)
             this.type = this.assertType(firstOperand, secondOperand);
         return this;
     }
 
     public MasterBinaryOperation secondOperand(AssignableElement secondOperand) {
+        if (secondOperand.isMalformed())
+            this.setMalformed();
         this.secondOperand = secondOperand;
-        if (this.firstOperand != null && this.secondOperand != null)
+        if (this.firstOperand != null)
             this.type = this.assertType(firstOperand, secondOperand);
         return this;
     }
 
     public Type assertType(AssignableElement firstOperand, AssignableElement secondOperand) {
-        if (this.malformedFlag)
+        if (this.malformed){
+            this.setMalformed();
             return null;
+        }
 
         if (firstOperand.isMalformed()) {
             System.err.println("No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
-            this.malformedFlag = true;
+            this.setMalformed();
             return null;
         }
 
         if (secondOperand.isMalformed()) {
             System.err.println("No es posible operar con una expresión malformada (" + secondOperand.getValue() + ")");
-            this.malformedFlag = true;
+            this.setMalformed();
             return null;
         }
 
@@ -80,12 +88,12 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     }
 
     private void errorHelper(AssignableElement operand) {
-        this.malformedFlag = true;
+        this.setMalformed();
         System.err.println(operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 
     private void errorHelper(AssignableElement operandA, AssignableElement operandB) {
-        this.malformedFlag = true;
+        this.setMalformed();
         System.err.println(operandA.getName() + " (" + operandA.getType() + ") no es operable con " + operandB.getName() + " (" + operandB.getType() + ")");
     }
 

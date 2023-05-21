@@ -1,10 +1,11 @@
 package semantic.element.sentence.function_sentence.function_call;
 
 import semantic.element.Function;
-import semantic.element.sentence.function_sentence.function_call.master_function_call.MasterFunctionCall;
 import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.element.sentence.function_sentence.function_call.master_function_call.MasterFunctionCall;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
+import semantic.utils.enums.Type;
 
 import java.util.LinkedList;
 
@@ -13,7 +14,10 @@ public class InnerFunctionCall extends MasterFunctionCall {
     private Function function;
 
     public InnerFunctionCall(Function function, ProgrammableElement context) {
-        this.type = function.getType();
+        if (Type.checkTypeCasting(function.getName()))
+            this.type = Type.valueOf(function.getName());
+        else
+            this.type = function.getType();
         this.name = function.getName() + "_CALL";
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.FUNCT_CALL;
@@ -23,6 +27,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.functionName = function.getName();
         this.callingParams = new LinkedList<>();
         this.malformed = true;
+        this.errorOnCreation = false;
     }
 
     public Function getFunction() {
@@ -39,8 +44,14 @@ public class InnerFunctionCall extends MasterFunctionCall {
     }
     @Override
     public FunctionCall call() {
-        if (this.function.checkCallingParams(this.callingParams))
-            this.malformed = false;
+        if (this.errorOnCreation) {
+            this.setMalformed();
+        } else {
+            if (!this.function.checkCallingParams(this.callingParams))
+                this.setMalformed();
+            else
+                this.malformed = false;
+        }
         return this;
     }
 }

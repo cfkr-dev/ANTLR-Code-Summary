@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-public class IfElseBranch extends MasterConditionalBranch {
+public class ElseIfBranch extends MasterConditionalBranch {
 
     AssignableElement logicOperation;
     ConditionalBranch previous;
 
-    public IfElseBranch(AssignableElement logicOperation, ConditionalBranch previous, ProgrammableElement context) {
+    public ElseIfBranch(AssignableElement logicOperation, ConditionalBranch previous, ProgrammableElement context) {
         this.type = null;
         this.name = logicOperation.getValue() + "_IF_ELSE_BRANCH";
         this.elementType = Element.SENTENCE;
@@ -27,6 +27,7 @@ public class IfElseBranch extends MasterConditionalBranch {
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = logicOperation;
         this.previous = previous;
+        this.malformed = false;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {

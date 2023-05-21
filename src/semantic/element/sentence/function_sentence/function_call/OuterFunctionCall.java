@@ -20,10 +20,14 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.functionName = functionName;
         this.callingParams = new LinkedList<>();
         this.malformed = true;
+        this.errorOnCreation = false;
     }
     @Override
     public FunctionCall call() {
-        this.malformed = false;
+        if (this.errorOnCreation)
+            this.setMalformed();
+        else
+            this.malformed = false;
         return this;
     }
 

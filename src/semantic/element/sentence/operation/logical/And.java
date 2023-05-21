@@ -8,7 +8,7 @@ public class And extends BinaryLogicalOperation {
     public And(ProgrammableElement context) {
         super(context);
         this.name = "AND";
-        this.symbol = "&&";
+        this.symbol = "&";
         this.operationType = Operation.AND;
     }
 }

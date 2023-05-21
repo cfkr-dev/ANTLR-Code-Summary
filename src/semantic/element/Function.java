@@ -29,8 +29,10 @@ public class Function extends MasterSentenceContainer {
     }
 
     public Function addParam(String type, String name) {
-        if (this.malformed)
+        if (this.malformed) {
+            this.setMalformed();
             return this;
+        }
         Variable param = this.createNewVariable(type, name);
         if (param != null)
             this.params.add(param);
@@ -53,8 +55,10 @@ public class Function extends MasterSentenceContainer {
     }
 
     public boolean checkCallingParams(List<AssignableElement> params) {
-        if (this.malformed)
+        if (this.malformed) {
+            this.setMalformed();
             return false;
+        }
 
         if (this.params.size() != params.size()) {
             if (this.params.size() < params.size())

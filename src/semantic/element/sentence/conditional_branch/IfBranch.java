@@ -27,6 +27,7 @@ public class IfBranch extends MasterConditionalBranch {
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = logicOperation;
         this.previous = null;
+        this.malformed = false;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {
