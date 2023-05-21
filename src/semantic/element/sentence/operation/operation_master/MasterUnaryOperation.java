@@ -3,12 +3,15 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.UnaryOperation;
-import semantic.utils.enums.Element;
+import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
 public abstract class MasterUnaryOperation extends MasterProgramElement implements UnaryOperation {
     protected AssignableElement firstOperand;
     protected String symbol;
+    protected Operation operationType;
+    protected Boolean hasParenthesis;
+
 
     @Override
     public String getValue() {
@@ -17,13 +20,17 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
 
     @Override
     public String toString() {
-        String firstOpStr;
+        if (this.hasParenthesis)
+            return "(" + symbol + firstOperand.getValue() + ")";
+        else
+            return symbol + firstOperand.getValue();
 
-        if (this.firstOperand.getElementType().equals(Element.VARIABLE) || this.firstOperand.getElementType().equals(Element.CONSTANT))
-            firstOpStr = firstOperand.getName();
-        else firstOpStr = firstOperand.getValue();
+    }
 
-        return symbol + firstOpStr;
+    @Override
+    public MasterUnaryOperation setParenthesis() {
+        this.hasParenthesis = true;
+        return this;
     }
 
     @Override
@@ -32,20 +39,35 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     }
 
     public MasterUnaryOperation firstOperand(AssignableElement firstOperand) {
+        if (firstOperand.isMalformed())
+            this.setMalformed();
         this.firstOperand = firstOperand;
-        if (this.firstOperand != null)
-            this.type = this.assertType(firstOperand);
+        this.type = this.assertType(firstOperand);
         return this;
     }
 
     public Type assertType(AssignableElement firstOperand) {
-        if (firstOperand.getType().equals(Type.INTEGER))
-            return firstOperand.getType();
-        else if (firstOperand.getType().equals(Type.ANY))
-            return Type.ANY;
-        else {
-            System.err.println("Los tipos no son iguales");
-            return Type.ANY;
+        if (this.malformed){
+            this.setMalformed();
+            return null;
         }
+
+        if (firstOperand.isMalformed()) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            this.setMalformed();
+            return null;
+        }
+
+        if (!Type.checkTypeOperationRules(firstOperand.getType(), this.operationType)){
+            errorHelper(firstOperand);
+            return null;
+        }
+
+        return firstOperand.getType();
+    }
+
+    private void errorHelper(AssignableElement operand) {
+        this.setMalformed();
+        System.err.println("ERROR " + line + ":" + column + " => " + operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 }

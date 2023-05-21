@@ -435,7 +435,7 @@ grammar sourceCode;
 
             oplog
                 : '||'
-                | '&&'
+                | '&'
                 ;
 
             factorcond

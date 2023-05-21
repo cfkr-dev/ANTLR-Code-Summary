@@ -1,6 +1,3 @@
-import java.io.*;
-import org.antlr.v4.runtime.*;
-
 /*
 El nombre ClasePrincipal es arbitrario, escoge el que prefieras.
 Sustituye Numbers por el nombre del fichero que contiene la especificación de la gramática ANTLR
@@ -9,7 +6,7 @@ Sustituye Numbers por el nombre del fichero que contiene la especificación de l
 public class Main {
     public static void main(String[] args) throws InstantiationException {
 
-        FunctionsAndVariablesTest.runTest();
+        FunctionsAndVariablesTest.runTest_2();
 //        try {
 //            // Preparar el fichero de entrada para asignarlo al analizador léxico
 //            CharStream input = CharStreams.fromFileName(args[0]);
