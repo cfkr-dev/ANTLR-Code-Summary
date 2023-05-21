@@ -402,14 +402,14 @@ grammar sourceCode;
                 ;
 
             oplog[MasterSentenceContainer context ,AssignableElement left ] returns[BinaryLogicalOperation operation]
-                : '||'{$operation=$context.newLogicalOperation($start.line,$start.pos).or().firstOperand($left);}
-                | '&&'{$operation=$context.newLogicalOperation($start.line,$start.pos).and().firstOperand($left);}
+                : '||'{$operation=$context.newLogicalOperation().or($start.line,$start.pos).firstOperand($left);}
+                | '&&'{$operation=$context.newLogicalOperation().and($start.line,$start.pos).firstOperand($left);}
                 ;
 
             factorcond[MasterSentenceContainer context] returns [AssignableElement value]
                 : '(' expcond[$context] ')'  {$value=($expcond.value).setParenthesis();}
                 | exp[$context] factorcond_aux[$context,$exp.value] {$value=$factorcond_aux.value ;}
-                | '!' factorcond[$context] {$value=$context.newLogicalOperation($start.line,$start.pos).not().firstOperand($factorcond.value);}
+                | '!' factorcond[$context] {$value=$context.newLogicalOperation().not($start.line,$start.pos).firstOperand($factorcond.value);}
                 ;
 
             factorcond_aux[MasterSentenceContainer context ,AssignableElement left ] returns [AssignableElement value]
@@ -418,12 +418,12 @@ grammar sourceCode;
                 ;
 
             opcomp[MasterSentenceContainer context ,AssignableElement left ] returns[ComparisonOperation operation]
-                : '<' {$operation=$context.newComparisonOperation($start.line,$start.pos).lower().firstOperand($left);}
-                | '>' {$operation=$context.newComparisonOperation($start.line,$start.pos).greater().firstOperand($left);}
-                | '<='{$operation=$context.newComparisonOperation($start.line,$start.pos).lowerEqual().firstOperand($left);}
-                | '>='{$operation=$context.newComparisonOperation($start.line,$start.pos).greaterEqual().firstOperand($left);}
-                | '=='{$operation=$context.newComparisonOperation($start.line,$start.pos).equal().firstOperand($left);}
-                | '!='{$operation=$context.newComparisonOperation($start.line,$start.pos).notEqual().firstOperand($left);}
+                : '<' {$operation=$context.newComparisonOperation().lower($start.line,$start.pos).firstOperand($left);}
+                | '>' {$operation=$context.newComparisonOperation().greater($start.line,$start.pos).firstOperand($left);}
+                | '<='{$operation=$context.newComparisonOperation().lowerEqual($start.line,$start.pos).firstOperand($left);}
+                | '>='{$operation=$context.newComparisonOperation().greaterEqual($start.line,$start.pos).firstOperand($left);}
+                | '=='{$operation=$context.newComparisonOperation().equal($start.line,$start.pos).firstOperand($left);}
+                | '!='{$operation=$context.newComparisonOperation().notEqual($start.line,$start.pos).firstOperand($left);}
                 ;
 
         /* ---- ARITHMETIC OPERATIONS ---- */
@@ -440,11 +440,11 @@ grammar sourceCode;
                 ;
 
             op[MasterSentenceContainer context ,AssignableElement left ] returns[ArithmeticOperation operation]
-                : '+' {$operation=$context.newArithmeticOperation($start.line,$start.pos).sum().firstOperand($left);}
-                | '-' {$operation=$context.newArithmeticOperation($start.line,$start.pos).subtraction().firstOperand($left);}
-                | '*' {$operation=$context.newArithmeticOperation($start.line,$start.pos).multiplication().firstOperand($left);}
-                | 'DIV' {$operation=$context.newArithmeticOperation($start.line,$start.pos).division().firstOperand($left);}
-                | 'MOD' {$operation=$context.newArithmeticOperation($start.line,$start.pos).modulus().firstOperand($left);}
+                : '+' {$operation=$context.newArithmeticOperation().sum($start.line,$start.pos).firstOperand($left);}
+                | '-' {$operation=$context.newArithmeticOperation().subtraction($start.line,$start.pos).firstOperand($left);}
+                | '*' {$operation=$context.newArithmeticOperation().multiplication($start.line,$start.pos).firstOperand($left);}
+                | 'DIV' {$operation=$context.newArithmeticOperation().division($start.line,$start.pos).firstOperand($left);}
+                | 'MOD' {$operation=$context.newArithmeticOperation().modulus($start.line,$start.pos).firstOperand($left);}
                 ;
 
             factor[MasterSentenceContainer context] returns [AssignableElement value]
