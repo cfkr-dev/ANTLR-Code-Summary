@@ -5,8 +5,8 @@ import semantic.element.sentence.operation.operation_master.comparison.Compariso
 import semantic.utils.enums.Operation;
 
 public class Lower extends ComparisonOperation {
-    public Lower(ProgrammableElement context) {
-        super(context);
+    public Lower(ProgrammableElement context, int line, int column) {
+        super(context, line, column);
         this.name = "LOWER";
         this.symbol = "<";
         this.operationType = Operation.LOWER;

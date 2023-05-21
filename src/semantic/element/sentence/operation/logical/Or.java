@@ -5,8 +5,8 @@ import semantic.element.sentence.operation.operation_master.logical.BinaryLogica
 import semantic.utils.enums.Operation;
 
 public class Or extends BinaryLogicalOperation {
-    public Or(ProgrammableElement context) {
-        super(context);
+    public Or(ProgrammableElement context, int line, int column) {
+        super(context, line, column);
         this.name = "OR";
         this.symbol = "||";
         this.operationType = Operation.OR;

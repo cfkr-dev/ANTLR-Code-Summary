@@ -12,7 +12,7 @@ public class SimpleVariable extends MasterVariable {
 
     private AssignableElement value;
 
-    public SimpleVariable(String type, String name, ProgrammableElement context) {
+    public SimpleVariable(String type, String name, ProgrammableElement context, int line, int column) {
         this.type = Type.valueOf(type.toUpperCase());
         this.elementType = Element.VARIABLE;
         this.name = name;
@@ -20,6 +20,8 @@ public class SimpleVariable extends MasterVariable {
         this.superContext = context.getSuperContext();
         this.value = null;
         this.malformed = false;
+        this.line = line;
+        this.column = column;
     }
 
 
@@ -41,14 +43,14 @@ public class SimpleVariable extends MasterVariable {
 
     @Override
     public Variable variableClone() {
-        Variable variable = new SimpleVariable(this.type.name(), this.name, this.context);
+        Variable variable = new SimpleVariable(this.type.name(), this.name, this.context, this.line, this.column);
         if (this.malformed)
             variable.forceSetMalformed();
         return variable;
     }
 
     @Override
-    public boolean setValue(AssignableElement assignableElement, ProgrammableElement context) {
+    public boolean setValue(AssignableElement assignableElement, ProgrammableElement context, int line, int column) {
 
         if (this.malformed) {
             this.setMalformed();
@@ -56,19 +58,19 @@ public class SimpleVariable extends MasterVariable {
         }
 
         if (assignableElement.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             this.setMalformed();
             return false;
         }
 
         if (!context.hasThisSymbol(this.name)) {
             if (!(assignableElement instanceof Variable<?> || assignableElement instanceof Constant)) {
-                System.err.println("No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
 
-            System.err.println("No se puede asignar " + assignableElement.getName() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getName() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
             this.setMalformed();
             return false;
         }
@@ -76,14 +78,14 @@ public class SimpleVariable extends MasterVariable {
         if (assignableElement instanceof Variable<?> || assignableElement instanceof Constant) {
 
             if (!context.hasThisSymbol(assignableElement.getName())) {
-                System.err.println("No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
         }
 
         if (!Type.checkTypeConsistency(assignableElement.getType(), this.type)) {
-            System.err.println("No se puede asignar un elemento de tipo \"" + assignableElement.getType() + "\" a una variable de tipo " + this.type.name().toLowerCase());
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar un elemento de tipo \"" + assignableElement.getType() + "\" a una variable de tipo " + this.type.name().toLowerCase());
             this.setMalformed();
             return false;
         }
@@ -95,7 +97,10 @@ public class SimpleVariable extends MasterVariable {
 
     @Override
     public String toString() {
-        return this.name + " = " + this.value.getValue();
+        if (this.value == null)
+            return this.name;
+        else
+            return this.name + " = " + this.value.getValue();
     }
 
     @Override

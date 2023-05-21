@@ -7,7 +7,7 @@ import semantic.utils.enums.Type;
 
 public class NumericRealConstant extends Literal {
 
-    public NumericRealConstant(String value, ProgrammableElement context) {
+    public NumericRealConstant(String value, ProgrammableElement context, int line, int column) {
         this.value = value;
         this.type = Type.FLOAT;
         this.name = "FLOAT_CONST_" + value;
@@ -15,6 +15,8 @@ public class NumericRealConstant extends Literal {
         this.context = context;
         this.superContext = context.getSuperContext();
         this.malformed = false;
+        this.line = line;
+        this.column = column;
     }
 
     @Override

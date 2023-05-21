@@ -18,15 +18,15 @@ public interface ProgrammableElement<E extends ProgramElement> extends ProgramEl
 
     boolean hasThisSymbol(String name);
 
-    Variable createNewVariable(String type, String name);
+    Variable createNewVariable(String type, String name, int line, int column);
 
-    StructVariable createNewVariable(String type);
+    StructVariable createNewVariable(String type, int line, int column);
 
     ProgramElement getSymbolByNameAndElement(String name, Element element);
 
-    public NumericIntegerConstant newIntegerConstant(String value);
+    public NumericIntegerConstant newIntegerConstant(String value, int line, int column);
 
-    public NumericRealConstant newRealConstant(String value);
+    public NumericRealConstant newRealConstant(String value, int line, int column);
 
-    public StringConstant newStringConstant(String value);
+    public StringConstant newStringConstant(String value, int line, int column);
 }

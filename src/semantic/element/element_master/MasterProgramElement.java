@@ -12,6 +12,8 @@ public abstract class MasterProgramElement implements ProgramElement {
     protected Element elementType;
     protected ProgrammableElement context;
     protected ProgrammableElement superContext;
+    protected int line;
+    protected int column;
     protected boolean malformed;
 
     @Override
@@ -42,6 +44,14 @@ public abstract class MasterProgramElement implements ProgramElement {
     @Override
     public ProgrammableElement getSuperContext() {
         return this.superContext;
+    }
+    @Override
+    public int getLine(){
+        return this.line;
+    }
+    @Override
+    public int getColumn() {
+        return this.column;
     }
 
     @Override

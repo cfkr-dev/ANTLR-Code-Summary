@@ -9,7 +9,7 @@ import semantic.utils.enums.Sentence;
 public class VariableAssignation extends MasterSimpleSentence {
     private Variable variable;
 
-    public VariableAssignation(Variable variable, ProgrammableElement context) {
+    public VariableAssignation(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();
         this.name = variable.getName() + "_ASSIG";
         this.elementType = Element.SENTENCE;
@@ -17,6 +17,8 @@ public class VariableAssignation extends MasterSimpleSentence {
         this.context = context;
         this.superContext = context.getSuperContext();
         this.variable = variable;
+        this.line = line;
+        this.column = column;
     }
 
     public Variable getVariable() {

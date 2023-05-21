@@ -42,26 +42,26 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
     }
 
     @Override
-    public Variable createNewVariable(String type, String name) {
+    public Variable createNewVariable(String type, String name, int line, int column) {
         if (!this.hasThisSymbol(name)) {
             Variable variable;
             if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
-                variable = this.createNewVariable("STRUCT");
+                variable = this.createNewVariable("STRUCT", line, column);
             } else {
-                variable = new SimpleVariable(type, name, this);
+                variable = new SimpleVariable(type, name, this, line, column);
                 this.addToSymbolTable(variable);
             }
             return variable;
         } else {
-            System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
             return null;
         }
     }
 
     @Override
-    public StructVariable createNewVariable(String type) {
+    public StructVariable createNewVariable(String type, int line, int column) {
         if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
-            StructVariable variable = new StructVariable(this);
+            StructVariable variable = new StructVariable(this, line, column);
             return variable;
         } else {
             return null;
@@ -73,15 +73,15 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
         return this.symbolTable.get(element).get(name);
     }
     @Override
-    public NumericIntegerConstant newIntegerConstant(String value) {
-        return new NumericIntegerConstant(value, this);
+    public NumericIntegerConstant newIntegerConstant(String value, int line, int column) {
+        return new NumericIntegerConstant(value, this, line, column);
     }
     @Override
-    public NumericRealConstant newRealConstant(String value) {
-        return new NumericRealConstant(value, this);
+    public NumericRealConstant newRealConstant(String value, int line, int column) {
+        return new NumericRealConstant(value, this, line, column);
     }
     @Override
-    public StringConstant newStringConstant(String value) {
-        return new StringConstant(value, this);
+    public StringConstant newStringConstant(String value, int line, int column) {
+        return new StringConstant(value, this, line, column);
     }
 }

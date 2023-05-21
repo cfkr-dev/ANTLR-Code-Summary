@@ -3,6 +3,7 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.BinaryOperation;
+import semantic.utils.enums.Element;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
@@ -20,7 +21,11 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
 
     @Override
     public String toString() {
-        return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
+        if (this.hasParenthesis)
+            return "(" + firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue() + ")";
+        else
+            return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
+
     }
 
     @Override
@@ -59,13 +64,13 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
         }
 
         if (firstOperand.isMalformed()) {
-            System.err.println("No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
             this.setMalformed();
             return null;
         }
 
         if (secondOperand.isMalformed()) {
-            System.err.println("No es posible operar con una expresión malformada (" + secondOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + secondOperand.getValue() + ")");
             this.setMalformed();
             return null;
         }
@@ -84,17 +89,20 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
             errorHelper(firstOperand, secondOperand);
         }
 
-        return Type.typeConversion(firstOperand.getType(), secondOperand.getType());
+        if (this.elementType.equals(Element.LOGICAL_OPERATION) || this.elementType.equals(Element.COMPARISON_OPERATION))
+            return Type.INTEGER;
+        else
+            return Type.typeConversion(firstOperand.getType(), secondOperand.getType());
     }
 
     private void errorHelper(AssignableElement operand) {
         this.setMalformed();
-        System.err.println(operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 
     private void errorHelper(AssignableElement operandA, AssignableElement operandB) {
         this.setMalformed();
-        System.err.println(operandA.getName() + " (" + operandA.getType() + ") no es operable con " + operandB.getName() + " (" + operandB.getType() + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + operandA.getName() + " (" + operandA.getType() + ") no es operable con " + operandB.getName() + " (" + operandB.getType() + ")");
     }
 
 }

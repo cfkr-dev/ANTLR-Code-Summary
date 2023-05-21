@@ -7,7 +7,7 @@ import semantic.utils.enums.Type;
 
 public class NumericIntegerConstant extends Literal {
 
-    public NumericIntegerConstant(String value, ProgrammableElement context) {
+    public NumericIntegerConstant(String value, ProgrammableElement context, int line, int column) {
         this.value = value;
         this.type = Type.INTEGER;
         this.name = "INT_CONST_" + value;
@@ -15,6 +15,8 @@ public class NumericIntegerConstant extends Literal {
         this.context = context;
         this.superContext = context.getSuperContext();
         this.malformed = false;
+        this.line = line;
+        this.column = column;
     }
 
     @Override

@@ -8,7 +8,7 @@ import semantic.element.element_master.MasterProgramElement;
 public abstract class MasterVariable<E extends AssignableElement> extends MasterProgramElement implements Variable<E> {
 
     @Override
-    public abstract boolean setValue(E assignableElement, ProgrammableElement context);
+    public abstract boolean setValue(E assignableElement, ProgrammableElement context, int line, int column);
 
     @Override
     public abstract String getValue();

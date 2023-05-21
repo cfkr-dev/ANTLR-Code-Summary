@@ -6,7 +6,7 @@ import semantic.utils.enums.Element;
 
 public class BinaryLogicalOperation extends MasterBinaryOperation {
 
-    public BinaryLogicalOperation(ProgrammableElement context) {
+    public BinaryLogicalOperation(ProgrammableElement context, int line, int column) {
         this.type = null;
         this.firstOperand = null;
         this.secondOperand = null;
@@ -15,5 +15,7 @@ public class BinaryLogicalOperation extends MasterBinaryOperation {
         this.superContext = context.getSuperContext();
         this.malformed = false;
         this.hasParenthesis = false;
+        this.line = line;
+        this.column = column;
     }
 }

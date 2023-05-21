@@ -23,7 +23,7 @@ public class ForLoop extends MasterProgrammableSentence {
     public ForLoop(Variable variable,
                    AssignableElement conditionStop,
                    VariableAssignation assignationAfterIteration,
-                   ProgrammableElement context) {
+                   ProgrammableElement context, int line, int column) {
         this.type = null;
         this.name = "FOR_LOOP";
         this.elementType = Element.SENTENCE;
@@ -36,16 +36,12 @@ public class ForLoop extends MasterProgrammableSentence {
         this.conditionStop = conditionStop;
         this.assignationAfterIteration = assignationAfterIteration;
         this.malformed = false;
-
-        insertIndexVariable();
+        this.line = line;
+        this.column = column;
     }
 
     public Variable getIndexVariable() {
         return this.indexVariable;
-    }
-
-    private void insertIndexVariable() {
-        this.createNewVariable(indexVariable.getType().name(), getIndexVariable().getName());
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {

@@ -7,6 +7,5 @@ import semantic.utils.enums.Type;
 public interface UnaryOperation extends AssignableElement {
 
     public Type assertType(AssignableElement firstOperand);
-    public boolean isMalformed();
     public MasterUnaryOperation setParenthesis();
 }

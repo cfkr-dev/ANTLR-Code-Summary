@@ -20,7 +20,11 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
 
     @Override
     public String toString() {
-        return symbol + firstOperand.getValue();
+        if (this.hasParenthesis)
+            return "(" + symbol + firstOperand.getValue() + ")";
+        else
+            return symbol + firstOperand.getValue();
+
     }
 
     @Override
@@ -49,7 +53,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
         }
 
         if (firstOperand.isMalformed()) {
-            System.err.println("No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
             this.setMalformed();
             return null;
         }
@@ -64,6 +68,6 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
 
     private void errorHelper(AssignableElement operand) {
         this.setMalformed();
-        System.err.println(operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 }

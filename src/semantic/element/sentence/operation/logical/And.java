@@ -5,8 +5,8 @@ import semantic.element.sentence.operation.operation_master.logical.BinaryLogica
 import semantic.utils.enums.Operation;
 
 public class And extends BinaryLogicalOperation {
-    public And(ProgrammableElement context) {
-        super(context);
+    public And(ProgrammableElement context, int line, int column) {
+        super(context, line, column);
         this.name = "AND";
         this.symbol = "&";
         this.operationType = Operation.AND;

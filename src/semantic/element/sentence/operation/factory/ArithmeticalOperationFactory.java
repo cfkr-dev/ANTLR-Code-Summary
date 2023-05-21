@@ -12,23 +12,23 @@ public class ArithmeticalOperationFactory {
         this.context = context;
     }
 
-    public ArithmeticOperation sum() {
-        return new Sum(this.context);
+    public ArithmeticOperation sum(int line, int column) {
+        return new Sum(this.context, line, column);
     }
 
-    public ArithmeticOperation subtraction() {
-        return new Subtraction(this.context);
+    public ArithmeticOperation subtraction(int line, int column) {
+        return new Subtraction(this.context, line, column);
     }
 
-    public ArithmeticOperation multiplication() {
-        return new Multiplication(this.context);
+    public ArithmeticOperation multiplication(int line, int column) {
+        return new Multiplication(this.context, line, column);
     }
 
-    public ArithmeticOperation division() {
-        return new Division(this.context);
+    public ArithmeticOperation division(int line, int column) {
+        return new Division(this.context, line, column);
     }
 
-    public ArithmeticOperation modulus() {
-        return new Modulus(this.context);
+    public ArithmeticOperation modulus(int line, int column) {
+        return new Modulus(this.context, line, column);
     }
 }

@@ -6,7 +6,7 @@ import semantic.utils.enums.Element;
 
 public class UnaryLogicalOperation extends MasterUnaryOperation {
 
-    public UnaryLogicalOperation(ProgrammableElement context) {
+    public UnaryLogicalOperation(ProgrammableElement context, int line, int column) {
         this.type = null;
         this.firstOperand = null;
         this.elementType = Element.LOGICAL_OPERATION;
@@ -14,5 +14,7 @@ public class UnaryLogicalOperation extends MasterUnaryOperation {
         this.superContext = context.getSuperContext();
         this.malformed = false;
         this.hasParenthesis = false;
+        this.line = line;
+        this.column = column;
     }
 }

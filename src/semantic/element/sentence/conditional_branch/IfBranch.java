@@ -16,7 +16,7 @@ public class IfBranch extends MasterConditionalBranch {
     AssignableElement logicOperation;
     ConditionalBranch previous;
 
-    public IfBranch(AssignableElement logicOperation, ProgrammableElement context) {
+    public IfBranch(AssignableElement logicOperation, ProgrammableElement context, int line, int column) {
         this.type = null;
         this.name = logicOperation.getValue() + "_IF_BRANCH";
         this.elementType = Element.SENTENCE;
@@ -28,6 +28,8 @@ public class IfBranch extends MasterConditionalBranch {
         this.logicOperation = logicOperation;
         this.previous = null;
         this.malformed = false;
+        this.line = line;
+        this.column = column;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {

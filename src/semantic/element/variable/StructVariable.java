@@ -22,7 +22,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     protected List<Variable<? extends AssignableElement>> properties;
     protected boolean errorOnCreation;
 
-    public StructVariable(ProgrammableElement context) {
+    public StructVariable(ProgrammableElement context, int line, int column) {
         this.type = Type.STRUCT;
         this.elementType = Element.VARIABLE;
         this.name = null;
@@ -32,6 +32,8 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         this.properties = new ArrayList<>();
         this.errorOnCreation = false;
         this.malformed = true;
+        this.line = line;
+        this.column = column;
     }
 
     public StructVariable createStruct(String name) {
@@ -78,56 +80,56 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         return this.symbolTable.get(element).get(name);
     }
 
-    public StructVariable addNewSimpleProperty(String type, String name) {
+    public StructVariable addNewSimpleProperty(String type, String name, int line, int column) {
         if (!this.hasThisSymbol(name)) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)){
-                SimpleVariable simpleVariable = new SimpleVariable(type, name, this);
+                SimpleVariable simpleVariable = new SimpleVariable(type, name, this, line, column);
                 this.addToSymbolTable(simpleVariable);
                 this.properties.add(simpleVariable);
                 return this;
             }
         }
-        System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         this.errorOnCreation = true;
         return this;
     }
 
-    public StructVariable addNewSimpleProperty(String type, String name, AssignableElement value) {
+    public StructVariable addNewSimpleProperty(String type, String name, AssignableElement value, int line, int column) {
         if (!this.hasThisSymbol(name)) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
-                SimpleVariable simpleVariable = new SimpleVariable(type, name, this);
+                SimpleVariable simpleVariable = new SimpleVariable(type, name, this, line, column);
                 this.addToSymbolTable(simpleVariable);
-                simpleVariable.setValue(value, this);
+                simpleVariable.setValue(value, this, line, column);
                 this.properties.add(simpleVariable);
                 return this;
             }
         }
-        System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         this.errorOnCreation = true;
         return this;
     }
 
-    public StructVariable addNewNestedStructProperty(String name) {
+    public StructVariable addNewNestedStructProperty(String name, int line, int column) {
         if (!this.hasThisSymbol(name)) {
-            StructVariable structVariable = new StructVariable(this);
+            StructVariable structVariable = new StructVariable(this, line, column);
             this.properties.add(structVariable);
             return structVariable;
         }
-        StructVariable structVariable = new StructVariable(this);
+        StructVariable structVariable = new StructVariable(this, line, column);
         this.errorOnCreation = true;
-        System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
         return structVariable;
     }
 
     @Override
-    public boolean setValue(Variable assignableElement, ProgrammableElement context) {
+    public boolean setValue(Variable assignableElement, ProgrammableElement context, int line, int column) {
         if (this.malformed) {
             this.setMalformed();
             return false;
         }
 
         if (assignableElement.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             this.setMalformed();
             return false;
         }
@@ -138,9 +140,11 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             this.superContext = assignableElement.getSuperContext();
             this.symbolTable = ((StructVariable) assignableElement).getSymbolTable();
             this.properties = ((StructVariable) assignableElement).getProperties();
+            this.line = assignableElement.getLine();
+            this.column = assignableElement.getColumn();
             return true;
         } else {
-            System.err.println("Una variable de tipo struct solo puede ser asignada con otra variable de tipo struct");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Una variable de tipo struct solo puede ser asignada con otra variable de tipo struct");
             this.setMalformed();
             return false;
         }
@@ -153,6 +157,8 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             this.superContext = assignableElement.getSuperContext();
             this.symbolTable = ((StructVariable) assignableElement).getSymbolTable();
             this.properties = ((StructVariable) assignableElement).getProperties();
+            this.line = assignableElement.getLine();
+            this.column = assignableElement.getColumn();
         }
     }
 
@@ -167,7 +173,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
 
     @Override
     public Variable variableClone() {
-        StructVariable structVariable = new StructVariable(this.context).createStruct(this.name);
+        StructVariable structVariable = new StructVariable(this.context, this.line, this.column).createStruct(this.name);
         if (this.malformed)
             structVariable.forceSetMalformed();
         return structVariable;
@@ -187,30 +193,30 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     }
 
     @Override
-    public NumericIntegerConstant newIntegerConstant(String value) {
-        return new NumericIntegerConstant(value, this);
+    public NumericIntegerConstant newIntegerConstant(String value, int line, int column) {
+        return new NumericIntegerConstant(value, this, line, column);
     }
     @Override
-    public NumericRealConstant newRealConstant(String value) {
-        return new NumericRealConstant(value, this);
+    public NumericRealConstant newRealConstant(String value, int line, int column) {
+        return new NumericRealConstant(value, this, line, column);
     }
     @Override
-    public StringConstant newStringConstant(String value) {
-        return new StringConstant(value, this);
+    public StringConstant newStringConstant(String value, int line, int column) {
+        return new StringConstant(value, this, line, column);
     }
 
     /**
      * Se delega el comportamiento a el método ".addNewSimpleProperty()"
      */
     @Override
-    public Variable createNewVariable(String type, String name) {
-        return this.addNewSimpleProperty(type, name);
+    public Variable createNewVariable(String type, String name, int line, int column) {
+        return this.addNewSimpleProperty(type, name, line, column);
     }
 
     @Override
-    public StructVariable createNewVariable(String type) {
+    public StructVariable createNewVariable(String type, int line, int column) {
         if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT))
-            return this.addNewNestedStructProperty(type);
+            return this.addNewNestedStructProperty(type, line, column);
         else return null;
     }
 

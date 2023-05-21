@@ -10,7 +10,7 @@ public class VariableDefinition extends MasterSimpleSentence {
 
     private Variable variable;
 
-    public VariableDefinition(Variable variable, ProgrammableElement context) {
+    public VariableDefinition(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();
         this.name = variable.getName() + "_DEF";
         this.elementType = Element.SENTENCE;
@@ -19,6 +19,8 @@ public class VariableDefinition extends MasterSimpleSentence {
         this.superContext = context.getSuperContext();
         this.variable = variable;
         this.malformed = false;
+        this.line = line;
+        this.column = column;
     }
 
     @Override

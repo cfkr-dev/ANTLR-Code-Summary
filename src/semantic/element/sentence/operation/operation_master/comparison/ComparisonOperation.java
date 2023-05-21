@@ -6,7 +6,7 @@ import semantic.utils.enums.Element;
 
 public class ComparisonOperation extends MasterBinaryOperation {
 
-    public ComparisonOperation(ProgrammableElement context) {
+    public ComparisonOperation(ProgrammableElement context, int line, int column) {
         this.type = null;
         this.firstOperand = null;
         this.secondOperand = null;
@@ -15,5 +15,7 @@ public class ComparisonOperation extends MasterBinaryOperation {
         this.superContext = context.getSuperContext();
         this.malformed = false;
         this.hasParenthesis = false;
+        this.line = line;
+        this.column = column;
     }
 }

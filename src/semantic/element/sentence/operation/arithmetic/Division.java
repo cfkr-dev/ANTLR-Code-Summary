@@ -5,8 +5,8 @@ import semantic.element.sentence.operation.operation_master.arithmetic.Arithmeti
 import semantic.utils.enums.Operation;
 
 public class Division extends ArithmeticOperation {
-    public Division(ProgrammableElement context) {
-        super(context);
+    public Division(ProgrammableElement context, int line, int column) {
+        super(context, line, column);
         this.name = "DIVISION";
         this.symbol = "DIV";
         this.operationType = Operation.DIVISION;

@@ -10,7 +10,7 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence {
 
     private Variable variable;
 
-    public VariableDefinitionAndAssign(Variable variable, ProgrammableElement context) {
+    public VariableDefinitionAndAssign(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();
         this.name = variable.getName() + "_DEF_AND_ASSIG";
         this.elementType = Element.SENTENCE;
@@ -18,6 +18,8 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence {
         this.context = context;
         this.superContext = context.getSuperContext();
         this.variable = variable;
+        this.line = line;
+        this.column = column;
     }
 
     public Variable getVariable () {

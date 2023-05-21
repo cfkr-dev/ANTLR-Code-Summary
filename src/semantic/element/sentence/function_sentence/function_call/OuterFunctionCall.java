@@ -10,7 +10,7 @@ import java.util.LinkedList;
 
 public class OuterFunctionCall extends MasterFunctionCall {
 
-    public OuterFunctionCall(String functionName, ProgrammableElement context) {
+    public OuterFunctionCall(String functionName, ProgrammableElement context, int line, int column) {
         this.type = Type.ANY;
         this.name = functionName + "_CALL";
         this.elementType = Element.SENTENCE;
@@ -21,6 +21,8 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.callingParams = new LinkedList<>();
         this.malformed = true;
         this.errorOnCreation = false;
+        this.line = line;
+        this.column = column;
     }
     @Override
     public FunctionCall call() {

@@ -5,8 +5,8 @@ import semantic.element.sentence.operation.operation_master.comparison.Compariso
 import semantic.utils.enums.Operation;
 
 public class Equal extends ComparisonOperation {
-    public Equal(ProgrammableElement context) {
-        super(context);
+    public Equal(ProgrammableElement context, int line, int column) {
+        super(context, line, column);
         this.name = "EQUAL";
         this.symbol = "==";
         this.operationType = Operation.EQUAL;

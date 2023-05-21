@@ -44,46 +44,62 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
      * @param tokenID <br> "VARIABLE" -> referencia a variable <br>
      *                     "CONSTANT" -> referencia a constante
      */
-    public AssignableElement newSymbolReference(String tokenID, String name) {
+    public AssignableElement newSymbolReference(String tokenID, String name, int line, int column) {
         if (this.hasThisSymbol(name)) {
             if (Element.valueOf(tokenID.toUpperCase()).equals(Element.VARIABLE))
                 return (AssignableElement) this.getSymbolByNameAndElement(name, Element.VARIABLE);
             else if (Element.valueOf(tokenID.toUpperCase()).equals(Element.CONSTANT))
                 return (AssignableElement) this.getSymbolByNameAndElement(name, Element.CONSTANT);
         }
-        System.err.println("No existe el símbolo al que se hace referencia (" + name + ")");
-        AssignableElement malformed = new Constant("malformed", this.newStringConstant("malformed"), this);
+        System.err.println("ERROR " + line + ":" + column + " => " + "No existe el símbolo al que se hace referencia (" + name + ")");
+        AssignableElement malformed = new Constant("malformed", this.newStringConstant("malformed", line, column), this, line, column);
         malformed.setMalformed();
         return malformed;
     }
 
     /**
-     * IMPORTANTE: UNA VEZ TERMINADO DE COLOCAR TODOS LOS PARAMETROS DE LLAMADA, EJECUTAR EL MÉTODO ".call()"
+     * Usor para referenciar constantes o variables al crear expresiones
+     * @param tokenID <br> "VARIABLE" -> referencia a variable <br>
+     *                     "CONSTANT" -> referencia a constante
      */
-    public FunctionCall newFunctionCall(String functionName) {
-        if (this.hasThisSymbol(functionName)) {
-            Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
-            return new InnerFunctionCall(function, this);
-        } else
-            return new OuterFunctionCall(functionName, this);
+    public AssignableElement newSymbolReference(String tokenID, String name, boolean forLoop, int line, int column) {
+        if (forLoop && Element.valueOf(tokenID.toUpperCase()).equals(Element.VARIABLE)) {
+            if (this.hasThisSymbol(name))
+                return (AssignableElement) this.getSymbolByNameAndElement(name, Element.VARIABLE);
+            else
+                return new SimpleVariable("INTEGER", name, this, line, column);
+        } else {
+            return this.newSymbolReference(tokenID, name, line, column);
+        }
     }
 
-    public VariableDefinition addNewVariableDefinition(String type, String name){
+    /**
+     * IMPORTANTE: UNA VEZ TERMINADO DE COLOCAR TODOS LOS PARAMETROS DE LLAMADA, EJECUTAR EL MÉTODO ".call()"
+     */
+    public FunctionCall newFunctionCall(String functionName, int line, int column) {
+        if (this.hasThisSymbol(functionName)) {
+            Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
+            return new InnerFunctionCall(function, this, line, column);
+        } else
+            return new OuterFunctionCall(functionName, this, line, column);
+    }
+
+    public VariableDefinition addNewVariableDefinition(String type, String name, int line, int column){
         boolean error = false;
 
-        Variable variable = this.createNewVariable(type, name);
+        Variable variable = this.createNewVariable(type, name, line, column);
 
         if (variable == null) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
-                variable = new SimpleVariable(type, name, this);
+                variable = new SimpleVariable(type, name, this, line, column);
             } else {
-                variable = new StructVariable(this);
+                variable = new StructVariable(this, line, column);
             }
             variable.setMalformed();
             error = true;
         }
 
-        VariableDefinition variableDefinition = new VariableDefinition(variable, this);
+        VariableDefinition variableDefinition = new VariableDefinition(variable, this, line, column);
 
         if (error) {
             variableDefinition.setMalformed();
@@ -94,17 +110,17 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return variableDefinition;
     }
 
-    public VariableDefinitionAndAssign addNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement){
+    public VariableDefinitionAndAssign addNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement, int line, int column){
         boolean error = false;
 
-        Variable variable = this.createNewVariable(type, name);
+        Variable variable = this.createNewVariable(type, name, line, column);
 
         if (variable == null) {
-            System.err.println("No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
-                variable = new SimpleVariable(type, name, this);
+                variable = new SimpleVariable(type, name, this, line, column);
             } else {
-                variable = new StructVariable(this);
+                variable = new StructVariable(this, line, column);
             }
             variable.setMalformed();
             error = true;
@@ -114,11 +130,11 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variable.forceSetValue(assignableElement);
-        } else if (!variable.setValue(assignableElement, this)) {
+        } else if (!variable.setValue(assignableElement, this, line, column)) {
             error = true;
         }
 
-        VariableDefinitionAndAssign variableDefinitionAndAssign = new VariableDefinitionAndAssign(variable, this);
+        VariableDefinitionAndAssign variableDefinitionAndAssign = new VariableDefinitionAndAssign(variable, this, line, column);
 
         if (error) {
             variableDefinitionAndAssign.setMalformed();
@@ -129,14 +145,14 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return variableDefinitionAndAssign;
     }
 
-    public VariableAssignation addNewVariableAssign(String name, AssignableElement assignableElement){
+    public VariableAssignation addNewVariableAssign(String name, AssignableElement assignableElement, int line, int column){
         boolean error = false;
 
         Variable variable = (Variable) this.getSymbolByNameAndElement(name, Element.VARIABLE);
 
         if (variable == null) {
-            System.err.println("No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
-            variable = new SimpleVariable("ANY", name, this);
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
+            variable = new SimpleVariable("ANY", name, this, line, column);
             variable.setMalformed();
             error = true;
         }
@@ -145,11 +161,11 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variable.forceSetValue(assignableElement);
-        } else if (!variable.setValue(assignableElement, this)) {
+        } else if (!variable.setValue(assignableElement, this, line, column)) {
             error = true;
         }
 
-        VariableAssignation variableAssignation = new VariableAssignation(variable, this);
+        VariableAssignation variableAssignation = new VariableAssignation(variable, this, line, column);
 
         if (error) {
             variableAssignation.setMalformed();
@@ -160,20 +176,20 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return variableAssignation;
     }
 
-    public IfBranch addNewIfBranch(AssignableElement logicOperation) {
+    public IfBranch addNewIfBranch(AssignableElement logicOperation, int line, int column) {
         boolean error = false;
 
         if (!Type.checkTypeConditional(logicOperation)) {
-            System.err.println("Se debe introducir una expresión lógica");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Se debe introducir una expresión lógica");
             error = true;
         }
 
         if (logicOperation.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             error = true;
         }
 
-        IfBranch ifBranch = new IfBranch(logicOperation, this);
+        IfBranch ifBranch = new IfBranch(logicOperation, this, line, column);
         
         if (error) {
             ifBranch.setMalformed();
@@ -184,23 +200,23 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return ifBranch;
     }
 
-    public ElseIfBranch addNewElseIfBranch(AssignableElement logicOperation, ConditionalBranch previous) {
+    public ElseIfBranch addNewElseIfBranch(AssignableElement logicOperation, ConditionalBranch previous, int line, int column) {
         boolean error = false;
 
         if (!Type.checkTypeConditional(logicOperation)) {
-            System.err.println("Se debe introducir una expresión lógica");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Se debe introducir una expresión lógica");
             error = true;
         }
 
         if (logicOperation.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             error = true;
         }
 
         if (previous.isMalformed())
             error = true;
 
-        ElseIfBranch elseIfBranch = new ElseIfBranch(logicOperation, previous, this);
+        ElseIfBranch elseIfBranch = new ElseIfBranch(logicOperation, previous, this, line, column);
 
         if (error) {
             elseIfBranch.setMalformed();
@@ -211,10 +227,10 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return elseIfBranch;
     }
 
-    public ElseBranch addNewElseBranch(ConditionalBranch previous) {
+    public ElseBranch addNewElseBranch(ConditionalBranch previous, int line, int column) {
         boolean error = previous.isMalformed();
 
-        ElseBranch elseBranch = new ElseBranch(previous, this);
+        ElseBranch elseBranch = new ElseBranch(previous, this, line, column);
         
         if (error) {
             elseBranch.setMalformed();
@@ -227,16 +243,20 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     public ForLoop addNewForLoop(String indexVariableName, AssignableElement startValue,
                                  AssignableElement conditionStop,
-                                 String afterLoopVariableName, AssignableElement afterLoopValue){
+                                 String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
+        boolean createdIndexVariable = false;
 
         Variable variableIndex = (Variable) this.getSymbolByNameAndElement(indexVariableName, Element.VARIABLE);
 
-        if (variableIndex == null)
-            variableIndex = new SimpleVariable("integer", indexVariableName, this);
+        if (variableIndex == null) {
+            variableIndex = new SimpleVariable("integer", indexVariableName, this, line, column);
+            this.addToSymbolTable(variableIndex);
+            createdIndexVariable = true;
+        }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
-            System.err.println("La variable índice debe ser de tipo integer");
+            System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice debe ser de tipo integer");
             variableIndex.setMalformed();
             error = true;
         }
@@ -245,29 +265,29 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variableIndex.forceSetValue(startValue);
-        } else if (!variableIndex.setValue(startValue, this)) {
+        } else if (!variableIndex.setValue(startValue, this, line, column)) {
             error = true;
         }
 
         if (!Type.checkTypeConditional(conditionStop)) {
-            System.err.println("Debe incluir una expresión lógica de parada como segundo argumento");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Debe incluir una expresión lógica de parada como segundo argumento");
             error = true;
         }
 
         if (conditionStop.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada como condición de parada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada como condición de parada");
             error = true;
         }
 
-        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this);
+        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this, line, column);
 
-        if (afterLoopVariableName.equals(indexVariableName)) {
-            System.err.println("La variable índice nunca es actualizada");
+        if (!afterLoopVariableName.equals(indexVariableName)) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice nunca es actualizada");
             error = true;
         }
 
         if (afterLoopValue.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada como expresión de actualización");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada como expresión de actualización");
             error = true;
         }
 
@@ -275,13 +295,16 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             afterIterationVariable.forceSetValue(afterLoopValue);
-        } else if (!afterIterationVariable.setValue(afterLoopValue, this)) {
+        } else if (!afterIterationVariable.setValue(afterLoopValue, this, line, column)) {
             error = true;
         }
 
-        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this);
+        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
 
-        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this);
+        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this, line, column);
+
+        if (createdIndexVariable)
+            this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
 
         if (error) {
             forLoop.setMalformed();
@@ -295,25 +318,21 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     public ForLoop addNewForLoop(String indexVariableType, String indexVariableName, AssignableElement startValue,
                                   AssignableElement conditionStop,
-                                  String afterLoopVariableName, AssignableElement afterLoopValue){
+                                  String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
+        boolean createdIndexVariable = false;
 
-        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, this);
+        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, this, line, column);
 
-        if (!this.hasThisSymbol(indexVariableName)){
-            System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + indexVariableName + ")");
-            variableIndex = null;
-            error = true;
-        }
-
-        if (variableIndex == null) {
-            variableIndex = new SimpleVariable("integer", indexVariableName, this);
-            variableIndex.setMalformed();
-            error = true;
+        if (this.hasThisSymbol(indexVariableName)){
+            this.getSymbolTable().get(Element.VARIABLE).replace(indexVariableName, variableIndex);
+            createdIndexVariable = true;
+        } else {
+            this.getSymbolTable().get(Element.VARIABLE).put(indexVariableName, variableIndex);
         }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
-            System.err.println("La variable índice debe ser de tipo integer");
+            System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice debe ser de tipo integer");
             variableIndex.setMalformed();
             error = true;
         }
@@ -322,29 +341,29 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variableIndex.forceSetValue(startValue);
-        } else if (!variableIndex.setValue(startValue, this)) {
+        } else if (!variableIndex.setValue(startValue, this, line, column)) {
             error = true;
         }
 
         if (!Type.checkTypeConditional(conditionStop)) {
-            System.err.println("Debe incluir una expresión lógica de parada como segundo argumento");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Debe incluir una expresión lógica de parada como segundo argumento");
             error = true;
         }
 
         if (conditionStop.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada como condición de parada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada como condición de parada");
             error = true;
         }
 
-        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this);
+        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this, line, column);
 
-        if (afterLoopVariableName.equals(indexVariableName)) {
-            System.err.println("La variable índice nunca es actualizada");
+        if (!afterLoopVariableName.equals(indexVariableName)) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice nunca es actualizada");
             error = true;
         }
 
         if (afterLoopValue.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada como expresión de actualización");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada como expresión de actualización");
             error = true;
         }
 
@@ -352,13 +371,16 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             afterIterationVariable.forceSetValue(afterLoopValue);
-        } else if (!afterIterationVariable.setValue(afterLoopValue, this)) {
+        } else if (!afterIterationVariable.setValue(afterLoopValue, this, line, column)) {
             error = true;
         }
 
-        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this);
+        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
 
-        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this);
+        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this, line, column);
+
+        if (createdIndexVariable)
+            this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
 
         if (error) {
             forLoop.setMalformed();
@@ -371,25 +393,27 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     public ForLoop addNewForLoop(String indexVariableType, String indexVariableName,
                                   AssignableElement conditionStop,
-                                  String afterLoopVariableName, AssignableElement afterLoopValue){
+                                  String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
+        boolean createdIndexVariable = false;
 
-        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, this);
+        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, this, line, column);
 
-        if (!this.hasThisSymbol(indexVariableName)){
-            System.err.println("Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + indexVariableName + ")");
-            variableIndex = null;
-            error = true;
+        if (this.hasThisSymbol(indexVariableName)){
+            this.getSymbolTable().get(Element.VARIABLE).replace(indexVariableName, variableIndex);
+            createdIndexVariable = true;
+        } else {
+            this.getSymbolTable().get(Element.VARIABLE).put(indexVariableName, variableIndex);
         }
 
         if (variableIndex == null) {
-            variableIndex = new SimpleVariable("integer", indexVariableName, this);
+            variableIndex = new SimpleVariable("integer", indexVariableName, this, line, column);
             variableIndex.setMalformed();
             error = true;
         }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
-            System.err.println("La variable índice debe ser de tipo integer");
+            System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice debe ser de tipo integer");
             variableIndex.setMalformed();
             error = true;
         }
@@ -397,30 +421,30 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         variableIndex = (SimpleVariable) variableIndex.variableClone();
 
         if (error) {
-            variableIndex.forceSetValue(this.newIntegerConstant("0"));
-        } else if (!variableIndex.setValue(this.newIntegerConstant("0"), this)) {
+            variableIndex.forceSetValue(this.newIntegerConstant("0", line, column));
+        } else if (!variableIndex.setValue(this.newIntegerConstant("0", line, column), this, line, column)) {
             error = true;
         }
 
         if (!Type.checkTypeConditional(conditionStop)) {
-            System.err.println("Debe incluir una expresión lógica de parada como segundo argumento");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Debe incluir una expresión lógica de parada como segundo argumento");
             error = true;
         }
 
         if (conditionStop.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada como condición de parada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada como condición de parada");
             error = true;
         }
 
-        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this);
+        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this, line, column);
 
-        if (afterLoopVariableName.equals(indexVariableName)) {
-            System.err.println("La variable índice nunca es actualizada");
+        if (!afterLoopVariableName.equals(indexVariableName)) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice nunca es actualizada");
             error = true;
         }
 
         if (afterLoopValue.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada como expresión de actualización");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada como expresión de actualización");
             error = true;
         }
 
@@ -428,13 +452,16 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             afterIterationVariable.forceSetValue(afterLoopValue);
-        } else if (!afterIterationVariable.setValue(afterLoopValue, this)) {
+        } else if (!afterIterationVariable.setValue(afterLoopValue, this, line, column)) {
             error = true;
         }
 
-        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this);
+        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
 
-        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this);
+        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this, line, column);
+
+        if (createdIndexVariable)
+            this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
 
         if (error) {
             forLoop.setMalformed();
@@ -445,20 +472,20 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return forLoop;
     }
 
-    public WhileLoop addNewWhileLoop(AssignableElement logicOperation){
+    public WhileLoop addNewWhileLoop(AssignableElement logicOperation, int line, int column){
         boolean error = false;
 
         if (!Type.checkTypeConditional(logicOperation)) {
-            System.err.println("Se debe introducir una expresión lógica");
+            System.err.println("ERROR " + line + ":" + column + " => " + "Se debe introducir una expresión lógica");
             error = true;
         }
 
         if (logicOperation.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             error = true;
         }
 
-        WhileLoop whileLoop = new WhileLoop(logicOperation, this);
+        WhileLoop whileLoop = new WhileLoop(logicOperation, this, line, column);
 
         if (error) {
             whileLoop.setMalformed();
@@ -472,8 +499,8 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     /**
      * IMPORTANTE: UNA VEZ INSERTADAS TODAS LAS SENTENCIAS LLAMAR AL MÉTODO INTERNO ".createDoWhileLoop()" CON SU OPERACIÓN LÓGICA CORRESPONDIENTE
      */
-    public DoWhileLoop addNewDoWhileLoop() {
-        DoWhileLoop doWhileLoop = new DoWhileLoop(this);
+    public DoWhileLoop addNewDoWhileLoop(int line, int column) {
+        DoWhileLoop doWhileLoop = new DoWhileLoop(this, line, column);
         if (!this.malformed)
             this.sentences.add(doWhileLoop);
         return doWhileLoop;
@@ -494,20 +521,20 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
         return functionCall;
     }
 
-    public ReturnPoint addNewReturnPoint(AssignableElement returnElement){
+    public ReturnPoint addNewReturnPoint(AssignableElement returnElement, int line, int column){
         boolean error = false;
         
         if (!this.getSuperContext().getType().equals(returnElement.getType())) {
-            System.err.println("El tipo del elemento devuelto debe concordar con el tipo de la función");
+            System.err.println("ERROR " + line + ":" + column + " => " + "El tipo del elemento devuelto debe concordar con el tipo de la función");
             error = true;
         }
 
         if (returnElement.isMalformed()) {
-            System.err.println("No se puede asignar una expresión malformada");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             error = true;
         }
 
-        ReturnPoint returnPoint = new ReturnPoint((Function) this.getSuperContext(), returnElement, this);
+        ReturnPoint returnPoint = new ReturnPoint((Function) this.getSuperContext(), returnElement, this, line, column);
 
         if (error) {
             returnElement.setMalformed();
