@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from /data_linux/UNIVERSIDAD/GII_GIS_5/PL/Practicas/practica_obligatoria/src/sourceCode.g4 by ANTLR 4.12.0
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -11,6 +11,18 @@ import org.antlr.v4.runtime.tree.TerminalNode;
  */
 @SuppressWarnings("CheckReturnValue")
 public class sourceCodeBaseListener implements sourceCodeListener {
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterProgram_prime(sourceCodeParser.Program_primeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitProgram_prime(sourceCodeParser.Program_primeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -35,18 +47,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitProgram_aux(sourceCodeParser.Program_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterProgram_empty(sourceCodeParser.Program_emptyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitProgram_empty(sourceCodeParser.Program_emptyContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -124,18 +124,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterSentlist_error(sourceCodeParser.Sentlist_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSentlist_error(sourceCodeParser.Sentlist_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterDcl(sourceCodeParser.DclContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -155,66 +143,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCte(sourceCodeParser.CteContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCte_error(sourceCodeParser.Cte_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCte_error(sourceCodeParser.Cte_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCte_error_aux(sourceCodeParser.Cte_error_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCte_error_aux(sourceCodeParser.Cte_error_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCte_error_aux_1(sourceCodeParser.Cte_error_aux_1Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCte_error_aux_1(sourceCodeParser.Cte_error_aux_1Context ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCte_error_aux_1_aux(sourceCodeParser.Cte_error_aux_1_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCte_error_aux_1_aux(sourceCodeParser.Cte_error_aux_1_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCte_error_semicolon(sourceCodeParser.Cte_error_semicolonContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCte_error_semicolon(sourceCodeParser.Cte_error_semicolonContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -256,18 +184,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterVardef_aux_error(sourceCodeParser.Vardef_aux_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitVardef_aux_error(sourceCodeParser.Vardef_aux_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterSimple_vardef(sourceCodeParser.Simple_vardefContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -280,30 +196,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterError_simple_vardef(sourceCodeParser.Error_simple_vardefContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitError_simple_vardef(sourceCodeParser.Error_simple_vardefContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterError_simple_vardef_aux(sourceCodeParser.Error_simple_vardef_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitError_simple_vardef_aux(sourceCodeParser.Error_simple_vardef_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterStruct_vardef(sourceCodeParser.Struct_vardefContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -311,18 +203,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStruct_vardef(sourceCodeParser.Struct_vardefContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterError_struct_vardef(sourceCodeParser.Error_struct_vardefContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitError_struct_vardef(sourceCodeParser.Error_struct_vardefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -383,18 +263,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSimpvalue(sourceCodeParser.SimpvalueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSimpvalue_error(sourceCodeParser.Simpvalue_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSimpvalue_error(sourceCodeParser.Simpvalue_errorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -472,30 +340,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunchead_error(sourceCodeParser.Funchead_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunchead_error(sourceCodeParser.Funchead_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunchead_error_aux(sourceCodeParser.Funchead_error_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunchead_error_aux(sourceCodeParser.Funchead_error_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterTypedef(sourceCodeParser.TypedefContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -520,30 +364,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterTypedef_error(sourceCodeParser.Typedef_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTypedef_error(sourceCodeParser.Typedef_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterTypedef_error_aux(sourceCodeParser.Typedef_error_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitTypedef_error_aux(sourceCodeParser.Typedef_error_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterMainhead(sourceCodeParser.MainheadContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -563,18 +383,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitMainhead_aux(sourceCodeParser.Mainhead_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMainhead_error(sourceCodeParser.Mainhead_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMainhead_error(sourceCodeParser.Mainhead_errorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -640,30 +448,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterError_simple_vardef_code(sourceCodeParser.Error_simple_vardef_codeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitError_simple_vardef_code(sourceCodeParser.Error_simple_vardef_codeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterError_simple_vardef_code_aux(sourceCodeParser.Error_simple_vardef_code_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitError_simple_vardef_code_aux(sourceCodeParser.Error_simple_vardef_code_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterAsig(sourceCodeParser.AsigContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -671,18 +455,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitAsig(sourceCodeParser.AsigContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAsig_error(sourceCodeParser.Asig_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAsig_error(sourceCodeParser.Asig_errorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -707,18 +479,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunccall(sourceCodeParser.FunccallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFunccall_error(sourceCodeParser.Funccall_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFunccall_error(sourceCodeParser.Funccall_errorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -784,18 +544,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterReturn_func_aux(sourceCodeParser.Return_func_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitReturn_func_aux(sourceCodeParser.Return_func_auxContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterIf(sourceCodeParser.IfContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -839,6 +587,18 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitElse_aux(sourceCodeParser.Else_auxContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIf_else(sourceCodeParser.If_elseContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIf_else(sourceCodeParser.If_elseContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -1019,222 +779,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitSimpvalue_code(sourceCodeParser.Simpvalue_codeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSimpvalue_code_error(sourceCodeParser.Simpvalue_code_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSimpvalue_code_error(sourceCodeParser.Simpvalue_code_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParen_open(sourceCodeParser.Paren_openContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParen_open(sourceCodeParser.Paren_openContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParen_open_error(sourceCodeParser.Paren_open_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParen_open_error(sourceCodeParser.Paren_open_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParen_close(sourceCodeParser.Paren_closeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParen_close(sourceCodeParser.Paren_closeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterParen_close_error(sourceCodeParser.Paren_close_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitParen_close_error(sourceCodeParser.Paren_close_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCurly_open(sourceCodeParser.Curly_openContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCurly_open(sourceCodeParser.Curly_openContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCurly_open_error(sourceCodeParser.Curly_open_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCurly_open_error(sourceCodeParser.Curly_open_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCurly_close(sourceCodeParser.Curly_closeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCurly_close(sourceCodeParser.Curly_closeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterCurly_close_error(sourceCodeParser.Curly_close_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCurly_close_error(sourceCodeParser.Curly_close_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterComma(sourceCodeParser.CommaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitComma(sourceCodeParser.CommaContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterComma_error(sourceCodeParser.Comma_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitComma_error(sourceCodeParser.Comma_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterComma_no_var_error(sourceCodeParser.Comma_no_var_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitComma_no_var_error(sourceCodeParser.Comma_no_var_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSemicolon(sourceCodeParser.SemicolonContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSemicolon(sourceCodeParser.SemicolonContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterSemicolon_error(sourceCodeParser.Semicolon_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitSemicolon_error(sourceCodeParser.Semicolon_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqual_asig(sourceCodeParser.Equal_asigContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqual_asig(sourceCodeParser.Equal_asigContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqual_asig_error(sourceCodeParser.Equal_asig_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqual_asig_error(sourceCodeParser.Equal_asig_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqual_asig_no_empty(sourceCodeParser.Equal_asig_no_emptyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqual_asig_no_empty(sourceCodeParser.Equal_asig_no_emptyContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterEqual_asig_no_empty_error(sourceCodeParser.Equal_asig_no_empty_errorContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitEqual_asig_no_empty_error(sourceCodeParser.Equal_asig_no_empty_errorContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

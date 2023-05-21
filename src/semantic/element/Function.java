@@ -2,7 +2,6 @@ package semantic.element;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
-import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
@@ -75,17 +74,15 @@ public class Function extends MasterSentenceContainer {
 
     public String toStringCabecera() {
 
-        String cabecera = new String();
+        StringBuilder header = new StringBuilder(this.type + " " + this.toHTMLIdentifier() + "(");
 
-        cabecera = this.type + " " + this.toHTMLIdentifier() + "(";
+        for (Variable param : params) {
 
-        for (SimpleVariable param : params) {
-
-            cabecera += param.getType() + " " + param.toHTMLIdentifier() + ",";
+            header.append(param.getType()).append(" ").append(param.toHTMLIdentifier()).append(",");
 
         }
 
-        return cabecera.substring(0, cabecera.length()-1) + ")";
+        return header.substring(0, header.length()-1) + ")";
 
     }
 

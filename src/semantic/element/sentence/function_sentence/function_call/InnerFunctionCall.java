@@ -13,7 +13,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
 
     private Function function;
 
-    public InnerFunctionCall(Function function, ProgrammableElement context, int line, int column) {
+    public InnerFunctionCall(Function function, ProgrammableElement context, Boolean partOfExpression, int line, int column) {
         if (Type.checkTypeCasting(function.getName()))
             this.type = Type.valueOf(function.getName());
         else
@@ -26,6 +26,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.function = function;
         this.functionName = function.getName();
         this.callingParams = new LinkedList<>();
+        this.partOfExpression = partOfExpression;
         this.malformed = true;
         this.errorOnCreation = false;
         this.line = line;

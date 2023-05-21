@@ -27,6 +27,6 @@ public class VariableAssignation extends MasterSimpleSentence {
 
     @Override
     public String toHTML() {
-        return "<p>" + this.name + " = " + this.value + ";</p>\n";
+        return "<p>" + this.name + " = " + this.variable.getValue() + ";</p>\n";
     }
 }

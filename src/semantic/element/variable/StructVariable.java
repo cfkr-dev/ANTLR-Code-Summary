@@ -224,21 +224,19 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     @Override
     public String toHTML() {
 
-        String HTMLStruct = new String();
+        StringBuilder HTMLStruct = new StringBuilder("<p>struct{</p>\n");
 
-        HTMLStruct = "<p>struct{</p>\n";
-
-        HTMLStruct = "\t<DIV style=\"text-indent: 2cm\"><p>\n";
+        HTMLStruct.append("\t<DIV style=\"text-indent: 2cm\"><p>\n");
 
         for (Variable<? extends AssignableElement> element : this.properties) {
 
-            HTMLStruct += element.toHTML().replace("\n", "\n\t\t");
+            HTMLStruct.append(element.toHTML().replace("\n", "\n\t\t"));
 
         }
 
-        HTMLStruct += "\t</DIV>\n";
-        HTMLStruct += "<p>} " + this.name + ";</p>\n";
+        HTMLStruct.append("\t</DIV>\n");
+        HTMLStruct.append("<p>} ").append(this.name).append(";</p>\n");
 
-        return HTMLStruct;
+        return HTMLStruct.toString();
     }
 }

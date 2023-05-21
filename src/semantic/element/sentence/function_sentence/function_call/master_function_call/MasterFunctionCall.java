@@ -50,22 +50,20 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
     public String toHTML() {
 
-        String HTMLFunction = new String();
-
-        HTMLFunction = "<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(";
+        StringBuilder HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(");
 
         for (AssignableElement elem : callingParams) {
 
             if (elem != callingParams.get(0))
-                HTMLFunction += ", ";
+                HTMLFunction.append(", ");
 
-            HTMLFunction += elem.getName();
+            HTMLFunction.append(elem.getName());
 
         }
-        HTMLFunction += ")";
+        HTMLFunction.append(")");
 
         if (partOfExpression)
-            return HTMLFunction;
+            return HTMLFunction.toString();
         else
             return "<p>" + HTMLFunction + ";</p>\n";
 

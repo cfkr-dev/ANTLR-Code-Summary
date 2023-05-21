@@ -11,7 +11,6 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     protected String symbol;
     protected Boolean hasParenthesis;
     protected Operation operationType;
-    protected Boolean hasParenthesis;
 
     @Override
     public String getValue() {

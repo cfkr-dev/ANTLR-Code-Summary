@@ -551,20 +551,18 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     protected String toHTMLBrackets () {
 
-        String HTMLAux = new String();
-
-        HTMLAux = "\t<DIV style=\"text-indent: 2cm\"><p>\n";
+        StringBuilder HTMLAux = new StringBuilder("\t<DIV style=\"text-indent: 2cm\"><p>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence line : this.sentences) {
 
-            HTMLAux += line.toHTML().replace("\n", "\n\t\t");
+            HTMLAux.append(line.toHTML().replace("\n", "\n\t\t"));
 
         }
 
-        HTMLAux += "\t</DIV>\n";
-        HTMLAux += "<p>}</p>\n";
+        HTMLAux.append("\t</DIV>\n");
+        HTMLAux.append("<p>}</p>\n");
 
-        return HTMLAux;
+        return HTMLAux.toString();
 
     }
 

@@ -28,6 +28,7 @@ public class Program extends MasterProgrammableElement {
         this.malformed = false;
         this.line = 0;
         this.column = 0;
+        Constants.PROGRAM = this;
     }
 
     private Map<Element, Map<String, ProgramElement>> initializeSymbolTable () {
@@ -88,8 +89,8 @@ public class Program extends MasterProgrammableElement {
     @Override
     public String toHTML() {
 
-        //if (this.malformed)
-          //throw new RuntimeException("No es posible crear el resumen de programa");
+        if (this.malformed)
+          throw new RuntimeException("No es posible crear el resumen de programa");
 
         String HTMLCabecera = new String();
         String HTMLFuncitonsCabecera = new String();

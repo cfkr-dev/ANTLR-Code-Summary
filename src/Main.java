@@ -5,69 +5,60 @@ import org.antlr.v4.runtime.CommonTokenStream;
 import java.io.IOException;
 
 import static semantic.utils.Constants.FILE_NAME;
-import static semantic.utils.Constants.p;
+import static semantic.utils.Constants.PROGRAM;
 
-/*
-El nombre ClasePrincipal es arbitrario, escoge el que prefieras.
-Sustituye Numbers por el nombre del fichero que contiene la especificación de la gramática ANTLR
-(extensión .g4)
-*/
 public class Main {
     public static void main(String[] args) throws InstantiationException {
         try {
-            // Preparar el fichero de entrada para asignarlo al analizador léxico
+            // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
 
+            // Save file name
             FILE_NAME = args[0];
+
+            // Start HTML generator
             HTMLFileGen.starter();
 
-            // Crear el objeto correspondiente al analizador léxico con el fichero de
-            // entrada
-            sourceCodeLexer analex = new sourceCodeLexer(input);
+            // Create lexer
+            sourceCodeLexer lexer = new sourceCodeLexer(input);
 
-            // Identificar al analizador léxico como fuente de tokens para el
-            // sintactico
-            CommonTokenStream tokens = new CommonTokenStream(analex);
+            // Create tokens stream
+            CommonTokenStream tokens = new CommonTokenStream(lexer);
 
-            // Crear el objeto correspondiente al analizador sintáctico
-            sourceCodeParser anasint = new sourceCodeParser(tokens);
+            // Create parser
+            sourceCodeParser parser = new sourceCodeParser(tokens);
 
-            analex.removeErrorListeners();
-            analex.addErrorListener(new UnderlineCustomErrorListener());
+            // Remove default error listener from lexer
+            lexer.removeErrorListeners();
 
-            anasint.removeErrorListeners(); // remove ConsoleErrorListener
-            anasint.addErrorListener(new UnderlineCustomErrorListener()); // add ours
-            anasint.setErrorHandler(new CustomErrorStrategy()); // add custom error strategy
+            // Add custom error listener to lexer
+            lexer.addErrorListener(new UnderlineCustomErrorListener());
 
-            /*
-            Si se quiere pasar al analizador algún objeto externo con el que trabajar,
-            este deberá ser de una clase del mismo paquete
-            Aquí se le llama "sintesis", pero puede ser cualquier nombre.
-            NumbersParser anasint = new NumbersParser(tokens, new sintesis());
-            */
+            // Remove default error listener from parser
+            parser.removeErrorListeners();
 
-            /*
-            Comenzar el análisis llamando al axioma de la gramática
-            Atención, sustituye "AxiomaDeLaGramatica" por el nombre del axioma de tu
-            gramática
-            */
+            // Add custom error listener to parser
+            parser.addErrorListener(new UnderlineCustomErrorListener());
 
-            // Ejecución del analizador
-            anasint.program();
+            // Add custom error strategy to parser
+            parser.setErrorHandler(new CustomErrorStrategy());
 
-            // Generacion del fichero de Salida
-            HTMLFileGen.generate(p.toHTML());
+            // Run parser
+            parser.program_prime();
+
+            // Start generation
+            HTMLFileGen.generate(PROGRAM.toHTML());
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
-            //Fallo al reconocer la entrada
+            // Input recognition error
             System.err.println("REC " + e.getMessage());
 
         } catch (IOException e) {
-            //Fallo de entrada/salida
+            // Input / Output recognition error
             System.err.println("IO " + e.getMessage());
 
         } catch (java.lang.RuntimeException e) {
-            //Cualquier otro fallo
+            // Other fail
             System.err.println("RUN " + e.getMessage());
         }
     }

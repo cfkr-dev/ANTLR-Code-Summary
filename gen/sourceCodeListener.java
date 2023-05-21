@@ -1,4 +1,4 @@
-// Generated from java-escape by ANTLR 4.11.1
+// Generated from /data_linux/UNIVERSIDAD/GII_GIS_5/PL/Practicas/practica_obligatoria/src/sourceCode.g4 by ANTLR 4.12.0
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**
@@ -6,6 +6,16 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  * {@link sourceCodeParser}.
  */
 public interface sourceCodeListener extends ParseTreeListener {
+	/**
+	 * Enter a parse tree produced by {@link sourceCodeParser#program_prime}.
+	 * @param ctx the parse tree
+	 */
+	void enterProgram_prime(sourceCodeParser.Program_primeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sourceCodeParser#program_prime}.
+	 * @param ctx the parse tree
+	 */
+	void exitProgram_prime(sourceCodeParser.Program_primeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#program}.
 	 * @param ctx the parse tree
@@ -26,16 +36,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitProgram_aux(sourceCodeParser.Program_auxContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#program_empty}.
-	 * @param ctx the parse tree
-	 */
-	void enterProgram_empty(sourceCodeParser.Program_emptyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#program_empty}.
-	 * @param ctx the parse tree
-	 */
-	void exitProgram_empty(sourceCodeParser.Program_emptyContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#dcllist}.
 	 * @param ctx the parse tree
@@ -97,16 +97,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitSentlist_aux(sourceCodeParser.Sentlist_auxContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#sentlist_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterSentlist_error(sourceCodeParser.Sentlist_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#sentlist_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitSentlist_error(sourceCodeParser.Sentlist_errorContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#dcl}.
 	 * @param ctx the parse tree
 	 */
@@ -126,56 +116,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCte(sourceCodeParser.CteContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#cte_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterCte_error(sourceCodeParser.Cte_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#cte_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitCte_error(sourceCodeParser.Cte_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#cte_error_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterCte_error_aux(sourceCodeParser.Cte_error_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#cte_error_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitCte_error_aux(sourceCodeParser.Cte_error_auxContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#cte_error_aux_1}.
-	 * @param ctx the parse tree
-	 */
-	void enterCte_error_aux_1(sourceCodeParser.Cte_error_aux_1Context ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#cte_error_aux_1}.
-	 * @param ctx the parse tree
-	 */
-	void exitCte_error_aux_1(sourceCodeParser.Cte_error_aux_1Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#cte_error_aux_1_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterCte_error_aux_1_aux(sourceCodeParser.Cte_error_aux_1_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#cte_error_aux_1_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitCte_error_aux_1_aux(sourceCodeParser.Cte_error_aux_1_auxContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#cte_error_semicolon}.
-	 * @param ctx the parse tree
-	 */
-	void enterCte_error_semicolon(sourceCodeParser.Cte_error_semicolonContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#cte_error_semicolon}.
-	 * @param ctx the parse tree
-	 */
-	void exitCte_error_semicolon(sourceCodeParser.Cte_error_semicolonContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#var}.
 	 * @param ctx the parse tree
@@ -207,16 +147,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitVardef_aux(sourceCodeParser.Vardef_auxContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#vardef_aux_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterVardef_aux_error(sourceCodeParser.Vardef_aux_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#vardef_aux_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitVardef_aux_error(sourceCodeParser.Vardef_aux_errorContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#simple_vardef}.
 	 * @param ctx the parse tree
 	 */
@@ -227,26 +157,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitSimple_vardef(sourceCodeParser.Simple_vardefContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#error_simple_vardef}.
-	 * @param ctx the parse tree
-	 */
-	void enterError_simple_vardef(sourceCodeParser.Error_simple_vardefContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#error_simple_vardef}.
-	 * @param ctx the parse tree
-	 */
-	void exitError_simple_vardef(sourceCodeParser.Error_simple_vardefContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#error_simple_vardef_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterError_simple_vardef_aux(sourceCodeParser.Error_simple_vardef_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#error_simple_vardef_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitError_simple_vardef_aux(sourceCodeParser.Error_simple_vardef_auxContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#struct_vardef}.
 	 * @param ctx the parse tree
 	 */
@@ -256,16 +166,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStruct_vardef(sourceCodeParser.Struct_vardefContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#error_struct_vardef}.
-	 * @param ctx the parse tree
-	 */
-	void enterError_struct_vardef(sourceCodeParser.Error_struct_vardefContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#error_struct_vardef}.
-	 * @param ctx the parse tree
-	 */
-	void exitError_struct_vardef(sourceCodeParser.Error_struct_vardefContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#struct_def}.
 	 * @param ctx the parse tree
@@ -316,16 +216,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSimpvalue(sourceCodeParser.SimpvalueContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#simpvalue_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterSimpvalue_error(sourceCodeParser.Simpvalue_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#simpvalue_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitSimpvalue_error(sourceCodeParser.Simpvalue_errorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#tbas}.
 	 * @param ctx the parse tree
@@ -387,26 +277,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitFunchead_aux(sourceCodeParser.Funchead_auxContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#funchead_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunchead_error(sourceCodeParser.Funchead_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#funchead_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunchead_error(sourceCodeParser.Funchead_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#funchead_error_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunchead_error_aux(sourceCodeParser.Funchead_error_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#funchead_error_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunchead_error_aux(sourceCodeParser.Funchead_error_auxContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#typedef}.
 	 * @param ctx the parse tree
 	 */
@@ -427,26 +297,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitTypedef_aux(sourceCodeParser.Typedef_auxContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#typedef_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterTypedef_error(sourceCodeParser.Typedef_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#typedef_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitTypedef_error(sourceCodeParser.Typedef_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#typedef_error_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterTypedef_error_aux(sourceCodeParser.Typedef_error_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#typedef_error_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitTypedef_error_aux(sourceCodeParser.Typedef_error_auxContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#mainhead}.
 	 * @param ctx the parse tree
 	 */
@@ -466,16 +316,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitMainhead_aux(sourceCodeParser.Mainhead_auxContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#mainhead_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterMainhead_error(sourceCodeParser.Mainhead_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#mainhead_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitMainhead_error(sourceCodeParser.Mainhead_errorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#code}.
 	 * @param ctx the parse tree
@@ -527,26 +367,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitSimple_vardef_code(sourceCodeParser.Simple_vardef_codeContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#error_simple_vardef_code}.
-	 * @param ctx the parse tree
-	 */
-	void enterError_simple_vardef_code(sourceCodeParser.Error_simple_vardef_codeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#error_simple_vardef_code}.
-	 * @param ctx the parse tree
-	 */
-	void exitError_simple_vardef_code(sourceCodeParser.Error_simple_vardef_codeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#error_simple_vardef_code_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterError_simple_vardef_code_aux(sourceCodeParser.Error_simple_vardef_code_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#error_simple_vardef_code_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitError_simple_vardef_code_aux(sourceCodeParser.Error_simple_vardef_code_auxContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#asig}.
 	 * @param ctx the parse tree
 	 */
@@ -556,16 +376,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitAsig(sourceCodeParser.AsigContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#asig_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterAsig_error(sourceCodeParser.Asig_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#asig_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitAsig_error(sourceCodeParser.Asig_errorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#vardef_and_asig}.
 	 * @param ctx the parse tree
@@ -586,16 +396,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunccall(sourceCodeParser.FunccallContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#funccall_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterFunccall_error(sourceCodeParser.Funccall_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#funccall_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitFunccall_error(sourceCodeParser.Funccall_errorContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#funccall_aux}.
 	 * @param ctx the parse tree
@@ -647,16 +447,6 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 */
 	void exitReturn_func(sourceCodeParser.Return_funcContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#return_func_aux}.
-	 * @param ctx the parse tree
-	 */
-	void enterReturn_func_aux(sourceCodeParser.Return_func_auxContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#return_func_aux}.
-	 * @param ctx the parse tree
-	 */
-	void exitReturn_func_aux(sourceCodeParser.Return_func_auxContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#if}.
 	 * @param ctx the parse tree
 	 */
@@ -696,6 +486,16 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitElse_aux(sourceCodeParser.Else_auxContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link sourceCodeParser#if_else}.
+	 * @param ctx the parse tree
+	 */
+	void enterIf_else(sourceCodeParser.If_elseContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link sourceCodeParser#if_else}.
+	 * @param ctx the parse tree
+	 */
+	void exitIf_else(sourceCodeParser.If_elseContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#while}.
 	 * @param ctx the parse tree
@@ -846,184 +646,4 @@ public interface sourceCodeListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitSimpvalue_code(sourceCodeParser.Simpvalue_codeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#simpvalue_code_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterSimpvalue_code_error(sourceCodeParser.Simpvalue_code_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#simpvalue_code_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitSimpvalue_code_error(sourceCodeParser.Simpvalue_code_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#paren_open}.
-	 * @param ctx the parse tree
-	 */
-	void enterParen_open(sourceCodeParser.Paren_openContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#paren_open}.
-	 * @param ctx the parse tree
-	 */
-	void exitParen_open(sourceCodeParser.Paren_openContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#paren_open_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterParen_open_error(sourceCodeParser.Paren_open_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#paren_open_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitParen_open_error(sourceCodeParser.Paren_open_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#paren_close}.
-	 * @param ctx the parse tree
-	 */
-	void enterParen_close(sourceCodeParser.Paren_closeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#paren_close}.
-	 * @param ctx the parse tree
-	 */
-	void exitParen_close(sourceCodeParser.Paren_closeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#paren_close_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterParen_close_error(sourceCodeParser.Paren_close_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#paren_close_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitParen_close_error(sourceCodeParser.Paren_close_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#curly_open}.
-	 * @param ctx the parse tree
-	 */
-	void enterCurly_open(sourceCodeParser.Curly_openContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#curly_open}.
-	 * @param ctx the parse tree
-	 */
-	void exitCurly_open(sourceCodeParser.Curly_openContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#curly_open_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterCurly_open_error(sourceCodeParser.Curly_open_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#curly_open_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitCurly_open_error(sourceCodeParser.Curly_open_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#curly_close}.
-	 * @param ctx the parse tree
-	 */
-	void enterCurly_close(sourceCodeParser.Curly_closeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#curly_close}.
-	 * @param ctx the parse tree
-	 */
-	void exitCurly_close(sourceCodeParser.Curly_closeContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#curly_close_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterCurly_close_error(sourceCodeParser.Curly_close_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#curly_close_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitCurly_close_error(sourceCodeParser.Curly_close_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#comma}.
-	 * @param ctx the parse tree
-	 */
-	void enterComma(sourceCodeParser.CommaContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#comma}.
-	 * @param ctx the parse tree
-	 */
-	void exitComma(sourceCodeParser.CommaContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#comma_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterComma_error(sourceCodeParser.Comma_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#comma_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitComma_error(sourceCodeParser.Comma_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#comma_no_var_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterComma_no_var_error(sourceCodeParser.Comma_no_var_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#comma_no_var_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitComma_no_var_error(sourceCodeParser.Comma_no_var_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#semicolon}.
-	 * @param ctx the parse tree
-	 */
-	void enterSemicolon(sourceCodeParser.SemicolonContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#semicolon}.
-	 * @param ctx the parse tree
-	 */
-	void exitSemicolon(sourceCodeParser.SemicolonContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#semicolon_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterSemicolon_error(sourceCodeParser.Semicolon_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#semicolon_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitSemicolon_error(sourceCodeParser.Semicolon_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#equal_asig}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqual_asig(sourceCodeParser.Equal_asigContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#equal_asig}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqual_asig(sourceCodeParser.Equal_asigContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#equal_asig_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqual_asig_error(sourceCodeParser.Equal_asig_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#equal_asig_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqual_asig_error(sourceCodeParser.Equal_asig_errorContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#equal_asig_no_empty}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqual_asig_no_empty(sourceCodeParser.Equal_asig_no_emptyContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#equal_asig_no_empty}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqual_asig_no_empty(sourceCodeParser.Equal_asig_no_emptyContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#equal_asig_no_empty_error}.
-	 * @param ctx the parse tree
-	 */
-	void enterEqual_asig_no_empty_error(sourceCodeParser.Equal_asig_no_empty_errorContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#equal_asig_no_empty_error}.
-	 * @param ctx the parse tree
-	 */
-	void exitEqual_asig_no_empty_error(sourceCodeParser.Equal_asig_no_empty_errorContext ctx);
 }

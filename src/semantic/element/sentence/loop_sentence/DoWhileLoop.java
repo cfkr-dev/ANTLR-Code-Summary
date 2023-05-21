@@ -56,9 +56,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
     @Override
     public String toHTML() {
 
-        String HTMLDoWhile = new String();
-
-        HTMLDoWhile = "<p><SPAN CLASS=\"ident\">do</SPAN>  {</p>\n";
+        String HTMLDoWhile = "<p><SPAN CLASS=\"ident\">do</SPAN>  {</p>\n";
 
         HTMLDoWhile += this.toHTMLBrackets();
         HTMLDoWhile = HTMLDoWhile.substring(0, HTMLDoWhile.length() - 5) + " <SPAN CLASS=\"ident\">while</SPAN> (" + this.logicOperation.toHTML() + ");</p>\n";
