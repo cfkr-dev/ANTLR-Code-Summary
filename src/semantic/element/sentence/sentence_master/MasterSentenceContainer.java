@@ -23,6 +23,7 @@ import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.sentence.variable_sentence.VariableAssignation;
 import semantic.element.sentence.variable_sentence.VariableDefinition;
 import semantic.element.sentence.variable_sentence.VariableDefinitionAndAssign;
+import semantic.element.symbolReference.SymbolReference;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
@@ -43,17 +44,33 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
      * @param tokenID <br> "VARIABLE" -> referencia a variable <br>
      *                     "CONSTANT" -> referencia a constante
      */
-    public AssignableElement newSymbolReference(String tokenID, String name, int line, int column) {
+    public SymbolReference newSymbolReference(String tokenID, String name, int line, int column) {
         if (this.hasThisSymbol(name)) {
-            if (Element.valueOf(tokenID.toUpperCase()).equals(Element.VARIABLE))
-                return (AssignableElement) this.getSymbolByNameAndElement(name, Element.VARIABLE);
-            else if (Element.valueOf(tokenID.toUpperCase()).equals(Element.CONSTANT))
-                return (AssignableElement) this.getSymbolByNameAndElement(name, Element.CONSTANT);
+            if (Element.valueOf(tokenID.toUpperCase()).equals(Element.VARIABLE)) {
+                Variable variable = (Variable) this.getSymbolByNameAndElement(name, Element.VARIABLE);
+                if (variable != null)
+                    return new SymbolReference(variable, this, line, column);
+            }
+            else if (Element.valueOf(tokenID.toUpperCase()).equals(Element.CONSTANT)) {
+                Constant constant = (Constant) this.getSymbolByNameAndElement(name, Element.CONSTANT);
+                if (constant != null)
+                    return new SymbolReference(constant, this, line, column);
+            }
         }
+
         System.err.println("ERROR " + line + ":" + column + " => " + "No existe el símbolo al que se hace referencia (" + name + ")");
-        AssignableElement malformed = new Constant("malformed", this.newStringConstant("malformed", line, column), this, line, column);
-        malformed.setMalformed();
-        return malformed;
+
+        SymbolReference symbolReferenceMalformed;
+
+        if (Element.valueOf(tokenID.toUpperCase()).equals(Element.VARIABLE)) {
+            Variable variable = new SimpleVariable("ANY", "malformed", this, line, column);
+            symbolReferenceMalformed = new SymbolReference(variable, this, line, column);
+        } else {
+            Constant constant = new Constant("malformed", this.newStringConstant("malformed", line, column), this, line, column);
+            symbolReferenceMalformed = new SymbolReference(constant, this, line, column);
+        }
+        symbolReferenceMalformed.setMalformed();
+        return symbolReferenceMalformed;
     }
 
     /**
