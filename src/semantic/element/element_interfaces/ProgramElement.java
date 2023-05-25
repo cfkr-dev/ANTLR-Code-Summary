@@ -23,8 +23,6 @@ public interface ProgramElement {
 
     public void setMalformed();
 
-    public String toHTML();
-
-    public abstract String toHTMLIdentifier ();
+    public String toHTML(int indentationLevel);
 
 }

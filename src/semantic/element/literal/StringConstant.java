@@ -21,7 +21,7 @@ public class StringConstant extends Literal {
     }
 
     @Override
-     public String toHTML() {
+     public String toHTML(int indentationLevel) {
 
         return "<SPAN CLASS=\"cte\">\"" + value + "\"</SPAN>";
 

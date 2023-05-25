@@ -43,7 +43,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int indentationLevel) {
         return null;
     }
     @Override

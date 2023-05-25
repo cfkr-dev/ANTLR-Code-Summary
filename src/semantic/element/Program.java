@@ -1,5 +1,6 @@
 package semantic.element;
 
+import org.antlr.v4.misc.OrderedHashMap;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
 import semantic.element.literal.literal_master.Literal;
@@ -34,8 +35,17 @@ public class Program extends MasterProgrammableElement {
     private Map<Element, Map<String, ProgramElement>> initializeSymbolTable () {
         Map<Element, Map<String, ProgramElement>> symbolTable = new HashMap<>();
         for (Element e: Constants.PROGRAM_SYMBOLS)
-            symbolTable.put(e, new HashMap<>());
+            symbolTable.put(e, new OrderedHashMap<>());
         return symbolTable;
+    }
+
+    private List<Function> getAllInnerFunctions() {
+        List<Function> functions = new LinkedList<>();
+        for (ProgramElement function: this.symbolTable.get(Element.FUNCTION).values()) {
+            if (!function.getName().equals("Main"))
+                functions.add((Function) function);
+        }
+        return functions;
     }
 
     @Override
@@ -87,76 +97,136 @@ public class Program extends MasterProgrammableElement {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int indentationLevel) {
 
-        if (this.malformed)
-          throw new RuntimeException("No es posible crear el resumen de programa");
+        List<Function> functions = this.getAllInnerFunctions();
 
-        String HTMLCabecera = new String();
-        String HTMLFuncitonsCabecera = new String();
-        String HTMLFunctions = new String();
-        String HTMLGlobalVariables = new String();
+        // FUNCTION HEADERS
+        StringBuilder HTMLFunctionHeaders = generateFunctionHeadersList(functions);
 
-        String HTMLMain = new String();
-        String HTMLFinal = new String();
+        // FUNCTION BODIES
+        StringBuilder HTMLFunctionBodies = generateFunctionBodiesList(functions);
 
-        HTMLCabecera = "<!doctype html>\n" +
-                       "<html>\n" +
-                       "\t<head>\n" +
-                       "\t\t<title>" + this.name + ".html" + "</title>\n" +
-                       "\t</head>\n" +
-                       "\t<body>\n" +
-                       "\t\t<A NAME=\"INICIO\">\n" +
-                       "\t\t<h1>Programa: " + this.name + "</h1>\n" +
-                       "\t\t<h2>Funciones</h2>\n" +
-                       "\t\t<ul>\n";
 
-        HTMLFinal = "\t</body>\n" +
-                    "</html>";
+        // MAIN HTML CODE
+        StringBuilder HTMLMain = new StringBuilder()
+                .append("<!doctype html>\n")
+                .append("<html>\n")
+                    .append("\t<head>\n")
+                        .append("\t\t<title>").append(this.name).append("</title>\n")
+                    .append("\t</head>\n")
 
-        // HTMLFunction and HTMLMain
-        for (ProgramElement element : programElements) {
+                    .append("\t<body name=\"inicio-ancla\">\n")
+                        .append("\t\t<h1>Programa:").append(this.name).append("</h1>\n")
+                        .append("\t\t<h2>Funciones:").append("</h2>\n")
+                        .append("\t\t<ul>\n")
+                            .append(HTMLFunctionHeaders)
+                        .append("\t\t</ul>\n")
+                    .append("\t</body>\n")
+                .append("</html>\n");
 
-            if (element instanceof Function) {
 
-                if (element.getName() == "Main") { //HTMLMain
+    return null;
+//        String HTMLCabecera = new String();
+//        String HTMLFuncitonsCabecera = new String();
+//        String HTMLFunctions = new String();
+//        String HTMLGlobalVariables = new String();
+//
+//        String HTMLMain = new String();
+//        String HTMLFinal = new String();
+//
+//        HTMLCabecera = "<!doctype html>\n" +
+//                       "<html>\n" +
+//                       "\t<head>\n" +
+//                       "\t\t<title>" + this.name + ".html" + "</title>\n" +
+//                       "\t</head>\n" +
+//                       "\t<body>\n" +
+//                       "\t\t<A NAME=\"INICIO\">\n" +
+//                       "\t\t<h1>Programa: " + this.name + "</h1>\n" +
+//                       "\t\t<h2>Funciones</h2>\n" +
+//                       "\t\t<ul>\n";
+//
+//        HTMLFinal = "\t</body>\n" +
+//                    "</html>";
+//
+//        // HTMLFunction and HTMLMain
+//        for (ProgramElement element : programElements) {
+//
+//            if (element instanceof Function) {
+//
+//                if (element.getName() == "Main") { //HTMLMain
+//
+//                    HTMLCabecera += "\t\t\t<li><A HREF=\"#" + element.getName() + "\">Programa principal</A></li>\n";
+//
+//                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\">\n" + HTMLGlobalVariables;
+//                    HTMLGlobalVariables = "\t\t<h2>Funciones</h2>\n" +
+//                                          //"\t\t</br>\n" +
+//                                          HTMLGlobalVariables;
+//                    HTMLMain = element.toHTML().replace("\n", "\n\t\t");
+//                    HTMLMain += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
+//                    HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
+//                    HTMLMain += "\t\t</hr>\n";
+//
+//                } else { //HTMLFunction
+//
+//                    HTMLFuncitonsCabecera = "\t\t\t<li><A HREF=\"#" + element.getName() + "\">" + ((Function) element).toStringCabecera() + "</A></li>\n";
+//
+//                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\">\n";
+//                    HTMLFunctions += element.toHTML().replace("\n", "\n\t\t");
+//                    HTMLFunctions += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
+//                    HTMLFunctions += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
+//                    HTMLFunctions += "\t\t</hr>\n";
+//
+//                }
+//
+//            } else { // Constants and global variables
+//
+//                HTMLGlobalVariables += element.toHTML().replace("\n", "\n\t\t");
+//
+//            }
+//
+//        }
+//
+//        HTMLCabecera += HTMLFuncitonsCabecera;
+//        HTMLCabecera += "\t\t</ul>\n";
+//        HTMLCabecera += "\t\t</hr>\n";
+//
+//        return HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + HTMLMain + HTMLFinal;
 
-                    HTMLCabecera += "\t\t\t<li><A HREF=\"#" + element.getName() + "\">Programa principal</A></li>\n";
+    }
 
-                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\">\n" + HTMLGlobalVariables;
-                    HTMLGlobalVariables = "\t\t<h2>Funciones</h2>\n" +
-                                          //"\t\t</br>\n" +
-                                          HTMLGlobalVariables;
-                    HTMLMain = element.toHTML().replace("\n", "\n\t\t");
-                    HTMLMain += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
-                    HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-                    HTMLMain += "\t\t</hr>\n";
+    private StringBuilder generateFunctionHeadersList(List<Function> functions) {
+        StringBuilder HTMLFunctionHeaders = new StringBuilder();
 
-                } else { //HTMLFunction
+        boolean first = true;
 
-                    HTMLFuncitonsCabecera = "\t\t\t<li><A HREF=\"#" + element.getName() + "\">" + ((Function) element).toStringCabecera() + "</A></li>\n";
-
-                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\">\n";
-                    HTMLFunctions += element.toHTML().replace("\n", "\n\t\t");
-                    HTMLFunctions += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
-                    HTMLFunctions += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-                    HTMLFunctions += "\t\t</hr>\n";
-
-                }
-
-            } else { // Constants and global variables
-
-                HTMLGlobalVariables += element.toHTML().replace("\n", "\n\t\t");
-
-            }
-
+        for (Function function: functions) {
+            HTMLFunctionHeaders.append("\t\t\t<li>\n")
+                .append("\t\t\t\t<a href=\"").append(function.getName()).append("\">\n");
+                    if (first) {
+                        HTMLFunctionHeaders.append("\t\t\t\t\t").append("Programa principal\n");
+                        first = false;
+                    } else
+                        HTMLFunctionHeaders.append("\t\t\t\t\t").append(function.getHeader()).append("\n");
+                HTMLFunctionHeaders.append("\t\t\t\t</a>\n")
+            .append("\t\t\t</li>\n");
         }
 
-        HTMLCabecera += HTMLFuncitonsCabecera;
-        HTMLCabecera += "\t\t</ul>\n";
-        HTMLCabecera += "\t\t</hr>\n";
+        return HTMLFunctionHeaders;
+    }
 
-        return HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + HTMLMain + HTMLFinal;
+    private StringBuilder generateFunctionBodiesList(List<Function> functions) {
+        StringBuilder HTMLFunctionBodies = new StringBuilder();
 
+        for (Function function: functions) {
+            HTMLFunctionBodies
+                    .append("\t\t<hr/>\n")
+                    .append("\t\t<a name=\"").append(function.getName()).append("\">\n")
+                    .append(function.toHTML(2))
+                    .append("\t\t<a href=\"").append(function.getName()).append("\">\n")
+                    .append("\t\t<a href=\"").append("#").append("\">\n");
+        }
+
+        return HTMLFunctionBodies;
     }
 }

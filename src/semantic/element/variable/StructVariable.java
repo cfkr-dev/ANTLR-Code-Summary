@@ -231,7 +231,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
 
 
     @Override
-    public String toHTML() {
+    public String toHTML(int indentationLevel) {
 
         StringBuilder HTMLStruct = new StringBuilder("<p>struct{</p>\n");
 

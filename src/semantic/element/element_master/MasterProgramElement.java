@@ -21,7 +21,6 @@ public abstract class MasterProgramElement implements ProgramElement {
         return this.type;
     }
 
-
     public void setType(Type type) {
         this.type = type;
     }
@@ -67,13 +66,6 @@ public abstract class MasterProgramElement implements ProgramElement {
     }
 
     @Override
-    public abstract String toHTML();
-
-    @Override
-    public String toHTMLIdentifier () {
-
-        return "<SPAN CLASS=\"ident\">" + this.name + "</SPAN>";
-
-    }
+    public abstract String toHTML(int indentationLevel);
 
 }

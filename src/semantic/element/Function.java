@@ -2,11 +2,13 @@ package semantic.element;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
+import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
@@ -60,30 +62,35 @@ public class Function extends MasterSentenceContainer {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int indentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(indentationLevel);
 
-        String HTMLFunction = new String();
+        StringBuilder function = new StringBuilder()
+                .append(tabs).append("<span class=\"palres\">").append(this.type.name()).append("</span>")
+                .append("<span class=\"ident\">").append(" ").append(this.name).append("</span>")
+                .append("(");
 
-        HTMLFunction = "<p>" + this.toStringCabecera() + " {</p>\n";
+        boolean first = true;
 
-        HTMLFunction += this.toHTMLBrackets();
-
-        return HTMLFunction;
-
-    }
-
-    public String toStringCabecera() {
-
-        StringBuilder header = new StringBuilder(this.type + " " + this.toHTMLIdentifier() + "(");
-
-        for (Variable param : params) {
-
-            header.append(param.getType()).append(" ").append(param.toHTMLIdentifier()).append(",");
-
+        for (Variable variable: this.params) {
+            if (first)
+                first = false;
+            else
+                function.append(", ");
+            function.append("<span class=\"palres\">").append(variable.getType().name()).append("</span>")
+                    .append("<span class=\"ident\">").append(" ").append(variable.getName()).append("</span>");
         }
 
-        return header.substring(0, header.length()-1) + ")";
+        function.append(")<br>\n");
 
+        function.append(tabs).append("{<br>\n");
+
+        for (Sentence sentence: this.sentences)
+            function.append(tabs).append(sentence.toHTML(indentationLevel + 1)).append("\n");
+
+        function.append(tabs).append("}<br>\n");
+
+        return function.toString();
     }
 
     public boolean checkCallingParams(List<AssignableElement> params) {
@@ -110,5 +117,23 @@ public class Function extends MasterSentenceContainer {
             }
             return true;
         }
+    }
+
+    public String getHeader() {
+        StringBuilder header = new StringBuilder().append(this.type.name()).append(" ").append(this.name).append("(");
+
+        boolean first = true;
+
+        for (Variable variable: this.params) {
+            if (first)
+                first = false;
+            else
+                header.append(", ");
+            header.append(variable.getType().name()).append(" ").append(variable.getName());
+        }
+
+        header.append(")");
+
+        return header.toString();
     }
 }

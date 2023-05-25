@@ -27,7 +27,7 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int indentationLevel) {
         return "<p>" + this.type.name() + " " + this.name + " = " + this.variable.getValue() + ";</p>\n";
     }
 }
