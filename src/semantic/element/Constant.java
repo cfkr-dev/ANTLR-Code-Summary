@@ -41,7 +41,7 @@ public class Constant extends MasterProgramElement implements AssignableElement 
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
         return "<p>#define " + this.name + " \"" + this.value.toHTML() + "\"</p>\n";
     }
 }

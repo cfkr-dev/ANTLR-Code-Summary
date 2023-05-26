@@ -62,8 +62,8 @@ public class Function extends MasterSentenceContainer {
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
-        String tabs = HTMLHelper.generateTabulations(indentationLevel);
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder function = new StringBuilder()
                 .append(tabs).append("<span class=\"palres\">").append(this.type.name()).append("</span>")
@@ -86,7 +86,7 @@ public class Function extends MasterSentenceContainer {
         function.append(tabs).append("{<br>\n");
 
         for (Sentence sentence: this.sentences)
-            function.append(tabs).append(sentence.toHTML(indentationLevel + 1)).append("\n");
+            function.append(tabs).append(sentence.toHTML(HTMLIndentationLevel + 1, codeIndentationLevel + 1)).append("\n");
 
         function.append(tabs).append("}<br>\n");
 

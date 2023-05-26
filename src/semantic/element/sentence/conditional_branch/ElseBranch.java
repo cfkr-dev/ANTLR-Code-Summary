@@ -38,7 +38,7 @@ public class ElseBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
 
         String HTMLElse = new String();
 

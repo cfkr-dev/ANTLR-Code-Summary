@@ -39,7 +39,7 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
         return null;
     }
 

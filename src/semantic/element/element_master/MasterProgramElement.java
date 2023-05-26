@@ -66,6 +66,6 @@ public abstract class MasterProgramElement implements ProgramElement {
     }
 
     @Override
-    public abstract String toHTML(int indentationLevel);
+    public abstract String toHTML(int HTMLIndentationLevel, int codeIndentationLevel);
 
 }

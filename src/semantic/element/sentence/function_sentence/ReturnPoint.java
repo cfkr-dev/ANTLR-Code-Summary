@@ -26,7 +26,7 @@ public class ReturnPoint extends MasterSimpleSentence {
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
 
 
         return "<SPAN CLASS=\"ident\">return</SPAN>  " + this.returnElement.toHTML();

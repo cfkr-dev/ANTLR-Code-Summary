@@ -41,7 +41,7 @@ public class ElseIfBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
 
         String HTMLElseIf = new String();
 

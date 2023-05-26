@@ -4,6 +4,7 @@ import org.antlr.v4.misc.OrderedHashMap;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
 import semantic.element.literal.literal_master.Literal;
+import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
@@ -46,6 +47,15 @@ public class Program extends MasterProgrammableElement {
                 functions.add((Function) function);
         }
         return functions;
+    }
+
+    private List<ProgramElement> getAllMainDeclarations() {
+        List<ProgramElement> declarations = new LinkedList<>();
+        for (ProgramElement programElement: this.programElements) {
+            if (programElement.getElementType().equals(Element.VARIABLE) && programElement.getElementType().equals(Element.CONSTANT))
+                declarations.add(programElement);
+        }
+        return declarations;
     }
 
     @Override
@@ -97,9 +107,11 @@ public class Program extends MasterProgrammableElement {
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
 
         List<Function> functions = this.getAllInnerFunctions();
+        List<ProgramElement> declarations = this.getAllMainDeclarations();
+        Function mainProgram = (Function) this.getSymbolByNameAndElement("Main", Element.FUNCTION);
 
         // FUNCTION HEADERS
         StringBuilder HTMLFunctionHeaders = generateFunctionHeadersList(functions);
@@ -107,6 +119,8 @@ public class Program extends MasterProgrammableElement {
         // FUNCTION BODIES
         StringBuilder HTMLFunctionBodies = generateFunctionBodiesList(functions);
 
+        // MAIN PROGRAM
+        StringBuilder HTMLMainProgram = generateMainProgram(declarations, mainProgram);
 
         // MAIN HTML CODE
         StringBuilder HTMLMain = new StringBuilder()
@@ -114,14 +128,22 @@ public class Program extends MasterProgrammableElement {
                 .append("<html>\n")
                     .append("\t<head>\n")
                         .append("\t\t<title>").append(this.name).append("</title>\n")
+                        .append("\t\t<style>\n")
+                            .append(".palres {font-weight: bold;}\n")
+                            .append(".cte {color:green;}")
+                            .append(".ident {color:blue;}")
+                        .append("\t\t</style>\n")
                     .append("\t</head>\n")
-
-                    .append("\t<body name=\"inicio-ancla\">\n")
+                    .append("\t<body>\n")
                         .append("\t\t<h1>Programa:").append(this.name).append("</h1>\n")
                         .append("\t\t<h2>Funciones:").append("</h2>\n")
                         .append("\t\t<ul>\n")
                             .append(HTMLFunctionHeaders)
                         .append("\t\t</ul>\n")
+                        .append(HTMLFunctionBodies)
+                        .append(HTMLMainProgram)
+                        .append("\t\t<hr>\n")
+                        .append("\t\t<a name=\"programa-principal\">")
                     .append("\t</body>\n")
                 .append("</html>\n");
 
@@ -202,7 +224,7 @@ public class Program extends MasterProgrammableElement {
 
         for (Function function: functions) {
             HTMLFunctionHeaders.append("\t\t\t<li>\n")
-                .append("\t\t\t\t<a href=\"").append(function.getName()).append("\">\n");
+                .append("\t\t\t\t<a href=\"").append("#").append(function.getName()).append("\">\n");
                     if (first) {
                         HTMLFunctionHeaders.append("\t\t\t\t\t").append("Programa principal\n");
                         first = false;
@@ -222,9 +244,9 @@ public class Program extends MasterProgrammableElement {
             HTMLFunctionBodies
                     .append("\t\t<hr/>\n")
                     .append("\t\t<a name=\"").append(function.getName()).append("\">\n")
-                    .append(function.toHTML(2))
-                    .append("\t\t<a href=\"").append(function.getName()).append("\">\n")
-                    .append("\t\t<a href=\"").append("#").append("\">\n");
+                    .append(function.toHTML(2, 0))
+                    .append("\t\t<a href=\"").append("#").append(function.getName()).append("\">").append("Inicio de la función").append("</a>\n")
+                    .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
         }
 
         return HTMLFunctionBodies;

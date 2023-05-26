@@ -17,7 +17,7 @@ public abstract class Literal extends MasterProgramElement implements Assignable
         return value;
     }
 
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
 
         if (this.hasParenthesis)
             return "<SPAN CLASS=\"cte\">" + "(" + value + ")" + "</SPAN>";

@@ -105,7 +105,7 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public String toHTML(int indentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
 
         if (this.value == null)
             return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
