@@ -78,7 +78,7 @@ public class Function extends MasterSentenceContainer {
             else
                 function.append(", ");
             function.append("<span class=\"palres\">").append(variable.getType().name()).append("</span>")
-                .append("<span class=\"ident\">").append(" ").append(variable.getName()).append("</span>");
+                .append("<span class=\"ident\">").append(variable.getName()).append("</span>");
         }
 
         function.append(") <br/>\n");
@@ -88,7 +88,7 @@ public class Function extends MasterSentenceContainer {
         function.append(tabs).append("<div>\n");
 
         for (Sentence sentence: this.sentences)
-            function.append(tabs).append(sentence.toHTML(HTMLIndentationLevel + 1)).append("\n");
+            function.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
         function.append(tabs).append("</div>\n");
 

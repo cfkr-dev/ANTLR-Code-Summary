@@ -4,6 +4,7 @@ import semantic.element.literal.literal_master.Literal;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.element_master.MasterProgramElement;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 
 public class Constant extends MasterProgramElement implements AssignableElement {
@@ -42,6 +43,18 @@ public class Constant extends MasterProgramElement implements AssignableElement 
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
-        return "<p>#define " + this.name + " \"" + this.value.toHTML() + "\"</p>\n";
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+
+        StringBuilder HTMLConstant = new StringBuilder();
+
+        return HTMLConstant
+            .append(tabs)
+            .append("<span class=\"palres\">").append("#define").append("</span>")
+            .append(" ")
+            .append("<span class=\"ident\">").append(this.getName()).append("</span>")
+            .append(" ")
+            .append(this.value.toHTML(HTMLIndentationLevel))
+            .append(" <br/>\n")
+            .toString();
     }
 }

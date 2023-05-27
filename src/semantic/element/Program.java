@@ -108,6 +108,7 @@ public class Program extends MasterProgrammableElement {
     @Override
     public String toHTML(int HTMLIndentationLevel) {
 
+        // GET PROGRAM ELEMENTS TO BUILD HTML
         List<Function> functions = this.getAllInnerFunctions();
         List<ProgramElement> declarations = this.getAllMainDeclarations();
         Function mainProgram = (Function) this.getSymbolByNameAndElement("Main", Element.FUNCTION);
@@ -131,7 +132,7 @@ public class Program extends MasterProgrammableElement {
                         .append("\t\t\t.palres {font-weight: bold;}\n")
                         .append("\t\t\t.cte {color:green;}\n")
                         .append("\t\t\t.ident {color:blue;}\n")
-                        .append("\t\t\tdiv {margin-left: 2rem;}\n")
+                        .append("\t\t\tdiv {margin-left: 1.5rem;}\n")
                     .append("\t\t</style>\n")
                 .append("\t</head>\n")
                 .append("\t<body>\n")

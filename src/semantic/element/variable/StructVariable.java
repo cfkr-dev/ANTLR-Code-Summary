@@ -8,6 +8,7 @@ import semantic.element.variable.variable_master.MasterVariable;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
@@ -22,8 +23,6 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     protected List<Variable<? extends AssignableElement>> properties;
     protected boolean errorOnCreation;
     private boolean hasParenthesis;
-
-
 
     public StructVariable(ProgrammableElement context, int line, int column) {
         this.type = Type.STRUCT;
@@ -229,23 +228,31 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         else return null;
     }
 
-
     @Override
     public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
-        StringBuilder HTMLStruct = new StringBuilder("<p>struct{</p>\n");
+        StringBuilder HTMLStruct = new StringBuilder();
+        StringBuilder HTMLProperties = generatePropertiesList(this.properties, HTMLIndentationLevel + 1);
 
-        HTMLStruct.append("\t<DIV style=\"text-indent: 2cm\"><p>\n");
+        return HTMLStruct
+            .append(tabs).append("struct <br/>\n")
+            .append(tabs).append("{ <br/>\n")
+            .append(tabs).append("<div>\n")
+                .append(HTMLProperties)
+            .append(tabs).append("</div>\n")
+            .append(tabs).append("} ").append(this.name).append("; <br/>\n")
+            .toString();
+    }
 
-        for (Variable<? extends AssignableElement> element : this.properties) {
+    private StringBuilder generatePropertiesList(List<Variable<? extends AssignableElement>> properties, int HTMLIndentationLevel) {
+        StringBuilder HTMLProperties = new StringBuilder();
 
-            HTMLStruct.append(element.toHTML().replace("\n", "\n\t\t"));
-
+        for (Variable property: properties) {
+            HTMLProperties
+                .append(property.toHTML(HTMLIndentationLevel));
         }
 
-        HTMLStruct.append("\t</DIV>\n");
-        HTMLStruct.append("<p>} ").append(this.name).append(";</p>\n");
-
-        return HTMLStruct.toString();
+        return HTMLProperties;
     }
 }

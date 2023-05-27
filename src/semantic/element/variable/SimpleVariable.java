@@ -5,6 +5,7 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.element.variable.variable_master.MasterVariable;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
@@ -106,12 +107,27 @@ public class SimpleVariable extends MasterVariable {
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+
+        StringBuilder HTMLVariable = new StringBuilder();
 
         if (this.value == null)
-            return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
+            return HTMLVariable
+                .append(tabs)
+                .append("<span class=\"palres\">").append(this.getType().name()).append("</span>")
+                .append(" ")
+                .append("<span class=\"ident\">").append(this.getName()).append(";").append("</span>")
+                .append(" <br/>\n")
+                .toString();
         else
-            return "<p>" + this.type.name() + " " + this.name + " = " + this.value + ";</p>\n";
-
+            return HTMLVariable
+                .append(tabs)
+                .append("<span class=\"palres\">").append(this.getType().name()).append("</span>")
+                .append(" ")
+                .append("<span class=\"ident\">").append(this.getName()).append("</span>")
+                .append(" = ")
+                .append(this.value.toHTML(HTMLIndentationLevel)).append(";")
+                .append(" <br/>\n")
+                .toString();
     }
-
 }
