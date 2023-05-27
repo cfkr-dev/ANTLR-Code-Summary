@@ -41,7 +41,7 @@ public class IfBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         String HTMLIf = new String();
 

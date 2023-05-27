@@ -38,7 +38,7 @@ public class WhileLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         String HTMLWhile = "<p>while(" + this.logicOperation.toHTML() + ") {</p>\n";
         HTMLWhile += this.toHTMLBrackets();

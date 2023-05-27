@@ -39,7 +39,7 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         String HTMLOp = new String();
 

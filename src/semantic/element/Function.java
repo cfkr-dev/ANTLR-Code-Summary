@@ -62,13 +62,13 @@ public class Function extends MasterSentenceContainer {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder function = new StringBuilder()
-                .append(tabs).append("<span class=\"palres\">").append(this.type.name()).append("</span>")
-                .append("<span class=\"ident\">").append(" ").append(this.name).append("</span>")
-                .append("(");
+            .append(tabs).append("<span class=\"palres\">").append(this.type.name()).append("</span>")
+            .append("<span class=\"ident\">").append(" ").append(this.name).append("</span>")
+            .append("(");
 
         boolean first = true;
 
@@ -78,17 +78,21 @@ public class Function extends MasterSentenceContainer {
             else
                 function.append(", ");
             function.append("<span class=\"palres\">").append(variable.getType().name()).append("</span>")
-                    .append("<span class=\"ident\">").append(" ").append(variable.getName()).append("</span>");
+                .append("<span class=\"ident\">").append(" ").append(variable.getName()).append("</span>");
         }
 
-        function.append(")<br>\n");
+        function.append(") <br/>\n");
 
-        function.append(tabs).append("{<br>\n");
+        function.append(tabs).append("{ <br/>\n");
+
+        function.append(tabs).append("<div>\n");
 
         for (Sentence sentence: this.sentences)
-            function.append(tabs).append(sentence.toHTML(HTMLIndentationLevel + 1, codeIndentationLevel + 1)).append("\n");
+            function.append(tabs).append(sentence.toHTML(HTMLIndentationLevel + 1)).append("\n");
 
-        function.append(tabs).append("}<br>\n");
+        function.append(tabs).append("</div>\n");
+
+        function.append(tabs).append("} <br/>\n");
 
         return function.toString();
     }

@@ -40,7 +40,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
 
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         String HTMLOp = new String();
 

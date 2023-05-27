@@ -55,7 +55,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         this.partOfExpression = false;
     }
 
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         StringBuilder HTMLFunction;
         if (!this.hasParenthesis)

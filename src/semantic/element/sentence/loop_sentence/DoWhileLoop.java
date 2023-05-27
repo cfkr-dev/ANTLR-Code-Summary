@@ -54,7 +54,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         String HTMLDoWhile = "<p><SPAN CLASS=\"ident\">do</SPAN>  {</p>\n";
 

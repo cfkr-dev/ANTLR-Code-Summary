@@ -106,7 +106,7 @@ public class Program extends MasterProgrammableElement {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, int codeIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel) {
 
         List<Function> functions = this.getAllInnerFunctions();
         List<ProgramElement> declarations = this.getAllMainDeclarations();
@@ -128,9 +128,10 @@ public class Program extends MasterProgrammableElement {
                 .append("\t<head>\n")
                     .append("\t\t<title>").append(this.name).append("</title>\n")
                     .append("\t\t<style>\n")
-                        .append(".palres {font-weight: bold;}\n")
-                        .append(".cte {color:green;}")
-                        .append(".ident {color:blue;}")
+                        .append("\t\t\t.palres {font-weight: bold;}\n")
+                        .append("\t\t\t.cte {color:green;}\n")
+                        .append("\t\t\t.ident {color:blue;}\n")
+                        .append("\t\t\tdiv {margin-left: 2rem;}\n")
                     .append("\t\t</style>\n")
                 .append("\t</head>\n")
                 .append("\t<body>\n")
@@ -176,7 +177,7 @@ public class Program extends MasterProgrammableElement {
             HTMLFunctionBodies
                 .append("\t\t<hr/>\n")
                 .append("\t\t<a name=\"").append(function.getName()).append("\">\n")
-                .append(function.toHTML(2, 0))
+                .append(function.toHTML(2))
                 .append("\t\t<a href=\"").append("#").append(function.getName()).append("\">").append("Inicio de la función").append("</a>\n")
                 .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
         }
@@ -192,11 +193,11 @@ public class Program extends MasterProgrammableElement {
 
         for (ProgramElement declaration: declarations) {
             HTMLMainProgram
-                .append(declaration.toHTML(2, 0));
+                .append(declaration.toHTML(2));
         }
 
         HTMLMainProgram
-            .append(mainProgram.toHTML(2,0))
+            .append(mainProgram.toHTML(2))
             .append("\t\t<a href=\"").append("#").append("programa-principal").append("\">").append("Inicio del programa principal").append("</a>\n")
             .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
 
