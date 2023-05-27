@@ -4,7 +4,6 @@ import org.antlr.v4.misc.OrderedHashMap;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
 import semantic.element.literal.literal_master.Literal;
-import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
@@ -123,102 +122,32 @@ public class Program extends MasterProgrammableElement {
         StringBuilder HTMLMainProgram = generateMainProgram(declarations, mainProgram);
 
         // MAIN HTML CODE
-        StringBuilder HTMLMain = new StringBuilder()
-                .append("<!doctype html>\n")
-                .append("<html>\n")
-                    .append("\t<head>\n")
-                        .append("\t\t<title>").append(this.name).append("</title>\n")
-                        .append("\t\t<style>\n")
-                            .append(".palres {font-weight: bold;}\n")
-                            .append(".cte {color:green;}")
-                            .append(".ident {color:blue;}")
-                        .append("\t\t</style>\n")
-                    .append("\t</head>\n")
-                    .append("\t<body>\n")
-                        .append("\t\t<h1>Programa:").append(this.name).append("</h1>\n")
-                        .append("\t\t<h2>Funciones:").append("</h2>\n")
-                        .append("\t\t<ul>\n")
-                            .append(HTMLFunctionHeaders)
-                        .append("\t\t</ul>\n")
-                        .append(HTMLFunctionBodies)
-                        .append(HTMLMainProgram)
-                        .append("\t\t<hr>\n")
-                        .append("\t\t<a name=\"programa-principal\">")
-                    .append("\t</body>\n")
-                .append("</html>\n");
+        StringBuilder HTMLProgram = new StringBuilder()
+            .append("<!doctype html>\n")
+            .append("<html>\n")
+                .append("\t<head>\n")
+                    .append("\t\t<title>").append(this.name).append("</title>\n")
+                    .append("\t\t<style>\n")
+                        .append(".palres {font-weight: bold;}\n")
+                        .append(".cte {color:green;}")
+                        .append(".ident {color:blue;}")
+                    .append("\t\t</style>\n")
+                .append("\t</head>\n")
+                .append("\t<body>\n")
+                    .append("\t\t<h1>Programa:").append(this.name).append("</h1>\n")
+                    .append(HTMLFunctionHeaders)
+                    .append(HTMLFunctionBodies)
+                    .append(HTMLMainProgram)
+                .append("\t</body>\n")
+            .append("</html>\n");
 
-
-    return null;
-//        String HTMLCabecera = new String();
-//        String HTMLFuncitonsCabecera = new String();
-//        String HTMLFunctions = new String();
-//        String HTMLGlobalVariables = new String();
-//
-//        String HTMLMain = new String();
-//        String HTMLFinal = new String();
-//
-//        HTMLCabecera = "<!doctype html>\n" +
-//                       "<html>\n" +
-//                       "\t<head>\n" +
-//                       "\t\t<title>" + this.name + ".html" + "</title>\n" +
-//                       "\t</head>\n" +
-//                       "\t<body>\n" +
-//                       "\t\t<A NAME=\"INICIO\">\n" +
-//                       "\t\t<h1>Programa: " + this.name + "</h1>\n" +
-//                       "\t\t<h2>Funciones</h2>\n" +
-//                       "\t\t<ul>\n";
-//
-//        HTMLFinal = "\t</body>\n" +
-//                    "</html>";
-//
-//        // HTMLFunction and HTMLMain
-//        for (ProgramElement element : programElements) {
-//
-//            if (element instanceof Function) {
-//
-//                if (element.getName() == "Main") { //HTMLMain
-//
-//                    HTMLCabecera += "\t\t\t<li><A HREF=\"#" + element.getName() + "\">Programa principal</A></li>\n";
-//
-//                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\">\n" + HTMLGlobalVariables;
-//                    HTMLGlobalVariables = "\t\t<h2>Funciones</h2>\n" +
-//                                          //"\t\t</br>\n" +
-//                                          HTMLGlobalVariables;
-//                    HTMLMain = element.toHTML().replace("\n", "\n\t\t");
-//                    HTMLMain += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
-//                    HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-//                    HTMLMain += "\t\t</hr>\n";
-//
-//                } else { //HTMLFunction
-//
-//                    HTMLFuncitonsCabecera = "\t\t\t<li><A HREF=\"#" + element.getName() + "\">" + ((Function) element).toStringCabecera() + "</A></li>\n";
-//
-//                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\">\n";
-//                    HTMLFunctions += element.toHTML().replace("\n", "\n\t\t");
-//                    HTMLFunctions += "\t\t<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
-//                    HTMLFunctions += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-//                    HTMLFunctions += "\t\t</hr>\n";
-//
-//                }
-//
-//            } else { // Constants and global variables
-//
-//                HTMLGlobalVariables += element.toHTML().replace("\n", "\n\t\t");
-//
-//            }
-//
-//        }
-//
-//        HTMLCabecera += HTMLFuncitonsCabecera;
-//        HTMLCabecera += "\t\t</ul>\n";
-//        HTMLCabecera += "\t\t</hr>\n";
-//
-//        return HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + HTMLMain + HTMLFinal;
-
+        return HTMLProgram.toString();
     }
 
     private StringBuilder generateFunctionHeadersList(List<Function> functions) {
-        StringBuilder HTMLFunctionHeaders = new StringBuilder();
+        StringBuilder HTMLFunctionHeaders = new StringBuilder()
+            .append("\t\t<h2>Funciones:").append("</h2>\n")
+            .append("\t\t<ul>\n");
 
         boolean first = true;
 
@@ -234,6 +163,9 @@ public class Program extends MasterProgrammableElement {
             .append("\t\t\t</li>\n");
         }
 
+        HTMLFunctionHeaders
+            .append("\t\t</ul>\n");
+
         return HTMLFunctionHeaders;
     }
 
@@ -242,13 +174,32 @@ public class Program extends MasterProgrammableElement {
 
         for (Function function: functions) {
             HTMLFunctionBodies
-                    .append("\t\t<hr/>\n")
-                    .append("\t\t<a name=\"").append(function.getName()).append("\">\n")
-                    .append(function.toHTML(2, 0))
-                    .append("\t\t<a href=\"").append("#").append(function.getName()).append("\">").append("Inicio de la función").append("</a>\n")
-                    .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
+                .append("\t\t<hr/>\n")
+                .append("\t\t<a name=\"").append(function.getName()).append("\">\n")
+                .append(function.toHTML(2, 0))
+                .append("\t\t<a href=\"").append("#").append(function.getName()).append("\">").append("Inicio de la función").append("</a>\n")
+                .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
         }
 
         return HTMLFunctionBodies;
+    }
+
+    private StringBuilder generateMainProgram(List<ProgramElement> declarations, Function mainProgram) {
+        StringBuilder HTMLMainProgram = new StringBuilder()
+            .append("\t\t<hr/>\n")
+            .append("\t\t<a name=\"programa-principal\">\n")
+            .append("\t\t<h2>Programa principal:").append("</h2>\n");
+
+        for (ProgramElement declaration: declarations) {
+            HTMLMainProgram
+                .append(declaration.toHTML(2, 0));
+        }
+
+        HTMLMainProgram
+            .append(mainProgram.toHTML(2,0))
+            .append("\t\t<a href=\"").append("#").append("programa-principal").append("\">").append("Inicio del programa principal").append("</a>\n")
+            .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
+
+        return HTMLMainProgram;
     }
 }
