@@ -28,8 +28,8 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public String getValue() {
-        return this.name;
+    public AssignableElement getValue() {
+        return this.value;
     }
 
     @Override

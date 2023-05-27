@@ -3,6 +3,7 @@ package semantic.element.sentence.variable_sentence;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
 import semantic.element.variable.variable_interface.Variable;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -28,6 +29,18 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence {
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
-        return "<p>" + this.type.name() + " " + this.name + " = " + this.variable.getValue() + ";</p>\n";
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+
+        StringBuilder HTMLVariable = new StringBuilder();
+
+        return HTMLVariable
+                .append(tabs)
+                .append("<span class=\"palres\">").append(this.getType().name()).append("</span>")
+                .append(" ")
+                .append("<span class=\"ident\">").append(this.getName()).append("</span>")
+                .append(" = ")
+                .append(this.getVariable().getValue().toHTML(HTMLIndentationLevel)).append(";")
+                .append(" <br/>\n")
+                .toString();
     }
 }

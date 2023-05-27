@@ -7,7 +7,6 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     protected String value;
     protected boolean hasParenthesis;
 
-    @Override
     public String getValue() {
         return this.toString();
     }
@@ -18,11 +17,18 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     }
 
     public String toHTML(int HTMLIndentationLevel) {
+        StringBuilder HTMLLiteral = new StringBuilder();
+
+        HTMLLiteral.append("<span class=\"cte\">");
 
         if (this.hasParenthesis)
-            return "<SPAN CLASS=\"cte\">" + "(" + value + ")" + "</SPAN>";
+            HTMLLiteral.append("(").append(this.value).append(")");
         else
-            return "<SPAN CLASS=\"cte\">" + value + "</SPAN>";
+            HTMLLiteral.append(this.value);
+
+        HTMLLiteral.append("</span>");
+
+        return HTMLLiteral.toString();
     }
 
     @Override

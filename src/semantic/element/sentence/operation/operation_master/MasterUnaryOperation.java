@@ -12,7 +12,6 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     protected Boolean hasParenthesis;
     protected Operation operationType;
 
-    @Override
     public String getValue() {
         return this.toString();
     }

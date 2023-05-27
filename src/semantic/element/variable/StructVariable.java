@@ -170,14 +170,9 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         }
     }
 
-    public String getValue() {
-        return this.name;
+    public AssignableElement getValue() {
+        return this;
     }
-
-//    @Override
-//    public AssignableElement getVariableValue() {
-//        return this;
-//    }
 
     @Override
     public Variable variableClone() {

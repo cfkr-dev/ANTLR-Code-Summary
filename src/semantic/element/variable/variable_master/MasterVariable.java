@@ -11,7 +11,7 @@ public abstract class MasterVariable<E extends AssignableElement> extends Master
     public abstract boolean setValue(E assignableElement, ProgrammableElement context, int line, int column);
 
     @Override
-    public abstract String getValue();
+    public abstract AssignableElement getValue();
 
     @Override
     public abstract String toString();

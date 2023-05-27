@@ -14,7 +14,6 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     protected Operation operationType;
     protected Boolean hasParenthesis;
 
-    @Override
     public String getValue() {
         return this.toString();
     }
