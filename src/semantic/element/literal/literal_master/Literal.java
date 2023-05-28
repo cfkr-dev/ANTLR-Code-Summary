@@ -7,8 +7,8 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     protected String value;
     protected boolean hasParenthesis;
 
-    public String getValue() {
-        return this.toString();
+    public AssignableElement getValue() {
+        return this;
     }
 
     @Override

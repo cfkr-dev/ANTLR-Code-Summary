@@ -4,6 +4,7 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -42,13 +43,22 @@ public class IfBranch extends MasterConditionalBranch {
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
-        String HTMLIf = new String();
+        StringBuilder HTMLIf = new StringBuilder()
+                .append(tabs)
+                .append("<span class=\"palres\">if</span> (")
+                .append(this.logicOperation.toHTML(HTMLIndentationLevel)).append(") <br/>\n")
+                .append(tabs).append("{ <br/>\n")
+                .append(tabs).append("<div>\n");
 
-        HTMLIf = "<p><SPAN CLASS=\"ident\">if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
-        HTMLIf += this.toHTMLBrackets();
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLIf.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
-        return HTMLIf;
+        HTMLIf
+                .append(tabs).append("</div>\n")
+                .append(tabs).append("} <br/>\n");
 
+        return HTMLIf.toString();
     }
 }

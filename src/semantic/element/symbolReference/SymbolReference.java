@@ -2,6 +2,7 @@ package semantic.element.symbolReference;
 
 import semantic.element.Constant;
 import semantic.element.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.variable.variable_interface.Variable;
@@ -10,7 +11,7 @@ import semantic.utils.enums.Element;
 public class SymbolReference extends MasterProgramElement implements AssignableElement {
 
     protected boolean hasParenthesis;
-    protected AssignableElement value;
+    protected ProgramElement value;
 
     public SymbolReference(Variable variable, ProgrammableElement context, int line, int column) {
         this.value = variable;
@@ -39,13 +40,21 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
-        return null;
+    public String toString() {
+        if (this.hasParenthesis)
+            return "(" + value.getName() + ")";
+        else
+            return value.getName();
     }
 
     @Override
-    public String getValue() {
-        return this.value.getName();
+    public String toHTML(int HTMLIndentationLevel) {
+        return "<span class=\"ident\">" + value.getName() + "</span>";
+    }
+
+    @Override
+    public ProgramElement getValue() {
+        return this.value;
     }
 
     @Override

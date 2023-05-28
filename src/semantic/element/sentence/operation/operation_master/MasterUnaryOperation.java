@@ -12,8 +12,9 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     protected Boolean hasParenthesis;
     protected Operation operationType;
 
-    public String getValue() {
-        return this.toString();
+    @Override
+    public AssignableElement getValue() {
+        return this;
     }
 
     @Override
@@ -37,19 +38,16 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
         return this;
     }
 
-
     @Override
     public String toHTML(int HTMLIndentationLevel) {
-
-        String HTMLOp = new String();
-
-        HTMLOp = this.symbol + " " + this.firstOperand.toHTML();
+        StringBuilder HTMLOperation = new StringBuilder()
+            .append(this.symbol)
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel));
 
         if (this.hasParenthesis)
-            return "(" + HTMLOp + ")";
+            return HTMLOperation.insert(0, "(").append(")").toString();
         else
-            return HTMLOp;
-
+            return HTMLOperation.toString();
     }
 
     public MasterUnaryOperation firstOperand(AssignableElement firstOperand) {

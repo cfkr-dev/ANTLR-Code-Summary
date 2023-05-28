@@ -3,6 +3,7 @@ package semantic.element.variable;
 import semantic.element.literal.NumericIntegerConstant;
 import semantic.element.literal.NumericRealConstant;
 import semantic.element.literal.StringConstant;
+import semantic.element.symbolReference.SymbolReference;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.element.variable.variable_master.MasterVariable;
 import semantic.element.element_interfaces.AssignableElement;
@@ -17,12 +18,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class StructVariable extends MasterVariable<Variable> implements ProgrammableElement<Variable>{
+public class StructVariable extends MasterVariable implements ProgrammableElement<Variable>{
 
     protected Map<Element, Map<String, Variable>> symbolTable;
-    protected List<Variable<? extends AssignableElement>> properties;
+    protected List<Variable> properties;
     protected boolean errorOnCreation;
-    private boolean hasParenthesis;
 
     public StructVariable(ProgrammableElement context, int line, int column) {
         this.type = Type.STRUCT;
@@ -36,12 +36,6 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         this.malformed = true;
         this.line = line;
         this.column = column;
-        this.hasParenthesis = false;
-    }
-
-    @Override
-    public AssignableElement setParenthesis() {
-        return this;
     }
 
     public StructVariable createStruct(String name) {
@@ -130,7 +124,12 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     }
 
     @Override
-    public boolean setValue(Variable assignableElement, ProgrammableElement context, int line, int column) {
+    public AssignableElement getValue() {
+        return new SymbolReference(this, this.context, this.line, this.column);
+    }
+
+    @Override
+    public boolean setValue(AssignableElement assignableElement, ProgrammableElement context, int line, int column) {
         if (this.malformed) {
             this.setMalformed();
             return false;
@@ -142,14 +141,14 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             return false;
         }
 
-        if (assignableElement instanceof StructVariable) {
-            this.name = assignableElement.getName();
-            this.context = assignableElement.getContext();
-            this.superContext = assignableElement.getSuperContext();
-            this.symbolTable = ((StructVariable) assignableElement).getSymbolTable();
-            this.properties = ((StructVariable) assignableElement).getProperties();
-            this.line = assignableElement.getLine();
-            this.column = assignableElement.getColumn();
+        if (assignableElement.getValue() instanceof StructVariable assignableStruct) {
+            this.name = assignableStruct.getName();
+            this.context = assignableStruct.getContext();
+            this.superContext = assignableStruct.getSuperContext();
+            this.symbolTable = assignableStruct.getSymbolTable();
+            this.properties = assignableStruct.getProperties();
+            this.line = assignableStruct.getLine();
+            this.column = assignableStruct.getColumn();
             return true;
         } else {
             System.err.println("ERROR " + line + ":" + column + " => " + "Una variable de tipo struct solo puede ser asignada con otra variable de tipo struct");
@@ -170,10 +169,6 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         }
     }
 
-    public AssignableElement getValue() {
-        return this;
-    }
-
     @Override
     public Variable variableClone() {
         StructVariable structVariable = new StructVariable(this.context, this.line, this.column).createStruct(this.name);
@@ -182,16 +177,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         return structVariable;
     }
 
-    @Override
-    public String toString() {
-        StringBuilder s = new StringBuilder("struct {");
-        for (Variable property: this.properties) {
-            s.append(property.getValue());
-        }
-        return s.append("} ").append(this.name).toString();
-    }
-
-    public List<Variable<? extends AssignableElement>> getProperties() {
+    public List<Variable> getProperties() {
         return properties;
     }
 
@@ -240,7 +226,7 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
             .toString();
     }
 
-    private StringBuilder generatePropertiesList(List<Variable<? extends AssignableElement>> properties, int HTMLIndentationLevel) {
+    private StringBuilder generatePropertiesList(List<Variable> properties, int HTMLIndentationLevel) {
         StringBuilder HTMLProperties = new StringBuilder();
 
         for (Variable property: properties) {

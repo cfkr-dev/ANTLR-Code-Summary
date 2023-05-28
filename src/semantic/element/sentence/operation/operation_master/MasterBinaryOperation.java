@@ -14,8 +14,9 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     protected Operation operationType;
     protected Boolean hasParenthesis;
 
-    public String getValue() {
-        return this.toString();
+    @Override
+    public AssignableElement getValue() {
+        return this;
     }
 
     @Override
@@ -39,16 +40,17 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
-
-        String HTMLOp = new String();
-
-        HTMLOp = this.firstOperand.toHTML() + " " + this.symbol + " " + this.secondOperand.toHTML();
+        StringBuilder HTMLOperation = new StringBuilder()
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel))
+            .append(" ")
+            .append(this.symbol)
+            .append(" ")
+            .append(this.secondOperand.toHTML(HTMLIndentationLevel));
 
         if (this.hasParenthesis)
-            return "(" + HTMLOp + ")";
+            return HTMLOperation.insert(0, "(").append(")").toString();
         else
-            return HTMLOp;
-
+            return HTMLOperation.toString();
     }
 
     public MasterBinaryOperation firstOperand(AssignableElement firstOperand) {

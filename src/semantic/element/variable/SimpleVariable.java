@@ -12,7 +12,6 @@ import semantic.utils.enums.Type;
 public class SimpleVariable extends MasterVariable {
 
     private AssignableElement value;
-    private boolean hasParenthesis;
 
     public SimpleVariable(String type, String name, ProgrammableElement context, int line, int column) {
         this.type = Type.valueOf(type.toUpperCase());
@@ -24,17 +23,6 @@ public class SimpleVariable extends MasterVariable {
         this.malformed = false;
         this.line = line;
         this.column = column;
-        this.hasParenthesis = false;
-    }
-
-    @Override
-    public AssignableElement getValue() {
-        return this.value;
-    }
-
-    @Override
-    public void forceSetValue(AssignableElement assignableElement) {
-        this.value = assignableElement;
     }
 
     @Override
@@ -46,9 +34,13 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public AssignableElement setParenthesis() {
-        this.hasParenthesis = true;
-        return this;
+    public AssignableElement getValue() {
+        return this.value;
+    }
+
+    @Override
+    public void forceSetValue(AssignableElement assignableElement) {
+        this.value = assignableElement;
     }
 
     @Override
@@ -66,7 +58,7 @@ public class SimpleVariable extends MasterVariable {
         }
 
         if (!context.hasThisSymbol(this.name)) {
-            if (!(assignableElement instanceof Variable<?> || assignableElement instanceof Constant)) {
+            if (!(assignableElement instanceof Variable || assignableElement instanceof Constant)) {
                 System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
@@ -77,7 +69,7 @@ public class SimpleVariable extends MasterVariable {
             return false;
         }
 
-        if (assignableElement instanceof Variable<?> || assignableElement instanceof Constant) {
+        if (assignableElement instanceof Variable || assignableElement instanceof Constant) {
 
             if (!context.hasThisSymbol(assignableElement.getName())) {
                 System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
@@ -95,14 +87,6 @@ public class SimpleVariable extends MasterVariable {
         this.value = assignableElement;
         context.updateSymbolTable(this);
         return true;
-    }
-
-    @Override
-    public String toString() {
-        if (this.value == null)
-            return this.name;
-        else
-            return this.name + " = " + this.value.getValue();
     }
 
     @Override

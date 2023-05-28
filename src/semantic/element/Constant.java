@@ -7,11 +7,10 @@ import semantic.element.element_master.MasterProgramElement;
 import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 
-public class Constant extends MasterProgramElement implements AssignableElement {
+public class Constant extends MasterProgramElement {
 
     private Literal value;
     private boolean malformed;
-    private boolean hasParenthesis;
 
     public Constant(String name, Literal value, ProgrammableElement context, int line, int column) {
         this.type = value.getType();
@@ -23,22 +22,10 @@ public class Constant extends MasterProgramElement implements AssignableElement 
         this.malformed = false;
         this.line = line;
         this.column = column;
-        this.hasParenthesis = false;
     }
 
     public AssignableElement getValueTarget() {
         return this.value;
-    }
-
-    @Override
-    public AssignableElement setParenthesis() {
-        this.hasParenthesis = true;
-        return this;
-    }
-
-    @Override
-    public String getValue() {
-        return this.name;
     }
 
     @Override

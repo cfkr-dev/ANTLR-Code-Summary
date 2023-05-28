@@ -3,6 +3,7 @@ package semantic.element.sentence.conditional_branch;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -39,13 +40,21 @@ public class ElseBranch extends MasterConditionalBranch {
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
-        String HTMLElse = new String();
+        StringBuilder HTMLElse = new StringBuilder()
+                .append(tabs)
+                .append("<span class=\"palres\">else</span> <br/>\n")
+                .append(tabs).append("{ <br/>\n")
+                .append(tabs).append("<div>\n");
 
-        HTMLElse = "<p><SPAN CLASS=\"ident\">else</SPAN> {</p>\n";
-        HTMLElse += this.toHTMLBrackets();
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLElse.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
-        return HTMLElse;
+        HTMLElse
+                .append(tabs).append("</div>\n")
+                .append(tabs).append("} <br/>\n");
 
+        return HTMLElse.toString();
     }
 }

@@ -83,7 +83,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             if (this.hasThisSymbol(name))
                 return (AssignableElement) this.getSymbolByNameAndElement(name, Element.VARIABLE);
             else
-                return new SimpleVariable("INTEGER", name, this, line, column);
+                return new SymbolReference(new SimpleVariable("INTEGER", name, this, line, column), this, line, column);
         } else {
             return this.newSymbolReference(tokenID, name, line, column);
         }
@@ -563,23 +563,6 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
     public List<Sentence> getSentences() {
         return sentences;
-    }
-
-    protected String toHTMLBrackets () {
-
-        StringBuilder HTMLAux = new StringBuilder("\t<DIV style=\"text-indent: 2cm\"><p>\n");
-
-        for (semantic.element.sentence.sentence_interface.Sentence line : this.sentences) {
-
-            HTMLAux.append(line.toHTML().replace("\n", "\n\t\t"));
-
-        }
-
-        HTMLAux.append("\t</DIV>\n");
-        HTMLAux.append("<p>}</p>\n");
-
-        return HTMLAux.toString();
-
     }
 
 }
