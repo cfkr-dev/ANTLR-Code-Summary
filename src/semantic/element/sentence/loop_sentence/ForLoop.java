@@ -5,8 +5,10 @@ import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterProgrammableSentence;
 import semantic.element.sentence.variable_sentence.VariableAssignation;
+import semantic.element.sentence.variable_sentence.variable_sentence_interface.VariableSentence;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -16,11 +18,11 @@ import java.util.Map;
 
 public class ForLoop extends MasterProgrammableSentence {
 
-    Variable indexVariable;
+    VariableSentence indexVariable;
     AssignableElement conditionStop;
     VariableAssignation assignationAfterIteration;
 
-    public ForLoop(Variable variable,
+    public ForLoop(VariableSentence variable,
                    AssignableElement conditionStop,
                    VariableAssignation assignationAfterIteration,
                    ProgrammableElement context, int line, int column) {
@@ -41,7 +43,7 @@ public class ForLoop extends MasterProgrammableSentence {
     }
 
     public Variable getIndexVariable() {
-        return this.indexVariable;
+        return this.indexVariable.getVariable();
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {
@@ -53,12 +55,31 @@ public class ForLoop extends MasterProgrammableSentence {
 
     @Override
     public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
-        String HTMLFor = "<p><SPAN CLASS=\"ident\">for</SPAN> (" + this.indexVariable.toHTML() + "; " + this.conditionStop.toHTML() + "; " + this.assignationAfterIteration.toHTML() + ") {</p>\n";
-        HTMLFor += this.toHTMLBrackets();
+        StringBuilder HTMLFor = new StringBuilder()
+                .append(tabs)
+                .append("<span class=\"palres\">for</span> (")
+                .append(this.indexVariable.toHTML(HTMLIndentationLevel))
+                .append("; ")
+                .append(this.conditionStop.toHTML(HTMLIndentationLevel))
+                .append("; ")
+                .append(this.assignationAfterIteration.getVariable().getName())
+                .append(" = ")
+                .append(this.assignationAfterIteration.getVariable().getValue().toHTML(HTMLIndentationLevel))
+                .append(";")
+                .append(") <br/>\n")
+                .append(tabs).append("{ <br/>\n")
+                .append(tabs).append("<div>\n");
 
-        return HTMLFor;
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLFor.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
+        HTMLFor
+                .append(tabs).append("</div>\n")
+                .append(tabs).append("} <br/>\n");
+
+        return HTMLFor.toString();
     }
 
 }

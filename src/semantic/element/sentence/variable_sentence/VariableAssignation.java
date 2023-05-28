@@ -2,11 +2,12 @@ package semantic.element.sentence.variable_sentence;
 
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
+import semantic.element.sentence.variable_sentence.variable_sentence_interface.VariableSentence;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
-public class VariableAssignation extends MasterSimpleSentence {
+public class VariableAssignation extends MasterSimpleSentence implements VariableSentence {
     private Variable variable;
 
     public VariableAssignation(Variable variable, ProgrammableElement context, int line, int column) {
@@ -21,6 +22,7 @@ public class VariableAssignation extends MasterSimpleSentence {
         this.column = column;
     }
 
+    @Override
     public Variable getVariable() {
         return variable;
     }
