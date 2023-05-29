@@ -10,7 +10,7 @@ public class StringConstant extends Literal {
     public StringConstant(String value, ProgrammableElement context, int line, int column) {
         this.value = value;
         this.type = Type.STRING;
-        this.name = "STRING_CONST_" + value;
+        this.name = "STRING_CONST_" + line + "_" + column;
         this.elementType = Element.LITERAL;
         this.context = context;
         this.superContext = context.getSuperContext();
@@ -19,12 +19,4 @@ public class StringConstant extends Literal {
         this.column = column;
         this.hasParenthesis = false;
     }
-
-    @Override
-     public String toHTML(int HTMLIndentationLevel) {
-
-        return "<SPAN CLASS=\"cte\">\"" + value + "\"</SPAN>";
-
-    }
-
 }

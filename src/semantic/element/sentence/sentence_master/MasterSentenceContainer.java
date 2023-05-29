@@ -95,9 +95,9 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public FunctionCall newFunctionCall(String functionName, int line, int column) {
         if (this.hasThisSymbol(functionName)) {
             Function function = (Function) this.getSymbolByNameAndElement(functionName, Element.FUNCTION);
-            return new InnerFunctionCall(function, this, true, line, column);
+            return new InnerFunctionCall(function, this, line, column);
         } else
-            return new OuterFunctionCall(functionName, this, true, line, column);
+            return new OuterFunctionCall(functionName, this, line, column);
     }
 
     public VariableDefinition addNewVariableDefinition(String type, String name, int line, int column){
@@ -317,7 +317,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
 
-        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this, line, column);
+        ForLoop forLoop = new ForLoop(new VariableAssignation(variableIndex, this, line, column), conditionStop, afterIterationAssign, this, line, column);
 
         if (createdIndexVariable)
             this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
@@ -393,7 +393,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
 
-        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this, line, column);
+        ForLoop forLoop = new ForLoop(new VariableDefinitionAndAssign(variableIndex, this, line, column), conditionStop, afterIterationAssign, this, line, column);
 
         if (createdIndexVariable)
             this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
@@ -474,7 +474,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
 
-        ForLoop forLoop = new ForLoop((SimpleVariable) variableIndex, conditionStop, afterIterationAssign, this, line, column);
+        ForLoop forLoop = new ForLoop(new VariableDefinition(variableIndex, this, line, column), conditionStop, afterIterationAssign, this, line, column);
 
         if (createdIndexVariable)
             this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);

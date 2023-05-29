@@ -17,7 +17,7 @@ public class ElseBranch extends MasterConditionalBranch {
 
     public ElseBranch(ConditionalBranch previous, ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = "_ELSE_BRANCH";
+        this.name = "ELSE_BRANCH_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.ELSE;
         this.context = context;
@@ -39,21 +39,33 @@ public class ElseBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLElse = new StringBuilder()
                 .append(tabs)
-                .append("<span class=\"palres\">else</span> <br/>\n")
-                .append(tabs).append("{ <br/>\n")
+                .append("<span class=\"palres\">else</span>")
+                .append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n")
+                .append(tabs).append("{")
+                .append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n")
                 .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLElse.append(sentence.toHTML(HTMLIndentationLevel + 1));
+            HTMLElse.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
         HTMLElse
-                .append(tabs).append("</div>\n")
-                .append(tabs).append("} <br/>\n");
+                .append(tabs).append("</div>\n\n")
+                .append(tabs).append("}")
+                .append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n");
 
         return HTMLElse.toString();
     }

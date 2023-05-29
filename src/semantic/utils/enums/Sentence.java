@@ -1,6 +1,7 @@
 package semantic.utils.enums;
 
 public enum Sentence {
+    CONST_DEF,
     VAR_DEF,
     VARDEF_ASSIG,
     ASSIG,
@@ -10,6 +11,7 @@ public enum Sentence {
     FOR,
     WHILE,
     DO_WHILE,
-    FUNCT_CALL,
+    INNER_FUNCT_CALL,
+    OUTER_FUNCT_CALL,
     RETURN
 }

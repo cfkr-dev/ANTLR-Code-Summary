@@ -90,7 +90,7 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLVariable = new StringBuilder();
@@ -98,20 +98,18 @@ public class SimpleVariable extends MasterVariable {
         if (this.value == null)
             return HTMLVariable
                 .append(tabs)
-                .append("<span class=\"palres\">").append(this.getType().name()).append("</span>")
+                .append("<span class=\"palres\">").append(this.getType().name().toLowerCase()).append("</span>")
                 .append(" ")
-                .append("<span class=\"ident\">").append(this.getName()).append(";").append("</span>")
-                .append(" <br/>\n")
+                .append("<span class=\"ident\">").append(this.getName()).append("</span>")
                 .toString();
         else
             return HTMLVariable
                 .append(tabs)
-                .append("<span class=\"palres\">").append(this.getType().name()).append("</span>")
+                .append("<span class=\"palres\">").append(this.getType().name().toLowerCase()).append("</span>")
                 .append(" ")
                 .append("<span class=\"ident\">").append(this.getName()).append("</span>")
-                .append(" = ")
-                .append(this.value.toHTML(HTMLIndentationLevel)).append(";")
-                .append(" <br/>\n")
+                .append("<span class=\"palres\"> = </span>")
+                .append(this.value.toHTML(HTMLIndentationLevel, anchorContext))
                 .toString();
     }
 }

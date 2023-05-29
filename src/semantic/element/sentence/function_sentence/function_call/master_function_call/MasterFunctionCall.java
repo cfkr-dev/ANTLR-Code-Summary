@@ -3,6 +3,8 @@ package semantic.element.sentence.function_sentence.function_call.master_functio
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.sentence.function_sentence.function_call.FunctionCall;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
+import semantic.utils.HTMLHelper;
+import semantic.utils.enums.Sentence;
 
 import java.util.List;
 
@@ -11,8 +13,8 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     protected String functionName;
     protected List<AssignableElement> callingParams;
     protected boolean malformed;
-    protected boolean errorOnCreation;
     protected boolean partOfExpression;
+    protected boolean errorOnCreation;
     protected boolean hasParenthesis;
 
     @Override
@@ -43,45 +45,53 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     }
 
     @Override
-    public String getValue() {
-        return this.toString();
+    public boolean isPartOfExpression() {
+        return this.partOfExpression;
     }
 
-    public Boolean getPartOfExpression() {
-        return partOfExpression;
-    }
-
-    public void notPartOfExpression() {
+    @Override
+    public void notPartOfExpression(){
         this.partOfExpression = false;
     }
 
-    public String toHTML(int HTMLIndentationLevel) {
+    @Override
+    public AssignableElement getValue() {
+        return this;
+    }
 
-        StringBuilder HTMLFunction;
-        if (!this.hasParenthesis)
-            HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(");
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+
+        StringBuilder HTMLFunctionCall = new StringBuilder();
+
+        if (!this.partOfExpression)
+            HTMLFunctionCall.append(tabs);
+
+        if (this.sentenceType.equals(Sentence.INNER_FUNCT_CALL))
+            HTMLFunctionCall.append("<a href=\"#").append(this.functionName).append("\">").append("<span class=\"ident\">").append(this.functionName).append("</span>").append("</a>").append("(");
         else
-            HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + "(" + this.functionName + "</SPAN>(");
+            HTMLFunctionCall.append("<span class=\"ident\">").append(this.functionName).append("</span>").append("(");
 
+        boolean first = true;
+        for (AssignableElement param: this.callingParams) {
+            if (first)
+                first = false;
+            else
+                HTMLFunctionCall.append(", ");
 
-        for (AssignableElement elem : callingParams) {
-
-            if (elem != callingParams.get(0))
-                HTMLFunction.append(", ");
-
-            HTMLFunction.append(elem.getName());
-
+            HTMLFunctionCall.append(param.toHTML(HTMLIndentationLevel, anchorContext));
         }
-        HTMLFunction.append(")");
 
-        if (this.hasParenthesis)
-            HTMLFunction.append(")");
+        HTMLFunctionCall.append(")");
 
-        if (partOfExpression)
-            return HTMLFunction.toString();
-        else
-            return "<p>" + HTMLFunction + ";</p>\n";
+        if (!this.partOfExpression)
+            HTMLFunctionCall.append(";")
+                    .append("\n\n")
+                    .append(tabs)
+                    .append("<br/>")
+                    .append("\n\n");
 
+        return HTMLFunctionCall.toString();
     }
 
     @Override

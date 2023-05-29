@@ -18,7 +18,7 @@ public class WhileLoop extends MasterProgrammableSentence {
 
     public WhileLoop(AssignableElement logicOperation, ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = "WHILE_LOOP";
+        this.name = "WHILE_LOOP_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.WHILE;
         this.context = context;
@@ -40,22 +40,34 @@ public class WhileLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLWhile = new StringBuilder()
             .append(tabs)
             .append("<span class=\"palres\">while</span> (")
-            .append(this.logicOperation.toHTML(HTMLIndentationLevel)).append(") <br/>\n")
-            .append(tabs).append("{ <br/>\n")
+            .append(this.logicOperation.toHTML(HTMLIndentationLevel, anchorContext)).append(")")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n")
+            .append(tabs).append("{")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n")
             .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLWhile.append(sentence.toHTML(HTMLIndentationLevel + 1));
+            HTMLWhile.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
         HTMLWhile
-            .append(tabs).append("</div>\n")
-            .append(tabs).append("} <br/>\n");
+            .append(tabs).append("</div>\n\n")
+            .append(tabs).append("}")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n");
 
         return HTMLWhile.toString();
     }

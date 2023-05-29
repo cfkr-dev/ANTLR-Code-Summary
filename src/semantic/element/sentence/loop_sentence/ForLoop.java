@@ -27,7 +27,7 @@ public class ForLoop extends MasterProgrammableSentence {
                    VariableAssignation assignationAfterIteration,
                    ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = "FOR_LOOP";
+        this.name = "FOR_LOOP_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.FOR;
         this.context = context;
@@ -54,30 +54,74 @@ public class ForLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLFor = new StringBuilder()
                 .append(tabs)
-                .append("<span class=\"palres\">for</span> (")
-                .append(this.indexVariable.toHTML(HTMLIndentationLevel))
-                .append("; ")
-                .append(this.conditionStop.toHTML(HTMLIndentationLevel))
-                .append("; ")
-                .append(this.assignationAfterIteration.getVariable().getName())
-                .append(" = ")
-                .append(this.assignationAfterIteration.getVariable().getValue().toHTML(HTMLIndentationLevel))
-                .append(";")
-                .append(") <br/>\n")
-                .append(tabs).append("{ <br/>\n")
-                .append(tabs).append("<div>\n");
+                .append("<span class=\"palres\">for</span> (");
 
-        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLFor.append(sentence.toHTML(HTMLIndentationLevel + 1));
+        if (this.indexVariable.getSentenceType().equals(Sentence.VAR_DEF)) {
+            HTMLFor
+                .append("<span class=\"palres\">")
+                .append(this.indexVariable.getVariable().getType())
+                .append("</span>")
+                .append(" ")
+                .append("<span class=\"ident\">")
+                .append(this.indexVariable.getVariable().getName())
+                .append("</span>");
+        } else if (this.indexVariable.getSentenceType().equals(Sentence.VARDEF_ASSIG)) {
+            HTMLFor
+                .append("<span class=\"palres\">")
+                .append(this.indexVariable.getVariable().getType())
+                .append("</span>")
+                .append(" ")
+                .append("<span class=\"ident\">")
+                .append(this.indexVariable.getVariable().getName())
+                .append("</span>")
+                .append(" = ")
+                .append(this.indexVariable.getVariable().getValue().toHTML(HTMLIndentationLevel, anchorContext));
+        } else {
+            HTMLFor
+                .append("<span class=\"ident\">")
+                .append(this.indexVariable.getVariable().getName())
+                .append("</span>")
+                .append(" = ")
+                .append(this.indexVariable.getVariable().getValue().toHTML(HTMLIndentationLevel, anchorContext));
+        }
 
         HTMLFor
-                .append(tabs).append("</div>\n")
-                .append(tabs).append("} <br/>\n");
+            .append("; ")
+            .append(this.conditionStop.toHTML(HTMLIndentationLevel, anchorContext))
+            .append("; ")
+            .append("<span class=\"ident\">")
+            .append(this.assignationAfterIteration.getVariable().getName())
+            .append("</span>")
+            .append(" = ")
+            .append(this.assignationAfterIteration.getVariable().getValue().toHTML(HTMLIndentationLevel, anchorContext))
+            .append(";")
+            .append(")")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n")
+            .append(tabs).append("{")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n")
+            .append(tabs).append("<div>\n");
+
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLFor.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
+
+        HTMLFor
+                .append(tabs).append("</div>\n\n")
+                .append(tabs).append("}")
+                .append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n");
 
         return HTMLFor.toString();
     }

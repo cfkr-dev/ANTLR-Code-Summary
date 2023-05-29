@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Lower extends ComparisonOperation {
     public Lower(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "LOWER";
+        this.name = "LOWER_" + line + "_" + column;
         this.symbol = "<";
         this.operationType = Operation.LOWER;
 

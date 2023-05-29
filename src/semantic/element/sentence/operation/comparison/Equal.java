@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Equal extends ComparisonOperation {
     public Equal(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "EQUAL";
+        this.name = "EQUAL_" + line + "_" + column;
         this.symbol = "==";
         this.operationType = Operation.EQUAL;
 

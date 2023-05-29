@@ -6,6 +6,7 @@ import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
+import semantic.utils.enums.Type;
 
 public class Constant extends MasterProgramElement {
 
@@ -29,19 +30,28 @@ public class Constant extends MasterProgramElement {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLConstant = new StringBuilder();
 
-        return HTMLConstant
+        HTMLConstant
             .append(tabs)
             .append("<span class=\"palres\">").append("#define").append("</span>")
             .append(" ")
             .append("<span class=\"ident\">").append(this.getName()).append("</span>")
-            .append(" ")
-            .append(this.value.toHTML(HTMLIndentationLevel))
-            .append(" <br/>\n")
-            .toString();
+            .append(" ");
+
+        //</span>
+
+        HTMLConstant.append(this.value.toHTML(HTMLIndentationLevel, anchorContext));
+
+        if (!this.value.getType().equals(Type.STRING))
+            HTMLConstant.insert(HTMLConstant.lastIndexOf("cte\">") + 5, "\"");
+
+        if (!this.value.getType().equals(Type.STRING))
+            HTMLConstant.insert(HTMLConstant.lastIndexOf("</span>"), "\"");
+
+        return HTMLConstant.toString();
     }
 }

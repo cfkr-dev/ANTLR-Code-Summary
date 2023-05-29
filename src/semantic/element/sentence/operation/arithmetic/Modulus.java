@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Modulus extends ArithmeticOperation {
     public Modulus(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "MODULUS";
+        this.name = "MODULUS_" + line + "_" + column;
         this.symbol = "MOD";
         this.operationType = Operation.MODULUS;
 

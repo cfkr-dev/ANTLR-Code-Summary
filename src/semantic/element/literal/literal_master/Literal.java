@@ -16,7 +16,7 @@ public abstract class Literal extends MasterProgramElement implements Assignable
         return value;
     }
 
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         StringBuilder HTMLLiteral = new StringBuilder();
 
         HTMLLiteral.append("<span class=\"cte\">");

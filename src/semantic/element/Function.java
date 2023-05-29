@@ -62,12 +62,13 @@ public class Function extends MasterSentenceContainer {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder function = new StringBuilder()
-            .append(tabs).append("<span class=\"palres\">").append(this.type.name()).append("</span>")
-            .append("<span class=\"ident\">").append(" ").append(this.name).append("</span>")
+            .append(tabs).append("<span class=\"palres\">").append(this.type.name().toLowerCase()).append("</span>")
+            .append(" ")
+            .append("<span class=\"ident\">").append(this.name).append("</span>")
             .append("(");
 
         boolean first = true;
@@ -77,22 +78,35 @@ public class Function extends MasterSentenceContainer {
                 first = false;
             else
                 function.append(", ");
-            function.append("<span class=\"palres\">").append(variable.getType().name()).append("</span>")
+            function.append("<span class=\"palres\">").append(variable.getType().name().toLowerCase()).append("</span>")
+                .append(" ")
                 .append("<span class=\"ident\">").append(variable.getName()).append("</span>");
         }
 
-        function.append(") <br/>\n");
+        function.append(")")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n");
 
-        function.append(tabs).append("{ <br/>\n");
+        function.append(tabs).append("{")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n");
 
         function.append(tabs).append("<div>\n");
 
         for (Sentence sentence: this.sentences)
-            function.append(sentence.toHTML(HTMLIndentationLevel + 1));
+            function.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
-        function.append(tabs).append("</div>\n");
+        function.append(tabs).append("</div>\n\n");
 
-        function.append(tabs).append("} <br/>\n");
+        function.append(tabs).append("}")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n");
 
         return function.toString();
     }
@@ -124,7 +138,7 @@ public class Function extends MasterSentenceContainer {
     }
 
     public String getHeader() {
-        StringBuilder header = new StringBuilder().append(this.type.name()).append(" ").append(this.name).append("(");
+        StringBuilder header = new StringBuilder().append(this.type.name().toLowerCase()).append(" ").append(this.name).append("(");
 
         boolean first = true;
 
@@ -133,7 +147,7 @@ public class Function extends MasterSentenceContainer {
                 first = false;
             else
                 header.append(", ");
-            header.append(variable.getType().name()).append(" ").append(variable.getName());
+            header.append(variable.getType().name().toLowerCase()).append(" ").append(variable.getName());
         }
 
         header.append(")");

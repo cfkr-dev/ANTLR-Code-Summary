@@ -1,9 +1,13 @@
 package semantic.element;
 
 import org.antlr.v4.misc.OrderedHashMap;
+import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
 import semantic.element.literal.literal_master.Literal;
+import semantic.element.sentence.constant_sentence.ConstantDefinition;
+import semantic.element.sentence.variable_sentence.VariableDefinition;
+import semantic.element.sentence.variable_sentence.VariableDefinitionAndAssign;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
@@ -51,26 +55,93 @@ public class Program extends MasterProgrammableElement {
     private List<ProgramElement> getAllMainDeclarations() {
         List<ProgramElement> declarations = new LinkedList<>();
         for (ProgramElement programElement: this.programElements) {
-            if (programElement.getElementType().equals(Element.VARIABLE) && programElement.getElementType().equals(Element.CONSTANT))
+            if (programElement.getElementType().equals(Element.SENTENCE))
                 declarations.add(programElement);
         }
         return declarations;
     }
 
-    @Override
-    public Variable createNewVariable(String type, String name, int line, int column) {
+    public VariableDefinition createNewVariableDefinition(String type, String name, int line, int column){
+        boolean error = false;
+
         Variable variable = super.createNewVariable(type, name, line, column);
-        if (variable != null)
-            this.programElements.add(variable);
-        else {
+
+        if (variable == null) {
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
                 variable = new SimpleVariable(type, name, this, line, column);
             } else {
                 variable = new StructVariable(this, line, column);
             }
             variable.setMalformed();
+            error = true;
         }
-        return variable;
+
+        VariableDefinition variableDefinition = new VariableDefinition(variable, this, line, column);
+
+        if (error) {
+            variableDefinition.setMalformed();
+            return variableDefinition;
+        }
+
+        this.programElements.add(variableDefinition);
+        return variableDefinition;
+    }
+
+    public VariableDefinition createNewVariableDefinition(String type, int line, int column){
+        boolean error = false;
+
+        Variable variable = super.createNewVariable(type, line, column);
+
+        if (variable == null) {
+            variable = new StructVariable(this, line, column);
+            variable.setMalformed();
+            error = true;
+        }
+
+        VariableDefinition variableDefinition = new VariableDefinition(variable, this, line, column);
+
+        if (error) {
+            variableDefinition.setMalformed();
+            return variableDefinition;
+        }
+
+        this.programElements.add(variableDefinition);
+        return variableDefinition;
+    }
+
+    public VariableDefinitionAndAssign createNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement, int line, int column){
+        boolean error = false;
+
+        Variable variable = super.createNewVariable(type, name, line, column);
+
+        if (variable == null) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
+            if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
+                variable = new SimpleVariable(type, name, this, line, column);
+            } else {
+                variable = new StructVariable(this, line, column);
+            }
+            variable.setMalformed();
+            error = true;
+        }
+
+        variable = variable.variableClone();
+
+        if (error) {
+            variable.forceSetValue(assignableElement);
+        } else if (!variable.setValue(assignableElement, this, line, column)) {
+            error = true;
+        }
+
+        VariableDefinitionAndAssign variableDefinitionAndAssign = new VariableDefinitionAndAssign(variable, this, line, column);
+
+        if (error) {
+            variableDefinitionAndAssign.setMalformed();
+            return variableDefinitionAndAssign;
+        }
+
+        this.programElements.add(variableDefinitionAndAssign);
+        return variableDefinitionAndAssign;
     }
 
     public Function createNewFunction(String type, String name, int line, int column) {
@@ -91,22 +162,22 @@ public class Program extends MasterProgrammableElement {
         return this.createNewFunction("void", "Main", line, column);
     }
 
-    public Constant createNewConstant(String name, Literal value, int line, int column) {
+    public ConstantDefinition createNewConstant(String name, Literal value, int line, int column) {
         if (!this.hasThisSymbol(name)) {
-            Constant constant = new Constant(name, value, this, line, column);
-            this.addToSymbolTable(constant);
+            ConstantDefinition constant = new ConstantDefinition(new Constant(name, value, this, line, column), this, line, column);
+            this.addToSymbolTable(constant.getConstant());
             this.programElements.add(constant);
             return constant;
         } else {
             System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
-            Constant constant = new Constant(name, value, this, line, column);
+            ConstantDefinition constant = new ConstantDefinition(new Constant(name, value, this, line, column), this, line, column);
             constant.setMalformed();
             return constant;
         }
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
 
         // GET PROGRAM ELEMENTS TO BUILD HTML
         List<Function> functions = this.getAllInnerFunctions();
@@ -136,7 +207,7 @@ public class Program extends MasterProgrammableElement {
                     .append("\t\t</style>\n")
                 .append("\t</head>\n")
                 .append("\t<body>\n")
-                    .append("\t\t<h1>Programa:").append(this.name).append("</h1>\n")
+                    .append("\t\t<h1>Programa: ").append(this.name).append("</h1>\n\n")
                     .append(HTMLFunctionHeaders)
                     .append(HTMLFunctionBodies)
                     .append(HTMLMainProgram)
@@ -148,21 +219,22 @@ public class Program extends MasterProgrammableElement {
 
     private StringBuilder generateFunctionHeadersList(List<Function> functions) {
         StringBuilder HTMLFunctionHeaders = new StringBuilder()
-            .append("\t\t<h2>Funciones:").append("</h2>\n")
+            .append("\t\t<h2>Funciones:").append("</h2>\n\n")
             .append("\t\t<ul>\n");
 
-        boolean first = true;
+        HTMLFunctionHeaders
+            .append("\t\t\t<li>\n")
+            .append("\t\t\t\t<a href=\"").append("#").append("programa-principal").append("\">\n")
+            .append("\t\t\t\t\t").append("Programa principal\n")
+            .append("\t\t\t\t</a>\n")
+            .append("\t\t\t</li>\n");
 
         for (Function function: functions) {
             HTMLFunctionHeaders.append("\t\t\t<li>\n")
-                .append("\t\t\t\t<a href=\"").append("#").append(function.getName()).append("\">\n");
-                    if (first) {
-                        HTMLFunctionHeaders.append("\t\t\t\t\t").append("Programa principal\n");
-                        first = false;
-                    } else
-                        HTMLFunctionHeaders.append("\t\t\t\t\t").append(function.getHeader()).append("\n");
-                HTMLFunctionHeaders.append("\t\t\t\t</a>\n")
-            .append("\t\t\t</li>\n");
+                .append("\t\t\t\t<a href=\"").append("#").append(function.getName()).append("\">\n")
+                .append("\t\t\t\t\t").append(function.getHeader()).append("\n")
+                .append("\t\t\t\t</a>\n")
+                .append("\t\t\t</li>\n");
         }
 
         HTMLFunctionHeaders
@@ -176,9 +248,9 @@ public class Program extends MasterProgrammableElement {
 
         for (Function function: functions) {
             HTMLFunctionBodies
-                .append("\t\t<hr/>\n")
-                .append("\t\t<a name=\"").append(function.getName()).append("\">\n")
-                .append(function.toHTML(2))
+                .append("\n\t\t<hr/>\n\n")
+                .append("\t\t<a name=\"").append(function.getName()).append("\"></a>\n")
+                .append(function.toHTML(2, "programa-principal"))
                 .append("\t\t<a href=\"").append("#").append(function.getName()).append("\">").append("Inicio de la función").append("</a>\n")
                 .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
         }
@@ -188,17 +260,20 @@ public class Program extends MasterProgrammableElement {
 
     private StringBuilder generateMainProgram(List<ProgramElement> declarations, Function mainProgram) {
         StringBuilder HTMLMainProgram = new StringBuilder()
-            .append("\t\t<hr/>\n")
-            .append("\t\t<a name=\"programa-principal\">\n")
-            .append("\t\t<h2>Programa principal:").append("</h2>\n");
+            .append("\n\t\t<hr/>\n\n")
+            .append("\t\t<a name=\"programa-principal\"></a>\n\n")
+            .append("\t\t<h2>Programa principal:").append("</h2>\n\n");
 
         for (ProgramElement declaration: declarations) {
             HTMLMainProgram
-                .append(declaration.toHTML(2));
+                .append(declaration.toHTML(2, "programa-principal"));
         }
 
         HTMLMainProgram
-            .append(mainProgram.toHTML(2))
+            .append("\t\t")
+            .append("<br/>")
+            .append("\n\n")
+            .append(mainProgram.toHTML(2, "programa-principal"))
             .append("\t\t<a href=\"").append("#").append("programa-principal").append("\">").append("Inicio del programa principal").append("</a>\n")
             .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
 

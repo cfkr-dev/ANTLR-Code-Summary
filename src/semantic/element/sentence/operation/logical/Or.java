@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Or extends BinaryLogicalOperation {
     public Or(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "OR";
+        this.name = "OR_" + line + "_" + column;
         this.symbol = "||";
         this.operationType = Operation.OR;
 

@@ -10,7 +10,7 @@ public class NumericRealConstant extends Literal {
     public NumericRealConstant(String value, ProgrammableElement context, int line, int column) {
         this.value = value;
         this.type = Type.FLOAT;
-        this.name = "FLOAT_CONST_" + value;
+        this.name = "FLOAT_CONST_" + line + "_" + column;
         this.elementType = Element.LITERAL;
         this.context = context;
         this.superContext = context.getSuperContext();

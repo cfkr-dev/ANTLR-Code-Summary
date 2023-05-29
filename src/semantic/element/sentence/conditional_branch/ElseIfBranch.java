@@ -19,7 +19,7 @@ public class ElseIfBranch extends MasterConditionalBranch {
 
     public ElseIfBranch(AssignableElement logicOperation, ConditionalBranch previous, ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = logicOperation.getValue() + "_IF_ELSE_BRANCH";
+        this.name = "IF_ELSE_BRANCH_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.IF_ELSE;
         this.context = context;
@@ -42,22 +42,31 @@ public class ElseIfBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLElseIf = new StringBuilder()
                 .append(tabs)
                 .append("<span class=\"palres\">else if</span> (")
-                .append(this.logicOperation.toHTML(HTMLIndentationLevel)).append(") <br/>\n")
-                .append(tabs).append("{ <br/>\n")
+                .append(this.logicOperation.toHTML(HTMLIndentationLevel, anchorContext)).append(")").append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n")
+                .append(tabs).append("{").append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n")
                 .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLElseIf.append(sentence.toHTML(HTMLIndentationLevel + 1));
+            HTMLElseIf.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
         HTMLElseIf
-                .append(tabs).append("</div>\n")
-                .append(tabs).append("} <br/>\n");
+                .append(tabs).append("</div>\n\n")
+                .append(tabs).append("}").append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n");
 
         return HTMLElseIf.toString();
     }

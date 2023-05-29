@@ -5,6 +5,7 @@ import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterProgrammableSentence;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 import semantic.utils.enums.Type;
@@ -15,11 +16,10 @@ import java.util.Map;
 
 public class DoWhileLoop extends MasterProgrammableSentence {
     AssignableElement logicOperation;
-    protected boolean errorOnCreation;
 
     public DoWhileLoop(ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = "DO_WHILE_LOOP";
+        this.name = "DO_WHILE_LOOP_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.DO_WHILE;
         this.context = context;
@@ -54,14 +54,38 @@ public class DoWhileLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
-        String HTMLDoWhile = "<p><SPAN CLASS=\"ident\">do</SPAN>  {</p>\n";
+        StringBuilder HTMLDoWhile = new StringBuilder()
+                .append(tabs)
+                .append("<span class=\"palres\">do</span>")
+                .append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n")
+                .append("{")
+                .append("\n\n")
+                .append(tabs)
+                .append("<br/>")
+                .append("\n\n");
 
-        HTMLDoWhile += this.toHTMLBrackets();
-        HTMLDoWhile = HTMLDoWhile.substring(0, HTMLDoWhile.length() - 5) + " <SPAN CLASS=\"ident\">while</SPAN> (" + this.logicOperation.toHTML() + ");</p>\n";
+        HTMLDoWhile.append(tabs).append("<div>\n");
 
-        return HTMLDoWhile;
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLDoWhile.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
+        HTMLDoWhile.append(tabs).append("</div>\n\n");
+
+        HTMLDoWhile
+            .append(tabs)
+            .append("} <span class=\"palres\">while</span> (")
+            .append(this.logicOperation).append(");")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n");
+
+        return HTMLDoWhile.toString();
     }
 }

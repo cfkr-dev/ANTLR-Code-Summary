@@ -16,7 +16,7 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
     public SymbolReference(Variable variable, ProgrammableElement context, int line, int column) {
         this.value = variable;
         this.type = variable.getType();
-        this.name = "SYMBOL_REF_" + variable.getName();
+        this.name = "SYMBOL_REF_" + line + "_" + column;
         this.elementType = Element.SYMBOL_REFERENCE;
         this.context = context;
         this.superContext = context.getSuperContext();
@@ -48,7 +48,7 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         return "<span class=\"ident\">" + value.getName() + "</span>";
     }
 

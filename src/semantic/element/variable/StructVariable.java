@@ -46,7 +46,16 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         }
 
         this.name = name;
-        this.context.addToSymbolTable(this);
+
+        if (!this.context.hasThisSymbol(name)) {
+            this.context.addToSymbolTable(this);
+        } else if (this.context.getSymbolByNameAndElement(name, Element.VARIABLE).getContext() != this.context) {
+            this.context.updateSymbolTable(this);
+        } else {
+            this.setMalformed();
+            System.err.println("ERROR " + this.line + ":" + this.column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        }
+
         return this;
     }
 
@@ -111,15 +120,9 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         return this;
     }
 
-    public StructVariable addNewNestedStructProperty(String name, int line, int column) {
-        if (!this.hasThisSymbol(name)) {
-            StructVariable structVariable = new StructVariable(this, line, column);
-            this.properties.add(structVariable);
-            return structVariable;
-        }
+    public StructVariable addNewNestedStructProperty(int line, int column) {
         StructVariable structVariable = new StructVariable(this, line, column);
-        this.errorOnCreation = true;
-        System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
+        this.properties.add(structVariable);
         return structVariable;
     }
 
@@ -141,7 +144,8 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
             return false;
         }
 
-        if (assignableElement.getValue() instanceof StructVariable assignableStruct) {
+        if (assignableElement.getValue() instanceof StructVariable) {
+            StructVariable assignableStruct = (StructVariable) assignableElement.getValue();
             this.name = assignableStruct.getName();
             this.context = assignableStruct.getContext();
             this.superContext = assignableStruct.getSuperContext();
@@ -205,33 +209,52 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
     @Override
     public StructVariable createNewVariable(String type, int line, int column) {
         if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT))
-            return this.addNewNestedStructProperty(type, line, column);
+            return this.addNewNestedStructProperty(line, column);
         else return null;
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel) {
+    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
 
         StringBuilder HTMLStruct = new StringBuilder();
-        StringBuilder HTMLProperties = generatePropertiesList(this.properties, HTMLIndentationLevel + 1);
+        StringBuilder HTMLProperties = generatePropertiesList(this.properties, HTMLIndentationLevel + 1, anchorContext + ":" + this.name);
 
         return HTMLStruct
-            .append(tabs).append("struct <br/>\n")
-            .append(tabs).append("{ <br/>\n")
+            .append(tabs)
+            .append("<span class=\"palres\">")
+            .append("struct")
+            .append("</span>")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n")
+            .append(tabs).append("{")
+            .append("\n\n")
+            .append(tabs)
+            .append("<br/>")
+            .append("\n\n")
             .append(tabs).append("<div>\n")
                 .append(HTMLProperties)
-            .append(tabs).append("</div>\n")
-            .append(tabs).append("} ").append(this.name).append("; <br/>\n")
+            .append(tabs).append("</div>\n\n")
+            .append(tabs).append("} ")
+            .append("<span class=\"ident\">")
+            .append(this.name)
+            .append("</span>")
             .toString();
     }
 
-    private StringBuilder generatePropertiesList(List<Variable> properties, int HTMLIndentationLevel) {
+    private StringBuilder generatePropertiesList(List<Variable> properties, int HTMLIndentationLevel, String anchorContext) {
+        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
         StringBuilder HTMLProperties = new StringBuilder();
 
         for (Variable property: properties) {
             HTMLProperties
-                .append(property.toHTML(HTMLIndentationLevel));
+                .append(property.toHTML(HTMLIndentationLevel, anchorContext)).append(";")
+                    .append("\n\n")
+                    .append(tabs)
+                    .append("<br/>")
+                    .append("\n\n");
         }
 
         return HTMLProperties;

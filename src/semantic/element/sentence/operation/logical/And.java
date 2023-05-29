@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class And extends BinaryLogicalOperation {
     public And(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "AND";
+        this.name = "AND_" + line + "_" + column;
         this.symbol = "&";
         this.operationType = Operation.AND;
 
