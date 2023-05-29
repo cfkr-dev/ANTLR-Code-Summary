@@ -91,24 +91,26 @@ public class SimpleVariable extends MasterVariable {
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLVariable = new StringBuilder();
 
         if (this.value == null)
             return HTMLVariable
+                .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.getName())).append("\n")
                 .append(tabs)
-                .append("<span class=\"palres\">").append(this.getType().name().toLowerCase()).append("</span>")
+                .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
                 .append(" ")
-                .append("<span class=\"ident\">").append(this.getName()).append("</span>")
+                .append(HTMLHelper.genSpan("ident", this.getName()))
                 .toString();
         else
             return HTMLVariable
+                .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.getName())).append("\n")
                 .append(tabs)
-                .append("<span class=\"palres\">").append(this.getType().name().toLowerCase()).append("</span>")
+                .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
                 .append(" ")
-                .append("<span class=\"ident\">").append(this.getName()).append("</span>")
-                .append("<span class=\"palres\"> = </span>")
+                .append(HTMLHelper.genSpan("ident", this.getName()))
+                .append(HTMLHelper.genSpan("palres", " = "))
                 .append(this.value.toHTML(HTMLIndentationLevel, anchorContext))
                 .toString();
     }

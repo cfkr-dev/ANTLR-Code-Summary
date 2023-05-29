@@ -43,30 +43,26 @@ public class ElseIfBranch extends MasterConditionalBranch {
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLElseIf = new StringBuilder()
-                .append(tabs)
-                .append("<span class=\"palres\">else if</span> (")
-                .append(this.logicOperation.toHTML(HTMLIndentationLevel, anchorContext)).append(")").append("\n\n")
-                .append(tabs)
-                .append("<br/>")
-                .append("\n\n")
-                .append(tabs).append("{").append("\n\n")
-                .append(tabs)
-                .append("<br/>")
-                .append("\n\n")
-                .append(tabs).append("<div>\n");
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "else if"))
+            .append("(")
+            .append(this.logicOperation.toHTML(HTMLIndentationLevel, anchorContext))
+            .append(")")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("{")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
             HTMLElseIf.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
         HTMLElseIf
-                .append(tabs).append("</div>\n\n")
-                .append(tabs).append("}").append("\n\n")
-                .append(tabs)
-                .append("<br/>")
-                .append("\n\n");
+            .append(tabs).append("</div>\n\n")
+            .append(tabs).append("}")
+            .append(HTMLHelper.genBr(tabs));
 
         return HTMLElseIf.toString();
     }

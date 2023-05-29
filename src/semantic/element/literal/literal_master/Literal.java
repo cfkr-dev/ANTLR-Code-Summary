@@ -2,6 +2,7 @@ package semantic.element.literal.literal_master;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
+import semantic.utils.HTMLHelper;
 
 public abstract class Literal extends MasterProgramElement implements AssignableElement {
     protected String value;
@@ -17,18 +18,10 @@ public abstract class Literal extends MasterProgramElement implements Assignable
     }
 
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        StringBuilder HTMLLiteral = new StringBuilder();
-
-        HTMLLiteral.append("<span class=\"cte\">");
-
         if (this.hasParenthesis)
-            HTMLLiteral.append("(").append(this.value).append(")");
+            return HTMLHelper.genSpan("cte", "(" + this.value + ")");
         else
-            HTMLLiteral.append(this.value);
-
-        HTMLLiteral.append("</span>");
-
-        return HTMLLiteral.toString();
+            return HTMLHelper.genSpan("cte", this.value);
     }
 
     @Override

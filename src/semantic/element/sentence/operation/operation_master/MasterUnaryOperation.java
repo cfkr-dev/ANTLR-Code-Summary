@@ -3,6 +3,7 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.UnaryOperation;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
@@ -41,19 +42,21 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
         StringBuilder HTMLOperation = new StringBuilder()
-            .append("<span class=\"palres\">")
-            .append(this.symbol)
-            .append("</span>");
+            .append(HTMLHelper.genSpan("palres", this.symbol));
 
         if (this.hasParenthesis)
-            HTMLOperation.append("(");
+            HTMLOperation
+                .append("(");
 
-        HTMLOperation.append(this.firstOperand.toHTML(HTMLIndentationLevel, anchorContext));
+        HTMLOperation
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel, anchorContext));
 
         if (this.hasParenthesis)
-            HTMLOperation.append(")");
+            HTMLOperation
+                .append(")");
 
-        return HTMLOperation.toString();
+        return HTMLOperation
+            .toString();
     }
 
     public MasterUnaryOperation firstOperand(AssignableElement firstOperand) {

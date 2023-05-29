@@ -12,6 +12,7 @@ import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
@@ -207,7 +208,7 @@ public class Program extends MasterProgrammableElement {
                     .append("\t\t</style>\n")
                 .append("\t</head>\n")
                 .append("\t<body>\n")
-                    .append("\t\t<h1>Programa: ").append(this.name).append("</h1>\n\n")
+                    .append("\t\t").append(HTMLHelper.genH(1, this.name)).append("\n\n")
                     .append(HTMLFunctionHeaders)
                     .append(HTMLFunctionBodies)
                     .append(HTMLMainProgram)
@@ -219,26 +220,22 @@ public class Program extends MasterProgrammableElement {
 
     private StringBuilder generateFunctionHeadersList(List<Function> functions) {
         StringBuilder HTMLFunctionHeaders = new StringBuilder()
-            .append("\t\t<h2>Funciones:").append("</h2>\n\n")
+            .append("\t\t").append(HTMLHelper.genH(2, "Funciones:")).append("\n\n")
             .append("\t\t<ul>\n");
 
         HTMLFunctionHeaders
             .append("\t\t\t<li>\n")
-            .append("\t\t\t\t<a href=\"").append("#").append("programa-principal").append("\">\n")
-            .append("\t\t\t\t\t").append("Programa principal\n")
-            .append("\t\t\t\t</a>\n")
+            .append("\t\t\t\t").append(HTMLHelper.genAHref("PROGRAMA_PRINCIPAL", "Programa principal")).append("\n")
             .append("\t\t\t</li>\n");
 
         for (Function function: functions) {
             HTMLFunctionHeaders.append("\t\t\t<li>\n")
-                .append("\t\t\t\t<a href=\"").append("#").append(function.getName()).append("\">\n")
-                .append("\t\t\t\t\t").append(function.getHeader()).append("\n")
-                .append("\t\t\t\t</a>\n")
+                .append("\t\t\t\t").append(HTMLHelper.genAHref("FUNCIONES:" + function.getName(), function.getHeader())).append("\n")
                 .append("\t\t\t</li>\n");
         }
 
         HTMLFunctionHeaders
-            .append("\t\t</ul>\n");
+            .append("\t\t</ul>");
 
         return HTMLFunctionHeaders;
     }
@@ -248,11 +245,11 @@ public class Program extends MasterProgrammableElement {
 
         for (Function function: functions) {
             HTMLFunctionBodies
-                .append("\n\t\t<hr/>\n\n")
-                .append("\t\t<a name=\"").append(function.getName()).append("\"></a>\n")
-                .append(function.toHTML(2, "programa-principal"))
-                .append("\t\t<a href=\"").append("#").append(function.getName()).append("\">").append("Inicio de la función").append("</a>\n")
-                .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
+                .append(HTMLHelper.genHr("\t\t"))
+                .append("\t\t").append(HTMLHelper.genA("FUNCIONES:" + function.getName())).append("\n")
+                .append(function.toHTML(2, "FUNCIONES"))
+                .append("\t\t").append(HTMLHelper.genAHref("FUNCIONES:" + function.getName(), "Inicio de la función")).append("\n")
+                .append("\t\t").append(HTMLHelper.genAHref("", "Inicio del programa")).append("\n");
         }
 
         return HTMLFunctionBodies;
@@ -260,22 +257,20 @@ public class Program extends MasterProgrammableElement {
 
     private StringBuilder generateMainProgram(List<ProgramElement> declarations, Function mainProgram) {
         StringBuilder HTMLMainProgram = new StringBuilder()
-            .append("\n\t\t<hr/>\n\n")
-            .append("\t\t<a name=\"programa-principal\"></a>\n\n")
-            .append("\t\t<h2>Programa principal:").append("</h2>\n\n");
+            .append(HTMLHelper.genHr("\n", "\t\t", "\n\n"))
+            .append("\t\t").append(HTMLHelper.genA("PROGRAMA_PRINCIPAL")).append("\n")
+            .append("\t\t").append(HTMLHelper.genH(2, "Programa principal:")).append("\n\n");
 
         for (ProgramElement declaration: declarations) {
             HTMLMainProgram
-                .append(declaration.toHTML(2, "programa-principal"));
+                .append(declaration.toHTML(2, "PROGRAMA_PRINCIPAL"));
         }
 
         HTMLMainProgram
-            .append("\t\t")
-            .append("<br/>")
-            .append("\n\n")
-            .append(mainProgram.toHTML(2, "programa-principal"))
-            .append("\t\t<a href=\"").append("#").append("programa-principal").append("\">").append("Inicio del programa principal").append("</a>\n")
-            .append("\t\t<a href=\"").append("#").append("\">").append("Inicio del programa").append("</a>\n");
+            .append(HTMLHelper.genBr("", "\t\t", "\n\n"))
+            .append(mainProgram.toHTML(2, "PROGRAMA_PRINCIPAL"))
+            .append("\t\t").append(HTMLHelper.genAHref("PROGRAMA_PRINCIPAL", "Inicio del programa principal")).append("\n")
+            .append("\t\t").append(HTMLHelper.genAHref("", "Inicio del programa")).append("\n");
 
         return HTMLMainProgram;
     }

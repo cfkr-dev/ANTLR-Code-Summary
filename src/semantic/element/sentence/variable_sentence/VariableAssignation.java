@@ -31,7 +31,14 @@ public class VariableAssignation extends MasterSimpleSentence implements Variabl
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
-        return tabs + "<span class=\"ident\">" + this.variable.getName() + "</span>" + "<span class=\"palres\"> = </span>" + this.variable.getValue().toHTML(HTMLIndentationLevel, anchorContext) + ";\n\n" + tabs + "<br/>\n\n";
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
+
+        return new StringBuilder()
+            .append(tabs).append(HTMLHelper.genAHref(anchorContext + ":" + this.variable.getName(), HTMLHelper.genSpan("ident", this.variable.getName())))
+            .append(HTMLHelper.genSpan("palres", " = "))
+            .append(this.variable.getValue().toHTML(HTMLIndentationLevel, anchorContext))
+            .append(";")
+            .append(HTMLHelper.genBr(tabs))
+            .toString();
     }
 }

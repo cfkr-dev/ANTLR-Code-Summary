@@ -31,7 +31,7 @@ public class VariableDefinitionAndAssign extends MasterSimpleSentence implements
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
-        return this.variable.toHTML(HTMLIndentationLevel, anchorContext) + ";\n\n" + tabs + "<br/>\n\n";
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
+        return this.variable.toHTML(HTMLIndentationLevel, anchorContext) + ";" + HTMLHelper.genBr(tabs);
     }
 }

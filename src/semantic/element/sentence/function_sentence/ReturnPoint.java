@@ -28,7 +28,15 @@ public class ReturnPoint extends MasterSimpleSentence {
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
-        return tabs + "<span class=\"palres\">return</span> " + this.returnElement.toHTML(HTMLIndentationLevel, anchorContext) + ";\n\n" + tabs + "<br/>\n\n";
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
+
+        return new StringBuilder()
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "return"))
+            .append(" ")
+            .append(this.returnElement.toHTML(HTMLIndentationLevel, anchorContext))
+            .append(";")
+            .append(HTMLHelper.genBr(tabs))
+            .toString();
     }
 }

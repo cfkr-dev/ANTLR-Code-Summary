@@ -55,36 +55,29 @@ public class DoWhileLoop extends MasterProgrammableSentence {
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLDoWhile = new StringBuilder()
-                .append(tabs)
-                .append("<span class=\"palres\">do</span>")
-                .append("\n\n")
-                .append(tabs)
-                .append("<br/>")
-                .append("\n\n")
-                .append("{")
-                .append("\n\n")
-                .append(tabs)
-                .append("<br/>")
-                .append("\n\n");
-
-        HTMLDoWhile.append(tabs).append("<div>\n");
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "do"))
+            .append(HTMLHelper.genBr(tabs))
+            .append("{")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
             HTMLDoWhile.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
-        HTMLDoWhile.append(tabs).append("</div>\n\n");
+        HTMLDoWhile
+            .append(tabs).append("</div>\n\n");
 
         HTMLDoWhile
             .append(tabs)
-            .append("} <span class=\"palres\">while</span> (")
+            .append("}")
+            .append(HTMLHelper.genSpan("palres", "while"))
+            .append("(")
             .append(this.logicOperation).append(");")
-            .append("\n\n")
-            .append(tabs)
-            .append("<br/>")
-            .append("\n\n");
+            .append(HTMLHelper.genBr(tabs));
 
         return HTMLDoWhile.toString();
     }

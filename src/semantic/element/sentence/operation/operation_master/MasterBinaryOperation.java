@@ -3,6 +3,7 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.BinaryOperation;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
@@ -43,16 +44,18 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
         StringBuilder HTMLOperation = new StringBuilder()
             .append(this.firstOperand.toHTML(HTMLIndentationLevel, anchorContext))
             .append(" ")
-            .append("<span class=\"palres\">")
-            .append(this.symbol)
-            .append("</span>")
+            .append(HTMLHelper.genSpan("palres", this.symbol))
             .append(" ")
             .append(this.secondOperand.toHTML(HTMLIndentationLevel, anchorContext));
 
         if (this.hasParenthesis)
-            return HTMLOperation.insert(0, "(").append(")").toString();
+            return HTMLOperation
+                .insert(0, "(")
+                .append(")")
+                .toString();
         else
-            return HTMLOperation.toString();
+            return HTMLOperation
+                .toString();
     }
 
     public MasterBinaryOperation firstOperand(AssignableElement firstOperand) {

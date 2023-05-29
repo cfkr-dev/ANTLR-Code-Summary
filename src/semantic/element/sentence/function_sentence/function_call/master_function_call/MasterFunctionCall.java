@@ -60,7 +60,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     }
 
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLFunctionCall = new StringBuilder();
 
@@ -68,9 +68,14 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
             HTMLFunctionCall.append(tabs);
 
         if (this.sentenceType.equals(Sentence.INNER_FUNCT_CALL))
-            HTMLFunctionCall.append("<a href=\"#").append(this.functionName).append("\">").append("<span class=\"ident\">").append(this.functionName).append("</span>").append("</a>").append("(");
+            HTMLFunctionCall
+                .append(HTMLHelper.genAHref("FUNCIONES:" + this.functionName, HTMLHelper.genSpan("ident", this.functionName)));
         else
-            HTMLFunctionCall.append("<span class=\"ident\">").append(this.functionName).append("</span>").append("(");
+            HTMLFunctionCall
+                .append(HTMLHelper.genSpan("ident", this.functionName));
+
+        HTMLFunctionCall
+            .append("(");
 
         boolean first = true;
         for (AssignableElement param: this.callingParams) {
@@ -79,17 +84,17 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
             else
                 HTMLFunctionCall.append(", ");
 
-            HTMLFunctionCall.append(param.toHTML(HTMLIndentationLevel, anchorContext));
+            HTMLFunctionCall
+                .append(param.toHTML(HTMLIndentationLevel, anchorContext));
         }
 
-        HTMLFunctionCall.append(")");
+        HTMLFunctionCall
+            .append(")");
 
         if (!this.partOfExpression)
-            HTMLFunctionCall.append(";")
-                    .append("\n\n")
-                    .append(tabs)
-                    .append("<br/>")
-                    .append("\n\n");
+            HTMLFunctionCall
+                .append(";")
+                .append(HTMLHelper.genBr(tabs));
 
         return HTMLFunctionCall.toString();
     }

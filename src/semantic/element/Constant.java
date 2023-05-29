@@ -31,20 +31,20 @@ public class Constant extends MasterProgramElement {
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLConstant = new StringBuilder();
 
         HTMLConstant
+            .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.getName())).append("\n")
             .append(tabs)
-            .append("<span class=\"palres\">").append("#define").append("</span>")
+            .append(HTMLHelper.genSpan("palres", "#define"))
             .append(" ")
-            .append("<span class=\"ident\">").append(this.getName()).append("</span>")
+            .append(HTMLHelper.genSpan("ident", this.getName()))
             .append(" ");
 
-        //</span>
-
-        HTMLConstant.append(this.value.toHTML(HTMLIndentationLevel, anchorContext));
+        HTMLConstant
+            .append(this.value.toHTML(HTMLIndentationLevel, anchorContext));
 
         if (!this.value.getType().equals(Type.STRING))
             HTMLConstant.insert(HTMLConstant.lastIndexOf("cte\">") + 5, "\"");

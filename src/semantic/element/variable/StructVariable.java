@@ -215,46 +215,33 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLStruct = new StringBuilder();
         StringBuilder HTMLProperties = generatePropertiesList(this.properties, HTMLIndentationLevel + 1, anchorContext + ":" + this.name);
 
         return HTMLStruct
-            .append(tabs)
-            .append("<span class=\"palres\">")
-            .append("struct")
-            .append("</span>")
-            .append("\n\n")
-            .append(tabs)
-            .append("<br/>")
-            .append("\n\n")
+            .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.name)).append("\n")
+            .append(tabs).append(HTMLHelper.genSpan("palres", "struct"))
+            .append(HTMLHelper.genBr(tabs))
             .append(tabs).append("{")
-            .append("\n\n")
-            .append(tabs)
-            .append("<br/>")
-            .append("\n\n")
+            .append(HTMLHelper.genBr(tabs))
             .append(tabs).append("<div>\n")
-                .append(HTMLProperties)
+            .append(HTMLProperties)
             .append(tabs).append("</div>\n\n")
             .append(tabs).append("} ")
-            .append("<span class=\"ident\">")
-            .append(this.name)
-            .append("</span>")
+            .append(HTMLHelper.genSpan("ident", this.name))
             .toString();
     }
 
     private StringBuilder generatePropertiesList(List<Variable> properties, int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
         StringBuilder HTMLProperties = new StringBuilder();
 
         for (Variable property: properties) {
             HTMLProperties
                 .append(property.toHTML(HTMLIndentationLevel, anchorContext)).append(";")
-                    .append("\n\n")
-                    .append(tabs)
-                    .append("<br/>")
-                    .append("\n\n");
+                .append(HTMLHelper.genBr(tabs));
         }
 
         return HTMLProperties;

@@ -6,6 +6,7 @@ import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.variable.variable_interface.Variable;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 
 public class SymbolReference extends MasterProgramElement implements AssignableElement {
@@ -29,7 +30,7 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
     public SymbolReference(Constant constant, ProgrammableElement context, int line, int column) {
         this.value = constant;
         this.type = constant.getType();
-        this.name = "SYMBOL_REF" + constant.getName();
+        this.name = "SYMBOL_REF_" + line + "_" + column;
         this.elementType = Element.SYMBOL_REFERENCE;
         this.context = context;
         this.superContext = context.getSuperContext();
@@ -49,7 +50,10 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        return "<span class=\"ident\">" + value.getName() + "</span>";
+        if (this.hasParenthesis)
+            return HTMLHelper.genAHref(value.getContext() + ":" + value.getName(), HTMLHelper.genSpan("ident", "(" + value.getName() + ")"));
+        else
+            return HTMLHelper.genAHref(anchorContext + ":" + value.getName(), HTMLHelper.genSpan("ident", value.getName()));
     }
 
     @Override

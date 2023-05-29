@@ -63,12 +63,12 @@ public class Function extends MasterSentenceContainer {
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder function = new StringBuilder()
-            .append(tabs).append("<span class=\"palres\">").append(this.type.name().toLowerCase()).append("</span>")
+            .append(tabs).append(HTMLHelper.genSpan("palres", this.type.name().toLowerCase()))
             .append(" ")
-            .append("<span class=\"ident\">").append(this.name).append("</span>")
+            .append(HTMLHelper.genSpan("ident", this.name))
             .append("(");
 
         boolean first = true;
@@ -77,36 +77,39 @@ public class Function extends MasterSentenceContainer {
             if (first)
                 first = false;
             else
-                function.append(", ");
-            function.append("<span class=\"palres\">").append(variable.getType().name().toLowerCase()).append("</span>")
+                function
+                    .append(", ");
+            function
+                .append(HTMLHelper.genSpan("palres", variable.getType().name().toLowerCase()))
                 .append(" ")
-                .append("<span class=\"ident\">").append(variable.getName()).append("</span>");
+                .append(HTMLHelper.genSpan("ident", variable.getName()));
         }
 
-        function.append(")")
-            .append("\n\n")
-            .append(tabs)
-            .append("<br/>")
-            .append("\n\n");
+        function
+            .append(")")
+            .append(HTMLHelper.genBr(tabs));
 
-        function.append(tabs).append("{")
-            .append("\n\n")
+        function
             .append(tabs)
-            .append("<br/>")
-            .append("\n\n");
+            .append("{")
+            .append(HTMLHelper.genBr(tabs));
 
-        function.append(tabs).append("<div>\n");
+        function
+            .append(tabs)
+            .append("<div>\n");
 
         for (Sentence sentence: this.sentences)
-            function.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
+            function
+                .append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
 
-        function.append(tabs).append("</div>\n\n");
-
-        function.append(tabs).append("}")
-            .append("\n\n")
+        function
             .append(tabs)
-            .append("<br/>")
-            .append("\n\n");
+            .append("</div>\n\n");
+
+        function
+            .append(tabs)
+            .append("}")
+            .append(HTMLHelper.genBr(tabs));
 
         return function.toString();
     }

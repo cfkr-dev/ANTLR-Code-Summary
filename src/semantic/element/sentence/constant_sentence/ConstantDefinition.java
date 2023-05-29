@@ -30,7 +30,7 @@ public class ConstantDefinition extends MasterSimpleSentence implements Constant
 
     @Override
     public String toHTML(int HTMLIndentationLevel, String anchorContext) {
-        String tabs = HTMLHelper.generateTabulations(HTMLIndentationLevel);
-        return this.constant.toHTML(HTMLIndentationLevel, anchorContext) + ";\n\n" + tabs + "<br/>\n\n";
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
+        return this.constant.toHTML(HTMLIndentationLevel, anchorContext) + ";" + HTMLHelper.genBr(tabs);
     }
 }
