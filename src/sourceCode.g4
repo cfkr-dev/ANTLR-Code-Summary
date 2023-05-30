@@ -1,5 +1,23 @@
 grammar sourceCode;
 
+    @header{
+
+        import semantic.element.Function;
+        import semantic.element.Program;
+        import semantic.element.element_interfaces.AssignableElement;
+        import semantic.element.element_interfaces.ProgrammableElement;
+        import semantic.element.literal.literal_master.Literal;
+        import semantic.element.sentence.conditional_branch.ConditionalBranch;
+        import semantic.element.sentence.function_sentence.function_call.FunctionCall;
+        import semantic.element.sentence.loop_sentence.DoWhileLoop;
+        import semantic.element.sentence.loop_sentence.ForLoop;
+        import semantic.element.sentence.operation.operation_master.arithmetic.ArithmeticOperation;
+        import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
+        import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
+        import semantic.element.sentence.sentence_master.MasterSentenceContainer;
+        import semantic.element.variable.StructVariable;
+
+    }
 /*
 |-------------------------------------|
 |        GRAMMAR SPECIFICATION        |
@@ -62,7 +80,7 @@ grammar sourceCode;
 
             cte[Program context]
                 : '#define' CONST_DEF_IDENTIFIER simpvalue[$context]
-                {$context.createNewConstant($CONST_DEF_IDENTIFIER.text,(Literal)$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());}
+                {$context.addNewConstant($CONST_DEF_IDENTIFIER.text,(Literal)$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 
         /* ---- SIMPLE VARIABLES DECLARATION ---- */
@@ -79,7 +97,7 @@ grammar sourceCode;
             vardef_aux[ProgrammableElement context,String type,String name]
                 :{
                      if($context instanceof Program ){
-                         $context.createNewVariable($type,$name,$start.getLine(),$start.getCharPositionInLine());
+                         $context.addNewVariableDefinition($type,$name,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else if($context instanceof MasterSentenceContainer ){
                          MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
@@ -95,7 +113,7 @@ grammar sourceCode;
                 {
                      if($context instanceof Program ){
                      Program newContext=(Program)$context;
-                         newContext.createNewVariable($type,$name,$start.getLine(),$start.getCharPositionInLine()).setValue($simpvalue.value,newContext,$start.getLine(),$start.getCharPositionInLine());
+                         newContext.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else if($context instanceof MasterSentenceContainer ){
                          MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
@@ -125,13 +143,13 @@ grammar sourceCode;
                     if( $context instanceof Program){
                         Program newContext=(Program)$context;
 
-                        $struct=newContext.createNewVariable("struct",$start.getLine(),$start.getCharPositionInLine());
+                        StructVariable structAux=newContext.addNewVariableDefinition("struct",$start.getLine(),$start.getCharPositionInLine());
                     }else{
                         StructVariable newContext=(StructVariable)$context;
-                        $struct=newContext.addNewNestedStructProperty("struct",$start.getLine(),$start.getCharPositionInLine());
+                        StructVariable structAux=newContext.addNewNestedStructProperty("struct",$start.getLine(),$start.getCharPositionInLine());
                     }
                 }
-                dcllist_struct[$struct] '}'
+                dcllist_struct[structAux] '}' {$struct=structAux}
                 ;
 
             dcllist_struct[ProgrammableElement context]
@@ -189,7 +207,7 @@ grammar sourceCode;
         /* ---- FUNCTION HEAD ---- */
 
             funchead [Program context] returns [Function returnFunction]
-                : tbas IDENTIFIER '('{$returnFunction = $context.createNewFunction($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} funchead_aux [$returnFunction] {$returnFunction = $returnFunction;}
+                : tbas IDENTIFIER '('{Function functionAux = $context.addNewFunction($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} funchead_aux [functionAux] {$returnFunction = functionAux;}
                 ;
 
             funchead_aux[Function context]
@@ -218,8 +236,8 @@ grammar sourceCode;
         /* ---- FUNCION PRINCIPAL ---- */
 
             mainhead[Program context] returns [Function contextMain]
-                : tvoid 'Main' '(' {$contextMain= context.createNewMainFunction($start.getLine(),$start.getCharPositionInLine());}
-                 mainhead_aux[$contextMain]
+                : tvoid 'Main' '(' {Function contextMainAux= context.addMainFunction($start.getLine(),$start.getCharPositionInLine());}
+                 mainhead_aux[contextMainAux] {$contextMain = contextMainAux}
 
                 ;
 
@@ -272,7 +290,7 @@ grammar sourceCode;
         /* ---- ASSIGNMENTS ---- */
 
             asig[MasterSentenceContainer context] returns [ String name, AssignableElement value]
-                : IDENTIFIER {$name=$IDENTIFIER.text;} '=' exp[$context] {$value=$exp.value;}
+                : IDENTIFIER  '=' exp[$context] {$name=$IDENTIFIER.text , $value=$exp.value;}
                 ;
 
 
@@ -300,11 +318,11 @@ grammar sourceCode;
 
             subpparamlist[MasterSentenceContainer context, String name] returns [FunctionCall return_function]
                 : '(' {FunctionCall  reference=$context.newFunctionCall($name,$start.getLine(),$start.getCharPositionInLine());} explist[$context,reference]
-                    {$return_function=$explist.return_function;}  ')'
+                     ')' {$return_function=$explist.return_function;}
                 ;
 
             explist[MasterSentenceContainer context,FunctionCall function] returns [FunctionCall return_function]
-                : exp[$context] {$function.addParam($exp.value);} explist_aux[$context,$function] {$return_function=$function;}
+                : exp[$context] {FunctionCall functionAux= $function.addParam($exp.value);} explist_aux[$context,functionAux] {$return_function=functionAux;}
                 ;
 
             explist_aux[MasterSentenceContainer context,FunctionCall function]
