@@ -1,5 +1,5 @@
 integer entero_1= 0953 ;
-integer _entero2= -690 ;
+integer _entero_2= -690 ;
 float __float1_ = +.456;
 float float2_ = +045e16;
 float float3 = -00.69;
@@ -19,6 +19,8 @@ integer calc_float(float number_3,float number_4, float number_5){
 }
 
 void Main (){
+
+integer n;
 
 do{
     print(frase);

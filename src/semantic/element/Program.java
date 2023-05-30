@@ -127,7 +127,10 @@ public class Program extends MasterProgrammableElement {
             error = true;
         }
 
-        variable = variable.variableClone();
+        if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT))
+            variable = variable.variableClone(name);
+        else
+            variable = variable.variableClone();
 
         if (error) {
             variable.forceSetValue(assignableElement);

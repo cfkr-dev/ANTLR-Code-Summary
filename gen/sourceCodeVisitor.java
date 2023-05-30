@@ -14,7 +14,6 @@ import semantic.element.sentence.operation.operation_master.arithmetic.Arithmeti
 import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
 import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
-import semantic.element.sentence.variable_sentence.VariableDefinition;
 import semantic.element.variable.StructVariable;
 
 import org.antlr.v4.runtime.tree.ParseTreeVisitor;

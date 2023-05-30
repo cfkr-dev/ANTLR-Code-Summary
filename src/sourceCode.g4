@@ -264,8 +264,8 @@ import semantic.element.variable.StructVariable;
 
             sent[MasterSentenceContainer context]
 
-                : asig[$context]  ';'{$context.addNewVariableAssign($asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
-                | vardef_and_asig[$context]  ';'
+                : asig[$context, false]  ';'{$context.addNewVariableAssign($asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
+                | vardef_and_asig[$context, false]  ';'
                 | vardef_code[$context]  ';'
                 | funccall[$context]   ';' {$context.addNewFunctionCall(($funccall.return_function).call());}
                 | return_func[$context]';'
@@ -290,15 +290,19 @@ import semantic.element.variable.StructVariable;
         
         /* ---- ASSIGNMENTS ---- */
 
-            asig[MasterSentenceContainer context] returns [String name, AssignableElement value]
-                : IDENTIFIER  '=' exp[$context] {$name=$IDENTIFIER.text; $value=$exp.value;}
+            asig[MasterSentenceContainer context, boolean forLoop] returns [String name, AssignableElement value]
+                : IDENTIFIER  '=' exp[$context, forLoop] {$name=$IDENTIFIER.text; $value=$exp.value;}
                 ;
 
 
 
-            vardef_and_asig[MasterSentenceContainer context] returns[String type,String name,AssignableElement value]
-                : simple_vardef_code[$context]  '=' exp[$context]
-                {$context.addNewVariableDefinitionAndAssign($simple_vardef_code.type,$simple_vardef_code.name, $exp.value,$start.getLine(),$start.getCharPositionInLine());
+            vardef_and_asig[MasterSentenceContainer context, boolean forLoop] returns[String type,String name,AssignableElement value]
+                : simple_vardef_code[$context]  '=' exp[$context, false]
+                {
+                  if (!forLoop) {
+                    $context.addNewVariableDefinitionAndAssign($simple_vardef_code.type,$simple_vardef_code.name, $exp.value,$start.getLine(),$start.getCharPositionInLine());
+                  }
+
                   $type=$simple_vardef_code.type;
                   $name=$simple_vardef_code.name;
                   $value=$exp.value;
@@ -323,7 +327,8 @@ import semantic.element.variable.StructVariable;
                 ;
 
             explist[MasterSentenceContainer context,FunctionCall function] returns [FunctionCall return_function]
-                : exp[$context] {FunctionCall functionAux= $function.addParam($exp.value);} explist_aux[$context,functionAux] {$return_function=functionAux;}
+                : exp[$context, false] {FunctionCall functionAux=$function.addParam($exp.value);} explist_aux[$context,functionAux] {$return_function=functionAux;}
+                | {$return_function=function;}
                 ;
 
             explist_aux[MasterSentenceContainer context,FunctionCall function]
@@ -336,13 +341,13 @@ import semantic.element.variable.StructVariable;
         /* ---- FUNCTION-RETURN SECTION ---- */
 
             return_func[MasterSentenceContainer context]
-                : 'return' exp[$context] {$context.addNewReturnPoint($exp.value,$start.getLine(),$start.getCharPositionInLine());}
+                : 'return' exp[$context, false] {$context.addNewReturnPoint($exp.value,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 
         /* ---- IF-ELSE SENTENCE ---- */
 
             if [MasterSentenceContainer context]
-                : 'if' expcond[$context] {MasterSentenceContainer ifContext=$context.addNewIfBranch($expcond.value,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[ifContext] if_aux[$context,ifContext]
+                : 'if' expcond[$context, false] {MasterSentenceContainer ifContext=$context.addNewIfBranch($expcond.value,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[ifContext] if_aux[$context,ifContext]
                 ;
 
             if_aux[MasterSentenceContainer context,MasterSentenceContainer context_if]
@@ -360,20 +365,20 @@ import semantic.element.variable.StructVariable;
                 ;
 
             if_else[MasterSentenceContainer context,ConditionalBranch context_if]
-                : 'if' expcond[$context] {MasterSentenceContainer newContext=$context.addNewElseIfBranch($expcond.value,$context_if,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[newContext] if_aux[$context,newContext]
+                : 'if' expcond[$context, false] {MasterSentenceContainer newContext=$context.addNewElseIfBranch($expcond.value,$context_if,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[newContext] if_aux[$context,newContext]
                 ;
 
         /* ---- WHILE SENTENCE ---- */
 
             while[MasterSentenceContainer context]
-                : 'while' '(' expcond[$context] {MasterSentenceContainer newContext=$context.addNewWhileLoop($expcond.value,$start.getLine(),$start.getCharPositionInLine());}')' '{' sentlist_aux[newContext]
+                : 'while' '(' expcond[$context, false] {MasterSentenceContainer newContext=$context.addNewWhileLoop($expcond.value,$start.getLine(),$start.getCharPositionInLine());}')' '{' sentlist_aux[newContext]
                 ;
 
         /* ---- DO-WHILE SENTENCE ----*/
 
             dowhile[MasterSentenceContainer context]
                 : 'do' '{' {MasterSentenceContainer newContext=$context.addNewDoWhileLoop($start.getLine(),$start.getCharPositionInLine());} sentlist_aux[newContext]
-                'while' '(' expcond[newContext] {DoWhileLoop doWhileContext=(DoWhileLoop)newContext;
+                'while' '(' expcond[newContext, false] {DoWhileLoop doWhileContext=(DoWhileLoop)newContext;
                                                 doWhileContext.createDoWhileLoop($expcond.value);} ')' ';'
                 ;
 
@@ -384,17 +389,17 @@ import semantic.element.variable.StructVariable;
                 ;
 
             for_aux[MasterSentenceContainer context]
-                : asig1=asig[$context] ';' expcond[$context] ';' asig2=asig[$context] ')' '{'
+                : asig1=asig[$context, true] ';' expcond[$context, true] ';' asig2=asig[$context, true] ')' '{'
                   {MasterSentenceContainer forContext=$context.addNewForLoop($asig1.name,$asig1.value,$expcond.value,$asig2.name,
                   $asig2.value,$start.getLine(),$start.getCharPositionInLine());}
                   sentlist_aux[forContext]
 
-                | vardef_and_asig[$context] ';' expcond[$context] ';' asig[$context] ')' '{'
+                | vardef_and_asig[$context, true] ';' expcond[$context, true] ';' asig[$context, true] ')' '{'
                   {MasterSentenceContainer forContext=$context.addNewForLoop($vardef_and_asig.type,$vardef_and_asig.name,
                   $vardef_and_asig.value,$expcond.value,$asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
                   sentlist_aux[forContext]
 
-                | simple_vardef_code[$context] ';' expcond[$context] ';' asig[$context] ')' '{'
+                | simple_vardef_code[$context] ';' expcond[$context, true] ';' asig[$context, true] ')' '{'
                   {MasterSentenceContainer forContext=$context.addNewForLoop($simple_vardef_code.type,$simple_vardef_code.name,
                   $expcond.value,$asig.name,$asig.value,$start.getLine(),$start.getCharPositionInLine());}
                   sentlist_aux[forContext]
@@ -402,13 +407,13 @@ import semantic.element.variable.StructVariable;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
 
-            expcond[MasterSentenceContainer context] returns[AssignableElement value]
-                : factorcond[$context] expcond_aux[$context,$factorcond.value] {$value=$expcond_aux.value;}
+            expcond[MasterSentenceContainer context, boolean forLoop] returns[AssignableElement value]
+                : factorcond[$context, forLoop] expcond_aux[$context,$factorcond.value, forLoop] {$value=$expcond_aux.value;}
                 ;
 
-            expcond_aux[MasterSentenceContainer context,AssignableElement left] returns[AssignableElement value]
-                : oplog[$context,$left] expcond[$context]{AssignableElement valueH=$oplog.operation.secondOperand($expcond.value);}
-                expcond_aux1=expcond_aux[$context,valueH] {$value=$expcond_aux1.value ;}
+            expcond_aux[MasterSentenceContainer context,AssignableElement left, boolean forLoop] returns[AssignableElement value]
+                : oplog[$context,$left] expcond[$context, forLoop]{AssignableElement valueH=$oplog.operation.secondOperand($expcond.value);}
+                expcond_aux1=expcond_aux[$context,valueH,forLoop] {$value=$expcond_aux1.value ;}
                 | {$value=$left;}
                 ;
 
@@ -417,14 +422,14 @@ import semantic.element.variable.StructVariable;
                 | '&'{$operation=(BinaryLogicalOperation)$context.newLogicalOperation().and($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 ;
 
-            factorcond[MasterSentenceContainer context] returns [AssignableElement value]
-                : '(' expcond[$context] ')'  {$value=($expcond.value).setParenthesis();}
-                | exp[$context] factorcond_aux[$context,$exp.value] {$value=$factorcond_aux.value ;}
-                | '!' factorcond[$context] {$value=$context.newLogicalOperation().not($start.getLine(),$start.getCharPositionInLine()).firstOperand($factorcond.value);}
+            factorcond[MasterSentenceContainer context, boolean forLoop] returns [AssignableElement value]
+                : '(' expcond[$context, forLoop] ')'  {$value=($expcond.value).setParenthesis();}
+                | exp[$context, forLoop] factorcond_aux[$context,$exp.value, forLoop] {$value=$factorcond_aux.value ;}
+                | '!' factorcond[$context, forLoop] {$value=$context.newLogicalOperation().not($start.getLine(),$start.getCharPositionInLine()).firstOperand($factorcond.value);}
                 ;
 
-            factorcond_aux[MasterSentenceContainer context ,AssignableElement left ] returns [AssignableElement value]
-                : opcomp[$context,$left] exp[$context] {$value=$opcomp.operation.secondOperand($exp.value);}
+            factorcond_aux[MasterSentenceContainer context ,AssignableElement left, boolean forLoop ] returns [AssignableElement value]
+                : opcomp[$context,$left] exp[$context, forLoop] {$value=$opcomp.operation.secondOperand($exp.value);}
                 | {$value=$left;}
                 ;
 
@@ -439,13 +444,13 @@ import semantic.element.variable.StructVariable;
 
         /* ---- ARITHMETIC OPERATIONS ---- */
 
-            exp[MasterSentenceContainer context] returns[AssignableElement value]
-                :factor[$context] exp_aux[$context,$factor.value] {$value=$exp_aux.value;}
+            exp[MasterSentenceContainer context, boolean forLoop] returns[AssignableElement value]
+                :factor[$context, forLoop] exp_aux[$context,$factor.value, forLoop] {$value=$exp_aux.value;}
                 ;
 
-            exp_aux[MasterSentenceContainer context,AssignableElement left] returns[AssignableElement value]
-                : op[$context,$left] exp[$context] {AssignableElement valueH=$op.operation.secondOperand($exp.value);}
-                  exp_aux1=exp_aux[$context,valueH] {$value=$exp_aux1.value ;}
+            exp_aux[MasterSentenceContainer context,AssignableElement left, boolean forLoop] returns[AssignableElement value]
+                : op[$context,$left] exp[$context, forLoop] {AssignableElement valueH=$op.operation.secondOperand($exp.value);}
+                  exp_aux1=exp_aux[$context,valueH, forLoop] {$value=$exp_aux1.value ;}
                 | {$value=$left;}
                 ;
 
@@ -457,27 +462,17 @@ import semantic.element.variable.StructVariable;
                 | 'MOD' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().modulus($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 ;
 
-            factor[MasterSentenceContainer context] returns [AssignableElement value]
-                : simpvalue_code[$context]{$value=$simpvalue_code.value;}
-                | '(' exp[$context] ')' {$value=($exp.value).setParenthesis();}
+            factor[MasterSentenceContainer context, boolean forLoop] returns [AssignableElement value]
+                : simpvalue_code[$context, forLoop]{$value=$simpvalue_code.value;}
+                | '(' exp[$context, forLoop] ')' {$value=($exp.value).setParenthesis();}
                 | funccall[$context] {$value=($funccall.return_function).call();}
                 ;
 
-            simpvalue_code[MasterSentenceContainer context] returns [AssignableElement value]
+            simpvalue_code[MasterSentenceContainer context, boolean forLoop] returns [AssignableElement value]
                 : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
                 | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
                 | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
-                | IDENTIFIER
-                {
-                    if($context instanceof ForLoop){
-                        ForLoop newContext=(ForLoop)$context;
-                        $value=newContext.newSymbolReference("VARIABLE",$IDENTIFIER.text,true,$start.getLine(),$start.getCharPositionInLine());
-                    }else{
-                        MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
-                        $value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());
-                    }
-
-                }
+                | IDENTIFIER {$value=$context.newSymbolReference("VARIABLE",$IDENTIFIER.text,forLoop,$start.getLine(),$start.getCharPositionInLine());}
                 | CONST_DEF_IDENTIFIER{$value=$context.newSymbolReference("CONSTANT",$CONST_DEF_IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());}
                 ;
 

@@ -9,5 +9,6 @@ public interface Variable extends ProgramElement {
     AssignableElement getValue();
     public void forceSetValue(AssignableElement assignableElement);
     public Variable variableClone();
+    public Variable variableClone(String name);
     public void forceSetMalformed();
 }

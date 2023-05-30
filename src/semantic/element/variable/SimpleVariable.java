@@ -35,6 +35,14 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
+    public Variable variableClone(String name) {
+        Variable variable = new SimpleVariable(this.type.name(), name, this.context, this.line, this.column);
+        if (this.malformed)
+            variable.forceSetMalformed();
+        return variable;
+    }
+
+    @Override
     public AssignableElement getValue() {
         return this.value;
     }
@@ -59,7 +67,7 @@ public class SimpleVariable extends MasterVariable {
         }
 
         if (!context.hasThisSymbol(this.name)) {
-            if (!(assignableElement instanceof Variable || assignableElement instanceof Constant)) {
+            if (!(assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant)) {
                 System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
@@ -70,7 +78,7 @@ public class SimpleVariable extends MasterVariable {
             return false;
         }
 
-        if (assignableElement instanceof Variable || assignableElement instanceof Constant) {
+        if (assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant) {
 
             if (!context.hasThisSymbol(assignableElement.getName())) {
                 System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");

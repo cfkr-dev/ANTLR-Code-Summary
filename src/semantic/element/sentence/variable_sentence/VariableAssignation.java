@@ -35,22 +35,34 @@ public class VariableAssignation extends MasterSimpleSentence implements Variabl
     public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-        return new StringBuilder()
+        StringBuilder HTMLAssign = new StringBuilder()
             .append(tabs).append(HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", this.variable.getName())))
-            .append(HTMLHelper.genSpan("palres", " = "))
+            .append(HTMLHelper.genSpan("palres", " = "));
+
+        if (this.variable.getValue().getType().equals(Type.STRUCT))
+            HTMLAssign.append(this.variable.getValue().getName());
+
+        HTMLAssign
             .append(this.variable.getValue().toHTML(HTMLIndentationLevel))
             .append(";")
-            .append(HTMLHelper.genBr(tabs))
-            .toString();
+            .append(HTMLHelper.genBr(tabs));
+
+        return HTMLAssign.toString();
     }
 
     @Override
     public String toHTMLNoWhiteSpaces() {
-        return new StringBuilder()
+        StringBuilder HTMLAssign = new StringBuilder()
             .append(HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", this.variable.getName())))
-            .append(HTMLHelper.genSpan("palres", " = "))
+            .append(HTMLHelper.genSpan("palres", " = "));
+
+        if (this.variable.getValue().getType().equals(Type.STRUCT))
+            HTMLAssign.append(this.variable.getValue().getName());
+
+        HTMLAssign
             .append(this.variable.getValue().toHTML(0))
-            .append(";")
-            .toString();
+            .append(";");
+
+        return HTMLAssign.toString();
     }
 }

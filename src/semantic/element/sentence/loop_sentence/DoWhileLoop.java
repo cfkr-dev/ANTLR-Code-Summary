@@ -45,7 +45,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
         if (logicOperation.isMalformed()) {
             System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             this.setMalformed();
-        } else if (Type.checkTypeConditional(logicOperation)) {
+        } else if (!Type.checkTypeConditional(logicOperation)) {
             System.err.println("ERROR " + line + ":" + column + " => " + "Se debe introducir una expresión lógica");
             this.setMalformed();
         }
@@ -77,7 +77,8 @@ public class DoWhileLoop extends MasterProgrammableSentence {
             .append("}")
             .append(HTMLHelper.genSpan("palres", "while"))
             .append("(")
-            .append(this.logicOperation).append(");")
+            .append(this.logicOperation.toHTML(HTMLIndentationLevel))
+            .append(");")
             .append(HTMLHelper.genBr(tabs));
 
         return HTMLDoWhile.toString();

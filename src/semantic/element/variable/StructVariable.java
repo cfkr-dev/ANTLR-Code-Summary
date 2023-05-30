@@ -1,14 +1,14 @@
 package semantic.element.variable;
 
-import semantic.element.literal.NumericIntegerConstant;
-import semantic.element.literal.NumericRealConstant;
-import semantic.element.literal.StringConstant;
-import semantic.element.symbolReference.SymbolReference;
-import semantic.element.variable.variable_interface.Variable;
-import semantic.element.variable.variable_master.MasterVariable;
+import semantic.element.Constant;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.element.literal.NumericIntegerConstant;
+import semantic.element.literal.NumericRealConstant;
+import semantic.element.literal.StringConstant;
+import semantic.element.variable.variable_interface.Variable;
+import semantic.element.variable.variable_master.MasterVariable;
 import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
@@ -24,6 +24,8 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
     protected List<Variable> properties;
     protected boolean errorOnCreation;
 
+    protected AssignableElement value;
+
     public StructVariable(ProgrammableElement context, int line, int column) {
         this.type = Type.STRUCT;
         this.elementType = Element.VARIABLE;
@@ -34,6 +36,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         this.symbolTable = initializeSymbolTable();
         this.properties = new ArrayList<>();
         this.errorOnCreation = false;
+        this.value = null;
         this.malformed = true;
         this.line = line;
         this.column = column;
@@ -130,11 +133,14 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
 
     @Override
     public AssignableElement getValue() {
-        return new SymbolReference(this, this.context, this.line, this.column);
+        return this.value;
     }
 
     @Override
     public boolean setValue(AssignableElement assignableElement, ProgrammableElement context, int line, int column) {
+        if (this.properties.size() == 0)
+            this.malformed = false;
+
         if (this.malformed) {
             this.setMalformed();
             return false;
@@ -146,22 +152,36 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
             return false;
         }
 
-        if (assignableElement.getValue() instanceof StructVariable) {
-            StructVariable assignableStruct = (StructVariable) assignableElement.getValue();
-            this.name = assignableStruct.getName();
-            this.context = assignableStruct.getContext();
-            this.superContext = assignableStruct.getSuperContext();
-            this.anchorContext = assignableStruct.getAnchorContext();
-            this.symbolTable = assignableStruct.getSymbolTable();
-            this.properties = assignableStruct.getProperties();
-            this.line = assignableStruct.getLine();
-            this.column = assignableStruct.getColumn();
-            return true;
-        } else {
-            System.err.println("ERROR " + line + ":" + column + " => " + "Una variable de tipo struct solo puede ser asignada con otra variable de tipo struct");
+        if (!context.hasThisSymbol(this.name)) {
+            if (!(assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant)) {
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+                this.setMalformed();
+                return false;
+            }
+
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getName() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
             this.setMalformed();
             return false;
         }
+
+        if (assignableElement.getValue() instanceof StructVariable) {
+
+            if (!context.hasThisSymbol(assignableElement.getValue().getName())) {
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue().getName() + " a " + this.name + " por que " + assignableElement.getValue().getName() + " no ha sido declarado previamente");
+                this.setMalformed();
+                return false;
+            }
+        }
+
+        if (!Type.checkTypeConsistency(assignableElement.getType(), this.type)) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar un elemento de tipo \"" + assignableElement.getType() + "\" a una variable de tipo " + this.type.name().toLowerCase());
+            this.setMalformed();
+            return false;
+        }
+
+        this.value = assignableElement;
+        context.updateSymbolTable(this);
+        return true;
     }
 
     public void forceSetValue(AssignableElement assignableElement) {
@@ -180,6 +200,14 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
     @Override
     public Variable variableClone() {
         StructVariable structVariable = new StructVariable(this.context, this.line, this.column).createStruct(this.name);
+        if (this.malformed)
+            structVariable.forceSetMalformed();
+        return structVariable;
+    }
+
+    @Override
+    public Variable variableClone(String name) {
+        StructVariable structVariable = new StructVariable(this.context, this.line, this.column).createStruct(name);
         if (this.malformed)
             structVariable.forceSetMalformed();
         return structVariable;
@@ -222,6 +250,18 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLStruct = new StringBuilder();
+
+        if (this.value != null)
+            return HTMLStruct
+                .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
+                .append(tabs)
+                .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
+                .append(" ")
+                .append(HTMLHelper.genSpan("ident", this.getName()))
+                .append(HTMLHelper.genSpan("palres", " = "))
+                .append(this.value.toHTML(HTMLIndentationLevel))
+                .toString();
+
         StringBuilder HTMLProperties = generatePropertiesList(this.properties, HTMLIndentationLevel + 1, anchorContext + ":" + this.name);
 
         return HTMLStruct
