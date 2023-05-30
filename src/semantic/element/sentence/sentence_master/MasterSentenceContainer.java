@@ -262,6 +262,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
                                  String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
 
         boolean error = false;
+        boolean createdIndexVariable = false;
 
         ForLoop forLoop = new ForLoop(this, line, column);
 
@@ -271,6 +272,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
             variableIndex = new SimpleVariable("integer", indexVariableName, forLoop, line, column);
             this.addToSymbolTable(variableIndex);
             forLoop.addToSymbolTable(variableIndex);
+            createdIndexVariable = true;
         }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
@@ -320,7 +322,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, forLoop, line, column);
 
         forLoop
-            .setIndexVariable(new VariableAssignation(variableIndex, forLoop, line, column))
+            .setIndexVariable(new VariableAssignation(variableIndex, forLoop, line, column), createdIndexVariable)
             .setConditionStop(conditionStop)
             .setAssignationAfterIteration(afterIterationAssign);
 
@@ -338,6 +340,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
                                   AssignableElement conditionStop,
                                   String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
+        boolean createdIndexVariable = false;
 
         ForLoop forLoop = new ForLoop(this, line, column);
 
@@ -349,6 +352,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         } else {
             this.addToSymbolTable(variableIndex);
             forLoop.addToSymbolTable(variableIndex);
+            createdIndexVariable = true;
         }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
@@ -398,7 +402,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, forLoop, line, column);
 
         forLoop
-            .setIndexVariable(new VariableDefinitionAndAssign(variableIndex, forLoop, line, column))
+            .setIndexVariable(new VariableDefinitionAndAssign(variableIndex, forLoop, line, column), createdIndexVariable)
             .setConditionStop(conditionStop)
             .setAssignationAfterIteration(afterIterationAssign);
 
@@ -415,6 +419,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
                                   AssignableElement conditionStop,
                                   String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
+        boolean createdIndexVariable = false;
 
         ForLoop forLoop = new ForLoop(this, line, column);
 
@@ -426,6 +431,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         } else {
             this.addToSymbolTable(variableIndex);
             forLoop.addToSymbolTable(variableIndex);
+            createdIndexVariable = true;
         }
 
         if (variableIndex == null) {
@@ -481,7 +487,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, forLoop, line, column);
 
         forLoop
-            .setIndexVariable(new VariableDefinition(variableIndex, forLoop, line, column))
+            .setIndexVariable(new VariableDefinition(variableIndex, forLoop, line, column), createdIndexVariable)
             .setConditionStop(conditionStop)
             .setAssignationAfterIteration(afterIterationAssign);
 

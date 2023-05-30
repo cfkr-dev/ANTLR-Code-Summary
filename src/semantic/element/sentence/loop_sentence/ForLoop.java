@@ -21,6 +21,7 @@ public class ForLoop extends MasterProgrammableSentence {
     VariableSentence indexVariable;
     AssignableElement conditionStop;
     VariableAssignation assignationAfterIteration;
+    boolean createdIndexVariable;
 
     public ForLoop(ProgrammableElement context, int line, int column) {
         this.type = null;
@@ -35,6 +36,7 @@ public class ForLoop extends MasterProgrammableSentence {
         this.indexVariable = null;
         this.conditionStop = null;
         this.assignationAfterIteration = null;
+        this.createdIndexVariable = false;
         this.malformed = false;
         this.line = line;
         this.column = column;
@@ -44,11 +46,13 @@ public class ForLoop extends MasterProgrammableSentence {
         return this.indexVariable.getVariable();
     }
 
-    public ForLoop setIndexVariable(VariableSentence indexVariable) {
+    public ForLoop setIndexVariable(VariableSentence indexVariable, boolean createdIndexVariable) {
         if (indexVariable.isMalformed())
             this.setMalformed();
 
         this.indexVariable = indexVariable;
+
+        this.createdIndexVariable = createdIndexVariable;
 
         return this;
     }
@@ -86,6 +90,10 @@ public class ForLoop extends MasterProgrammableSentence {
                 .append(tabs)
                 .append(HTMLHelper.genSpan("palres", "for"))
                 .append("(");
+
+        if (createdIndexVariable)
+            HTMLFor
+                .append(HTMLHelper.genA(this.indexVariable.getVariable().getAnchorContext()));
 
         HTMLFor
             .append(this.indexVariable.toHTMLNoWhiteSpaces())

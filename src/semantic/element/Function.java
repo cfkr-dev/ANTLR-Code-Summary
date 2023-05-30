@@ -86,7 +86,7 @@ public class Function extends MasterSentenceContainer {
             function
                 .append(HTMLHelper.genSpan("palres", variable.getType().name().toLowerCase()))
                 .append(" ")
-                .append(HTMLHelper.genSpan("ident", variable.getName()));
+                .append(HTMLHelper.genA(variable.getAnchorContext(), HTMLHelper.genSpan("ident", variable.getName())));
         }
 
         function
