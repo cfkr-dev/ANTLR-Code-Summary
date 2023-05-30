@@ -40,7 +40,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         StringBuilder HTMLOperation = new StringBuilder()
             .append(HTMLHelper.genSpan("palres", this.symbol));
 
@@ -49,7 +49,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
                 .append("(");
 
         HTMLOperation
-            .append(this.firstOperand.toHTML(HTMLIndentationLevel, anchorContext));
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel));
 
         if (this.hasParenthesis)
             HTMLOperation

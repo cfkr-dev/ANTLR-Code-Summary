@@ -26,6 +26,10 @@ public class Function extends MasterSentenceContainer {
         this.elementType = Element.FUNCTION;
         this.context = context;
         this.superContext = this;
+        if (this.name.equals("Main"))
+            this.anchorContext = "PROGRAMA_PRINCIPAL:" + this.name;
+        else
+            this.anchorContext = "FUNCIONES:" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.params = new LinkedList<>();
@@ -62,7 +66,7 @@ public class Function extends MasterSentenceContainer {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder function = new StringBuilder()
@@ -100,7 +104,7 @@ public class Function extends MasterSentenceContainer {
 
         for (Sentence sentence: this.sentences)
             function
-                .append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
+                .append(sentence.toHTML(HTMLIndentationLevel + 1));
 
         function
             .append(tabs)

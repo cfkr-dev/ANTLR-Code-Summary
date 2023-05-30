@@ -32,7 +32,7 @@ import semantic.utils.enums.Type;
 
 import java.util.List;
 
-public abstract class MasterSentenceContainer extends MasterProgrammableElement {
+public abstract class  MasterSentenceContainer extends MasterProgrammableElement {
 
     protected List<Sentence> sentences;
     public ArithmeticalOperationFactory newArithmeticOperation() {return new ArithmeticalOperationFactory(this);}
@@ -260,15 +260,17 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
     public ForLoop addNewForLoop(String indexVariableName, AssignableElement startValue,
                                  AssignableElement conditionStop,
                                  String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
+
         boolean error = false;
-        boolean createdIndexVariable = false;
+
+        ForLoop forLoop = new ForLoop(this, line, column);
 
         Variable variableIndex = (Variable) this.getSymbolByNameAndElement(indexVariableName, Element.VARIABLE);
 
         if (variableIndex == null) {
-            variableIndex = new SimpleVariable("integer", indexVariableName, this, line, column);
+            variableIndex = new SimpleVariable("integer", indexVariableName, forLoop, line, column);
             this.addToSymbolTable(variableIndex);
-            createdIndexVariable = true;
+            forLoop.addToSymbolTable(variableIndex);
         }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
@@ -281,7 +283,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variableIndex.forceSetValue(startValue);
-        } else if (!variableIndex.setValue(startValue, this, line, column)) {
+        } else if (!variableIndex.setValue(startValue, forLoop, line, column)) {
             error = true;
         }
 
@@ -295,7 +297,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             error = true;
         }
 
-        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this, line, column);
+        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, forLoop, line, column);
 
         if (!afterLoopVariableName.equals(indexVariableName)) {
             System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice nunca es actualizada");
@@ -311,16 +313,16 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             afterIterationVariable.forceSetValue(afterLoopValue);
-        } else if (!afterIterationVariable.setValue(afterLoopValue, this, line, column)) {
+        } else if (!afterIterationVariable.setValue(afterLoopValue, forLoop, line, column)) {
             error = true;
         }
 
-        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
+        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, forLoop, line, column);
 
-        ForLoop forLoop = new ForLoop(new VariableAssignation(variableIndex, this, line, column), conditionStop, afterIterationAssign, this, line, column);
-
-        if (createdIndexVariable)
-            this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
+        forLoop
+            .setIndexVariable(new VariableAssignation(variableIndex, forLoop, line, column))
+            .setConditionStop(conditionStop)
+            .setAssignationAfterIteration(afterIterationAssign);
 
         if (error) {
             forLoop.setMalformed();
@@ -336,15 +338,17 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
                                   AssignableElement conditionStop,
                                   String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
-        boolean createdIndexVariable = false;
 
-        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, this, line, column);
+        ForLoop forLoop = new ForLoop(this, line, column);
+
+        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, forLoop, line, column);
 
         if (this.hasThisSymbol(indexVariableName)){
-            this.getSymbolTable().get(Element.VARIABLE).replace(indexVariableName, variableIndex);
-            createdIndexVariable = true;
+            this.updateSymbolTable(variableIndex);
+            forLoop.updateSymbolTable(variableIndex);
         } else {
-            this.getSymbolTable().get(Element.VARIABLE).put(indexVariableName, variableIndex);
+            this.addToSymbolTable(variableIndex);
+            forLoop.addToSymbolTable(variableIndex);
         }
 
         if (!variableIndex.getType().equals(Type.INTEGER)) {
@@ -357,7 +361,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variableIndex.forceSetValue(startValue);
-        } else if (!variableIndex.setValue(startValue, this, line, column)) {
+        } else if (!variableIndex.setValue(startValue, forLoop, line, column)) {
             error = true;
         }
 
@@ -371,7 +375,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             error = true;
         }
 
-        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this, line, column);
+        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, forLoop, line, column);
 
         if (!afterLoopVariableName.equals(indexVariableName)) {
             System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice nunca es actualizada");
@@ -387,16 +391,16 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             afterIterationVariable.forceSetValue(afterLoopValue);
-        } else if (!afterIterationVariable.setValue(afterLoopValue, this, line, column)) {
+        } else if (!afterIterationVariable.setValue(afterLoopValue, forLoop, line, column)) {
             error = true;
         }
 
-        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
+        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, forLoop, line, column);
 
-        ForLoop forLoop = new ForLoop(new VariableDefinitionAndAssign(variableIndex, this, line, column), conditionStop, afterIterationAssign, this, line, column);
-
-        if (createdIndexVariable)
-            this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
+        forLoop
+            .setIndexVariable(new VariableDefinitionAndAssign(variableIndex, forLoop, line, column))
+            .setConditionStop(conditionStop)
+            .setAssignationAfterIteration(afterIterationAssign);
 
         if (error) {
             forLoop.setMalformed();
@@ -411,19 +415,21 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
                                   AssignableElement conditionStop,
                                   String afterLoopVariableName, AssignableElement afterLoopValue, int line, int column){
         boolean error = false;
-        boolean createdIndexVariable = false;
 
-        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, this, line, column);
+        ForLoop forLoop = new ForLoop(this, line, column);
+
+        SimpleVariable variableIndex = new SimpleVariable(indexVariableType, indexVariableName, forLoop, line, column);
 
         if (this.hasThisSymbol(indexVariableName)){
-            this.getSymbolTable().get(Element.VARIABLE).replace(indexVariableName, variableIndex);
-            createdIndexVariable = true;
+            this.updateSymbolTable(variableIndex);
+            forLoop.updateSymbolTable(variableIndex);
         } else {
-            this.getSymbolTable().get(Element.VARIABLE).put(indexVariableName, variableIndex);
+            this.addToSymbolTable(variableIndex);
+            forLoop.addToSymbolTable(variableIndex);
         }
 
         if (variableIndex == null) {
-            variableIndex = new SimpleVariable("integer", indexVariableName, this, line, column);
+            variableIndex = new SimpleVariable("integer", indexVariableName, forLoop, line, column);
             variableIndex.setMalformed();
             error = true;
         }
@@ -438,7 +444,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             variableIndex.forceSetValue(this.newIntegerConstant("0", line, column));
-        } else if (!variableIndex.setValue(this.newIntegerConstant("0", line, column), this, line, column)) {
+        } else if (!variableIndex.setValue(this.newIntegerConstant("0", line, column), forLoop, line, column)) {
             error = true;
         }
 
@@ -452,7 +458,7 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
             error = true;
         }
 
-        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, this, line, column);
+        Variable afterIterationVariable = new SimpleVariable("integer", indexVariableName, forLoop, line, column);
 
         if (!afterLoopVariableName.equals(indexVariableName)) {
             System.err.println("ERROR " + line + ":" + column + " => " + "La variable índice nunca es actualizada");
@@ -468,16 +474,16 @@ public abstract class MasterSentenceContainer extends MasterProgrammableElement 
 
         if (error) {
             afterIterationVariable.forceSetValue(afterLoopValue);
-        } else if (!afterIterationVariable.setValue(afterLoopValue, this, line, column)) {
+        } else if (!afterIterationVariable.setValue(afterLoopValue, forLoop, line, column)) {
             error = true;
         }
 
-        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, this, line, column);
+        VariableAssignation afterIterationAssign = new VariableAssignation(afterIterationVariable, forLoop, line, column);
 
-        ForLoop forLoop = new ForLoop(new VariableDefinition(variableIndex, this, line, column), conditionStop, afterIterationAssign, this, line, column);
-
-        if (createdIndexVariable)
-            this.getSymbolTable().get(Element.VARIABLE).remove(indexVariableName);
+        forLoop
+            .setIndexVariable(new VariableDefinition(variableIndex, forLoop, line, column))
+            .setConditionStop(conditionStop)
+            .setAssignationAfterIteration(afterIterationAssign);
 
         if (error) {
             forLoop.setMalformed();

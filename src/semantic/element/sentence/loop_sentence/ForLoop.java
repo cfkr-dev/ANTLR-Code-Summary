@@ -22,21 +22,19 @@ public class ForLoop extends MasterProgrammableSentence {
     AssignableElement conditionStop;
     VariableAssignation assignationAfterIteration;
 
-    public ForLoop(VariableSentence variable,
-                   AssignableElement conditionStop,
-                   VariableAssignation assignationAfterIteration,
-                   ProgrammableElement context, int line, int column) {
+    public ForLoop(ProgrammableElement context, int line, int column) {
         this.type = null;
         this.name = "FOR_LOOP_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.FOR;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
-        this.indexVariable = variable;
-        this.conditionStop = conditionStop;
-        this.assignationAfterIteration = assignationAfterIteration;
+        this.indexVariable = null;
+        this.conditionStop = null;
+        this.assignationAfterIteration = null;
         this.malformed = false;
         this.line = line;
         this.column = column;
@@ -44,6 +42,33 @@ public class ForLoop extends MasterProgrammableSentence {
 
     public Variable getIndexVariable() {
         return this.indexVariable.getVariable();
+    }
+
+    public ForLoop setIndexVariable(VariableSentence indexVariable) {
+        if (indexVariable.isMalformed())
+            this.setMalformed();
+
+        this.indexVariable = indexVariable;
+
+        return this;
+    }
+
+    public ForLoop setConditionStop(AssignableElement conditionStop) {
+        if (conditionStop.isMalformed())
+            this.setMalformed();
+
+        this.conditionStop = conditionStop;
+
+        return this;
+    }
+
+    public ForLoop setAssignationAfterIteration(VariableAssignation assignationAfterIteration) {
+        if (assignationAfterIteration.isMalformed())
+            this.setMalformed();
+
+        this.assignationAfterIteration = assignationAfterIteration;
+
+        return this;
     }
 
     private Map<Element, Map<String, ProgramElement>> generateLocalSymbolTable(Map<Element, Map<String, ProgramElement>> symbolTable) {
@@ -54,7 +79,7 @@ public class ForLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLFor = new StringBuilder()
@@ -62,35 +87,12 @@ public class ForLoop extends MasterProgrammableSentence {
                 .append(HTMLHelper.genSpan("palres", "for"))
                 .append("(");
 
-        if (this.indexVariable.getSentenceType().equals(Sentence.VAR_DEF)) {
-            HTMLFor
-                .append(HTMLHelper.genA(anchorContext  + ":" + this.name + ":" + this.indexVariable.getVariable().getName()))
-                .append(HTMLHelper.genSpan("palres", this.indexVariable.getVariable().getType().name()))
-                .append(" ")
-                .append(HTMLHelper.genSpan("ident", this.indexVariable.getVariable().getName()));
-        } else if (this.indexVariable.getSentenceType().equals(Sentence.VARDEF_ASSIG)) {
-            HTMLFor
-                .append(HTMLHelper.genA(anchorContext  + ":" + this.name + ":" + this.indexVariable.getVariable().getName()))
-                .append(HTMLHelper.genSpan("palres", this.indexVariable.getVariable().getType().name()))
-                .append(" ")
-                .append(HTMLHelper.genSpan("ident", this.indexVariable.getVariable().getName()))
-                .append(HTMLHelper.genSpan("palres", " = "))
-                .append(this.indexVariable.getVariable().getValue().toHTML(HTMLIndentationLevel, anchorContext));
-        } else {
-            HTMLFor
-                .append(HTMLHelper.genAHref(anchorContext  + ":" + this.name + ":" + this.indexVariable.getVariable().getName(), HTMLHelper.genSpan("ident", this.indexVariable.getVariable().getName())))
-                .append(HTMLHelper.genSpan("palres", " = "))
-                .append(this.indexVariable.getVariable().getValue().toHTML(HTMLIndentationLevel, anchorContext));
-        }
-
         HTMLFor
+            .append(this.indexVariable.toHTMLNoWhiteSpaces())
+            .append(" ")
+            .append(this.conditionStop.toHTML(HTMLIndentationLevel))
             .append("; ")
-            .append(this.conditionStop.toHTML(HTMLIndentationLevel, anchorContext))
-            .append("; ")
-            .append(HTMLHelper.genAHref(anchorContext  + ":" + this.name + ":" + this.assignationAfterIteration.getVariable().getName(), HTMLHelper.genSpan("ident", this.assignationAfterIteration.getVariable().getName())))
-            .append(HTMLHelper.genSpan("palres", " = "))
-            .append(this.assignationAfterIteration.getVariable().getValue().toHTML(HTMLIndentationLevel, anchorContext))
-            .append(";")
+            .append(this.assignationAfterIteration.toHTMLNoWhiteSpaces())
             .append(")")
             .append(HTMLHelper.genBr(tabs))
             .append(tabs).append("{")
@@ -98,7 +100,7 @@ public class ForLoop extends MasterProgrammableSentence {
             .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLFor.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
+            HTMLFor.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
         HTMLFor
             .append(tabs).append("</div>\n\n")

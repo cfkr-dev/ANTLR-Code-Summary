@@ -17,9 +17,10 @@ public class VariableDefinition extends MasterSimpleSentence implements Variable
         this.name = "DEF_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.VAR_DEF;
+        this.variable = variable;
         this.context = context;
         this.superContext = context.getSuperContext();
-        this.variable = variable;
+        this.anchorContext = variable.getAnchorContext();
         this.malformed = false;
         this.line = line;
         this.column = column;
@@ -31,8 +32,13 @@ public class VariableDefinition extends MasterSimpleSentence implements Variable
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
-        return this.variable.toHTML(HTMLIndentationLevel, anchorContext) + ";" + HTMLHelper.genBr(tabs);
+        return this.variable.toHTML(HTMLIndentationLevel) + ";" + HTMLHelper.genBr(tabs);
+    }
+
+    @Override
+    public String toHTMLNoWhiteSpaces() {
+        return this.variable.toHTML(0) + ";";
     }
 }

@@ -30,6 +30,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         this.name = null;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":";
         this.symbolTable = initializeSymbolTable();
         this.properties = new ArrayList<>();
         this.errorOnCreation = false;
@@ -46,6 +47,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         }
 
         this.name = name;
+        this.anchorContext += name;
 
         if (!this.context.hasThisSymbol(name)) {
             this.context.addToSymbolTable(this);
@@ -149,6 +151,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
             this.name = assignableStruct.getName();
             this.context = assignableStruct.getContext();
             this.superContext = assignableStruct.getSuperContext();
+            this.anchorContext = assignableStruct.getAnchorContext();
             this.symbolTable = assignableStruct.getSymbolTable();
             this.properties = assignableStruct.getProperties();
             this.line = assignableStruct.getLine();
@@ -166,6 +169,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
             this.name = assignableElement.getName();
             this.context = assignableElement.getContext();
             this.superContext = assignableElement.getSuperContext();
+            this.anchorContext = assignableElement.getAnchorContext();
             this.symbolTable = ((StructVariable) assignableElement).getSymbolTable();
             this.properties = ((StructVariable) assignableElement).getProperties();
             this.line = assignableElement.getLine();
@@ -214,14 +218,14 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLStruct = new StringBuilder();
         StringBuilder HTMLProperties = generatePropertiesList(this.properties, HTMLIndentationLevel + 1, anchorContext + ":" + this.name);
 
         return HTMLStruct
-            .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.name)).append("\n")
+            .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
             .append(tabs).append(HTMLHelper.genSpan("palres", "struct"))
             .append(HTMLHelper.genBr(tabs))
             .append(tabs).append("{")
@@ -239,8 +243,9 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         StringBuilder HTMLProperties = new StringBuilder();
 
         for (Variable property: properties) {
+            property.forceChangeContext(this, this.anchorContext + ":" + property.getName());
             HTMLProperties
-                .append(property.toHTML(HTMLIndentationLevel, anchorContext)).append(";")
+                .append(property.toHTML(HTMLIndentationLevel)).append(";")
                 .append(HTMLHelper.genBr(tabs));
         }
 

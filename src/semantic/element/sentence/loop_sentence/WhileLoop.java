@@ -23,6 +23,7 @@ public class WhileLoop extends MasterProgrammableSentence {
         this.sentenceType = Sentence.WHILE;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = logicOperation;
@@ -40,14 +41,14 @@ public class WhileLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLWhile = new StringBuilder()
             .append(tabs)
             .append(HTMLHelper.genSpan("palres", "while"))
             .append("(")
-            .append(this.logicOperation.toHTML(HTMLIndentationLevel, anchorContext))
+            .append(this.logicOperation.toHTML(HTMLIndentationLevel))
             .append(")")
             .append(HTMLHelper.genBr(tabs))
             .append(tabs).append("{")
@@ -55,7 +56,7 @@ public class WhileLoop extends MasterProgrammableSentence {
             .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLWhile.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
+            HTMLWhile.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
         HTMLWhile
             .append(tabs).append("</div>\n\n")

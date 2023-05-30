@@ -59,7 +59,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         return this;
     }
 
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLFunctionCall = new StringBuilder();
@@ -69,7 +69,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
         if (this.sentenceType.equals(Sentence.INNER_FUNCT_CALL))
             HTMLFunctionCall
-                .append(HTMLHelper.genAHref("FUNCIONES:" + this.functionName, HTMLHelper.genSpan("ident", this.functionName)));
+                .append(HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", this.functionName)));
         else
             HTMLFunctionCall
                 .append(HTMLHelper.genSpan("ident", this.functionName));
@@ -85,7 +85,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
                 HTMLFunctionCall.append(", ");
 
             HTMLFunctionCall
-                .append(param.toHTML(HTMLIndentationLevel, anchorContext));
+                .append(param.toHTML(HTMLIndentationLevel));
         }
 
         HTMLFunctionCall

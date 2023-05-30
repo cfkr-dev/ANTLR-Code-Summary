@@ -14,6 +14,7 @@ public class NumericRealConstant extends Literal {
         this.elementType = Element.LITERAL;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.malformed = false;
         this.line = line;
         this.column = column;

@@ -19,6 +19,7 @@ public class Constant extends MasterProgramElement {
         this.name = name;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.value = value;
         this.malformed = false;
         this.line = line;
@@ -30,13 +31,13 @@ public class Constant extends MasterProgramElement {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLConstant = new StringBuilder();
 
         HTMLConstant
-            .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.getName())).append("\n")
+            .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
             .append(tabs)
             .append(HTMLHelper.genSpan("palres", "#define"))
             .append(" ")
@@ -44,7 +45,7 @@ public class Constant extends MasterProgramElement {
             .append(" ");
 
         HTMLConstant
-            .append(this.value.toHTML(HTMLIndentationLevel, anchorContext));
+            .append(this.value.toHTML(HTMLIndentationLevel));
 
         if (!this.value.getType().equals(Type.STRING))
             HTMLConstant.insert(HTMLConstant.lastIndexOf("cte\">") + 5, "\"");

@@ -207,22 +207,22 @@ public class FunctionsAndVariablesTest {
         Program program = new Program();
 
         //  #define FECHA 2023
-        program.createNewConstant("FECHA", program.newIntegerConstant("2023", 1,15), 1, 1);
+        program.addNewConstant("FECHA", program.newIntegerConstant("2023", 1,15), 1, 1);
 
         //  #define CODIGO 10
-        program.createNewConstant("CODIGO", program.newIntegerConstant("10", 2, 16), 2, 1);
+        program.addNewConstant("CODIGO", program.newIntegerConstant("10", 2, 16), 2, 1);
 
         //  integer n_alumnos;
-        program.createNewVariableDefinition("integer", "n_alumnos",3,1);
+        program.addNewVariableDefinition("integer", "n_alumnos",3,1);
 
         //  float __valor_real;
-        program.createNewVariableDefinition("float", "__valor_real",4,1);
+        program.addNewVariableDefinition("float", "__valor_real",4,1);
 
         //  string nombre = "alumno1";
-        program.createNewVariableDefinitionAndAssign("string", "nombre", program.newStringConstant("\"alumno1\"", 5, 17),5,1);
+        program.addNewVariableDefinitionAndAssign("string", "nombre", program.newStringConstant("\"alumno1\"", 5, 17),5,1);
 
         //  struct {
-        StructVariable program_struct = (StructVariable) program.createNewVariableDefinition("STRUCT", 99, 99).getVariable();
+        StructVariable program_struct = (StructVariable) program.addNewVariableDefinition("STRUCT", 99, 99).getVariable();
 
             //  string nombre;
             program_struct.addNewSimpleProperty("string","nombre", 99, 99);
@@ -244,7 +244,7 @@ public class FunctionsAndVariablesTest {
 
 
         //  string codificar_cadena(string cadena, integer desplazamiento){
-        Function program_function_codificar_cadena = program.createNewFunction("string", "codificar_cadena", 99, 99)
+        Function program_function_codificar_cadena = program.addNewFunction("string", "codificar_cadena", 99, 99)
                 .addParam("string", "cadena", 99, 99)
                 .addParam("integer", "desplazamiento", 99, 99);
 
@@ -272,7 +272,7 @@ public class FunctionsAndVariablesTest {
 
 
         //  void save(string nombre){
-        Function program_function_save = program.createNewFunction("void", "save", 99, 99)
+        Function program_function_save = program.addNewFunction("void", "save", 99, 99)
                 .addParam("string", "nombre", 99, 99);
 
             //  fopen("file.txt", "w");
@@ -291,7 +291,7 @@ public class FunctionsAndVariablesTest {
         //  }
 
         //  void Main (){
-        Function program_function_main = program.createNewMainFunction(99, 99);
+        Function program_function_main = program.addMainFunction(99, 99);
 
             //  while(n_alumnos < CODIGO){
             WhileLoop program_function_main_while = program_function_main.addNewWhileLoop(program_function_main.newComparisonOperation().lower(99, 99)
@@ -424,7 +424,7 @@ public class FunctionsAndVariablesTest {
     //  }
 
 
-       String html = program.toHTML(0, "");
+       String html = program.toHTML(0);
     }
 
 
@@ -488,22 +488,22 @@ public class FunctionsAndVariablesTest {
         Program program = new Program();
 
         //  #define FECHA 2023
-        program.createNewConstant("FECHA", program.newIntegerConstant("2023", 1,15), 1, 1);
+        program.addNewConstant("FECHA", program.newIntegerConstant("2023", 1,15), 1, 1);
 
         //  #define CODIGO 10
-        program.createNewConstant("CODIGO", program.newIntegerConstant("10", 2, 16), 2, 1);
+        program.addNewConstant("CODIGO", program.newIntegerConstant("10", 2, 16), 2, 1);
 
         //  integer n_alumnos;
-        program.createNewVariableDefinition("integer", "n_alumnos",3,1);
+        program.addNewVariableDefinition("integer", "n_alumnos",3,1);
 
         //  float __valor_real;
-        program.createNewVariableDefinition("float", "__valor_real",4,1);
+        program.addNewVariableDefinition("float", "__valor_real",4,1);
 
         //  string nombre = "alumno1";
-        program.createNewVariableDefinitionAndAssign("string", "nombre", program.newStringConstant("\"alumno1\"", 5, 17),5,1);
+        program.addNewVariableDefinitionAndAssign("string", "nombre", program.newStringConstant("\"alumno1\"", 5, 17),5,1);
 
         //  struct {
-        StructVariable program_struct = (StructVariable) program.createNewVariableDefinition("STRUCT", 99, 99).getVariable();
+        StructVariable program_struct = (StructVariable) program.addNewVariableDefinition("STRUCT", 99, 99).getVariable();
 
         //  string nombre;
         program_struct.addNewSimpleProperty("string","nombre", 99, 99);
@@ -533,7 +533,7 @@ public class FunctionsAndVariablesTest {
 
 
         //  string codificar_cadena(string cadena, integer desplazamiento){
-        Function program_function_codificar_cadena = program.createNewFunction("string", "codificar_cadena", 99, 99)
+        Function program_function_codificar_cadena = program.addNewFunction("string", "codificar_cadena", 99, 99)
                 .addParam("string", "cadena", 99, 99)
                 .addParam("integer", "desplazamiento", 99, 99);
 
@@ -561,7 +561,7 @@ public class FunctionsAndVariablesTest {
 
 
         //  void save(string nombre){
-        Function program_function_save = program.createNewFunction("void", "save", 99, 99)
+        Function program_function_save = program.addNewFunction("void", "save", 99, 99)
                 .addParam("string", "nombre", 99, 99);
 
         //  fopen("file.txt", "w");
@@ -580,7 +580,7 @@ public class FunctionsAndVariablesTest {
         //  }
 
         //  void Main (){
-        Function program_function_main = program.createNewMainFunction(99, 99);
+        Function program_function_main = program.addMainFunction(99, 99);
 
         //  while(n_alumnos < CODIGO){
         WhileLoop program_function_main_while = program_function_main.addNewWhileLoop(program_function_main.newComparisonOperation().lower(99, 99)
@@ -713,6 +713,6 @@ public class FunctionsAndVariablesTest {
         //  }
 
 
-        String html = program.toHTML(0, "");
+        String html = program.toHTML(0);
     }
 }

@@ -19,6 +19,7 @@ public class SimpleVariable extends MasterVariable {
         this.name = name;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.value = null;
         this.malformed = false;
         this.line = line;
@@ -90,14 +91,14 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLVariable = new StringBuilder();
 
         if (this.value == null)
             return HTMLVariable
-                .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.getName())).append("\n")
+                .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
                 .append(tabs)
                 .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
                 .append(" ")
@@ -105,13 +106,13 @@ public class SimpleVariable extends MasterVariable {
                 .toString();
         else
             return HTMLVariable
-                .append(tabs).append(HTMLHelper.genA(anchorContext + ":" + this.getName())).append("\n")
+                .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
                 .append(tabs)
                 .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
                 .append(" ")
                 .append(HTMLHelper.genSpan("ident", this.getName()))
                 .append(HTMLHelper.genSpan("palres", " = "))
-                .append(this.value.toHTML(HTMLIndentationLevel, anchorContext))
+                .append(this.value.toHTML(HTMLIndentationLevel))
                 .toString();
     }
 }

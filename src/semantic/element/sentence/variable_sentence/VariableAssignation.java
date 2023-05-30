@@ -14,12 +14,14 @@ public class VariableAssignation extends MasterSimpleSentence implements Variabl
 
     public VariableAssignation(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();
-        this.name = variable.getType().equals(Type.STRUCT) ? "STRUCT_ASSIG_" + line + "_" + column : variable.getName() + "ASSIG_" + line + "_" + column;
+        this.name = variable.getType().equals(Type.STRUCT) ? "STRUCT_ASSIG_" + line + "_" + column : "ASSIG_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.ASSIG;
+        this.variable = variable;
         this.context = context;
         this.superContext = context.getSuperContext();
-        this.variable = variable;
+        this.anchorContext = variable.getAnchorContext();
+        this.malformed = false;
         this.line = line;
         this.column = column;
     }
@@ -30,15 +32,25 @@ public class VariableAssignation extends MasterSimpleSentence implements Variabl
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         return new StringBuilder()
-            .append(tabs).append(HTMLHelper.genAHref(anchorContext + ":" + this.variable.getName(), HTMLHelper.genSpan("ident", this.variable.getName())))
+            .append(tabs).append(HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", this.variable.getName())))
             .append(HTMLHelper.genSpan("palres", " = "))
-            .append(this.variable.getValue().toHTML(HTMLIndentationLevel, anchorContext))
+            .append(this.variable.getValue().toHTML(HTMLIndentationLevel))
             .append(";")
             .append(HTMLHelper.genBr(tabs))
+            .toString();
+    }
+
+    @Override
+    public String toHTMLNoWhiteSpaces() {
+        return new StringBuilder()
+            .append(HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", this.variable.getName())))
+            .append(HTMLHelper.genSpan("palres", " = "))
+            .append(this.variable.getValue().toHTML(0))
+            .append(";")
             .toString();
     }
 }

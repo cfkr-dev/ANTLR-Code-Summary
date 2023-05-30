@@ -12,9 +12,15 @@ public abstract class MasterProgramElement implements ProgramElement {
     protected Element elementType;
     protected ProgrammableElement context;
     protected ProgrammableElement superContext;
+    protected String anchorContext;
     protected int line;
     protected int column;
     protected boolean malformed;
+
+    @Override
+    public String getAnchorContext() {
+        return this.anchorContext;
+    }
 
     @Override
     public Type getType() {
@@ -38,6 +44,22 @@ public abstract class MasterProgramElement implements ProgramElement {
     @Override
     public ProgrammableElement getContext() {
         return this.context;
+    }
+
+    @Override
+    public ProgramElement forceChangeContext(ProgrammableElement context){
+        this.context = context;
+        this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext();
+        return this;
+    }
+
+    @Override
+    public ProgramElement forceChangeContext(ProgrammableElement context, String customAnchorContext){
+        this.context = context;
+        this.superContext = context.getSuperContext();
+        this.anchorContext = customAnchorContext;
+        return this;
     }
 
     @Override
@@ -66,6 +88,6 @@ public abstract class MasterProgramElement implements ProgramElement {
     }
 
     @Override
-    public abstract String toHTML(int HTMLIndentationLevel, String anchorContext);
+    public abstract String toHTML(int HTMLIndentationLevel);
 
 }

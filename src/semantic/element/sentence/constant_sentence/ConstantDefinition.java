@@ -18,6 +18,7 @@ public class ConstantDefinition extends MasterSimpleSentence implements Constant
         this.sentenceType = Sentence.CONST_DEF;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.constant = constant;
         this.line = line;
         this.column = column;
@@ -29,8 +30,8 @@ public class ConstantDefinition extends MasterSimpleSentence implements Constant
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
-        return this.constant.toHTML(HTMLIndentationLevel, anchorContext) + ";" + HTMLHelper.genBr(tabs);
+        return this.constant.toHTML(HTMLIndentationLevel) + ";" + HTMLHelper.genBr(tabs);
     }
 }

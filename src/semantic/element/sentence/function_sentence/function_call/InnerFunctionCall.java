@@ -23,6 +23,7 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.sentenceType = Sentence.INNER_FUNCT_CALL;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = function.getAnchorContext();
         this.function = function;
         this.functionName = function.getName();
         this.callingParams = new LinkedList<>();

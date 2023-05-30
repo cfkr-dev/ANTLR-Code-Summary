@@ -5,4 +5,6 @@ import semantic.element.variable.variable_interface.Variable;
 
 public interface VariableSentence extends Sentence {
     public Variable getVariable();
+
+    public String toHTMLNoWhiteSpaces();
 }

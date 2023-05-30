@@ -20,6 +20,7 @@ public class ReturnPoint extends MasterSimpleSentence {
         this.sentenceType = Sentence.RETURN;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.targetFunction = targetFunction;
         this.returnElement = returnElement;
         this.line = line;
@@ -27,14 +28,14 @@ public class ReturnPoint extends MasterSimpleSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         return new StringBuilder()
             .append(tabs)
             .append(HTMLHelper.genSpan("palres", "return"))
             .append(" ")
-            .append(this.returnElement.toHTML(HTMLIndentationLevel, anchorContext))
+            .append(this.returnElement.toHTML(HTMLIndentationLevel))
             .append(";")
             .append(HTMLHelper.genBr(tabs))
             .toString();

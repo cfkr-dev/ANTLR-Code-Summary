@@ -17,6 +17,7 @@ public class OuterFunctionCall extends MasterFunctionCall {
         this.sentenceType = Sentence.OUTER_FUNCT_CALL;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.functionName = functionName;
         this.callingParams = new LinkedList<>();
         this.malformed = true;

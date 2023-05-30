@@ -24,6 +24,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
         this.sentenceType = Sentence.DO_WHILE;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = null;
@@ -54,7 +55,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
         StringBuilder HTMLDoWhile = new StringBuilder()
@@ -66,7 +67,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
             .append(tabs).append("<div>\n");
 
         for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
-            HTMLDoWhile.append(sentence.toHTML(HTMLIndentationLevel + 1, anchorContext + ":" + this.name));
+            HTMLDoWhile.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
         HTMLDoWhile
             .append(tabs).append("</div>\n\n");

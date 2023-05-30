@@ -40,13 +40,13 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         StringBuilder HTMLOperation = new StringBuilder()
-            .append(this.firstOperand.toHTML(HTMLIndentationLevel, anchorContext))
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel))
             .append(" ")
             .append(HTMLHelper.genSpan("palres", this.symbol))
             .append(" ")
-            .append(this.secondOperand.toHTML(HTMLIndentationLevel, anchorContext));
+            .append(this.secondOperand.toHTML(HTMLIndentationLevel));
 
         if (this.hasParenthesis)
             return HTMLOperation

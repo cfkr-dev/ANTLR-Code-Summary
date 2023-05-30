@@ -29,6 +29,7 @@ public class Program extends MasterProgrammableElement {
         this.name = Constants.FILE_NAME;
         this.context = null;
         this.superContext = this;
+        this.anchorContext = "PROGRAMA_PRINCIPAL";
         this.symbolTable = this.initializeSymbolTable();
         this.programElements = new LinkedList<>();
         this.malformed = false;
@@ -62,7 +63,7 @@ public class Program extends MasterProgrammableElement {
         return declarations;
     }
 
-    public VariableDefinition createNewVariableDefinition(String type, String name, int line, int column){
+    public VariableDefinition addNewVariableDefinition(String type, String name, int line, int column){
         boolean error = false;
 
         Variable variable = super.createNewVariable(type, name, line, column);
@@ -88,7 +89,7 @@ public class Program extends MasterProgrammableElement {
         return variableDefinition;
     }
 
-    public VariableDefinition createNewVariableDefinition(String type, int line, int column){
+    public VariableDefinition addNewVariableDefinition(String type, int line, int column){
         boolean error = false;
 
         Variable variable = super.createNewVariable(type, line, column);
@@ -110,7 +111,7 @@ public class Program extends MasterProgrammableElement {
         return variableDefinition;
     }
 
-    public VariableDefinitionAndAssign createNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement, int line, int column){
+    public VariableDefinitionAndAssign addNewVariableDefinitionAndAssign(String type, String name, AssignableElement assignableElement, int line, int column){
         boolean error = false;
 
         Variable variable = super.createNewVariable(type, name, line, column);
@@ -145,7 +146,7 @@ public class Program extends MasterProgrammableElement {
         return variableDefinitionAndAssign;
     }
 
-    public Function createNewFunction(String type, String name, int line, int column) {
+    public Function addNewFunction(String type, String name, int line, int column) {
         if (!this.hasThisSymbol(name)) {
             Function function = new Function(type, name, this, line, column);
             this.addToSymbolTable(function);
@@ -159,11 +160,11 @@ public class Program extends MasterProgrammableElement {
         }
     }
 
-    public Function createNewMainFunction(int line, int column) {
-        return this.createNewFunction("void", "Main", line, column);
+    public Function addMainFunction(int line, int column) {
+        return this.addNewFunction("void", "Main", line, column);
     }
 
-    public ConstantDefinition createNewConstant(String name, Literal value, int line, int column) {
+    public ConstantDefinition addNewConstant(String name, Literal value, int line, int column) {
         if (!this.hasThisSymbol(name)) {
             ConstantDefinition constant = new ConstantDefinition(new Constant(name, value, this, line, column), this, line, column);
             this.addToSymbolTable(constant.getConstant());
@@ -178,7 +179,11 @@ public class Program extends MasterProgrammableElement {
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
+
+        // CHECK MALFORMED
+        if (this.malformed)
+            throw new RuntimeException("No es posible crear el resumen del programa");
 
         // GET PROGRAM ELEMENTS TO BUILD HTML
         List<Function> functions = this.getAllInnerFunctions();
@@ -213,7 +218,7 @@ public class Program extends MasterProgrammableElement {
                     .append(HTMLFunctionBodies)
                     .append(HTMLMainProgram)
                 .append("\t</body>\n")
-            .append("</html>\n");
+            .append("</html>");
 
         return HTMLProgram.toString();
     }
@@ -225,12 +230,12 @@ public class Program extends MasterProgrammableElement {
 
         HTMLFunctionHeaders
             .append("\t\t\t<li>\n")
-            .append("\t\t\t\t").append(HTMLHelper.genAHref("PROGRAMA_PRINCIPAL", "Programa principal")).append("\n")
+            .append("\t\t\t\t").append(HTMLHelper.genAHref(this.anchorContext, "Programa principal")).append("\n")
             .append("\t\t\t</li>\n");
 
         for (Function function: functions) {
             HTMLFunctionHeaders.append("\t\t\t<li>\n")
-                .append("\t\t\t\t").append(HTMLHelper.genAHref("FUNCIONES:" + function.getName(), function.getHeader())).append("\n")
+                .append("\t\t\t\t").append(HTMLHelper.genAHref(function.getAnchorContext(), function.getHeader())).append("\n")
                 .append("\t\t\t</li>\n");
         }
 
@@ -246,9 +251,9 @@ public class Program extends MasterProgrammableElement {
         for (Function function: functions) {
             HTMLFunctionBodies
                 .append(HTMLHelper.genHr("\t\t"))
-                .append("\t\t").append(HTMLHelper.genA("FUNCIONES:" + function.getName())).append("\n")
-                .append(function.toHTML(2, "FUNCIONES"))
-                .append("\t\t").append(HTMLHelper.genAHref("FUNCIONES:" + function.getName(), "Inicio de la función")).append("\n")
+                .append("\t\t").append(HTMLHelper.genA(function.getAnchorContext())).append("\n")
+                .append(function.toHTML(2))
+                .append("\t\t").append(HTMLHelper.genAHref(function.getAnchorContext(), "Inicio de la función")).append("\n")
                 .append("\t\t").append(HTMLHelper.genAHref("", "Inicio del programa")).append("\n");
         }
 
@@ -258,18 +263,18 @@ public class Program extends MasterProgrammableElement {
     private StringBuilder generateMainProgram(List<ProgramElement> declarations, Function mainProgram) {
         StringBuilder HTMLMainProgram = new StringBuilder()
             .append(HTMLHelper.genHr("\n", "\t\t", "\n\n"))
-            .append("\t\t").append(HTMLHelper.genA("PROGRAMA_PRINCIPAL")).append("\n")
+            .append("\t\t").append(HTMLHelper.genA(this.anchorContext)).append("\n")
             .append("\t\t").append(HTMLHelper.genH(2, "Programa principal:")).append("\n\n");
 
         for (ProgramElement declaration: declarations) {
             HTMLMainProgram
-                .append(declaration.toHTML(2, "PROGRAMA_PRINCIPAL"));
+                .append(declaration.toHTML(2));
         }
 
         HTMLMainProgram
             .append(HTMLHelper.genBr("", "\t\t", "\n\n"))
-            .append(mainProgram.toHTML(2, "PROGRAMA_PRINCIPAL"))
-            .append("\t\t").append(HTMLHelper.genAHref("PROGRAMA_PRINCIPAL", "Inicio del programa principal")).append("\n")
+            .append(mainProgram.toHTML(2))
+            .append("\t\t").append(HTMLHelper.genAHref(this.anchorContext, "Inicio del programa principal")).append("\n")
             .append("\t\t").append(HTMLHelper.genAHref("", "Inicio del programa")).append("\n");
 
         return HTMLMainProgram;

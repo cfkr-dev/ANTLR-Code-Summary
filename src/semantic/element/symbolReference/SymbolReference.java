@@ -21,6 +21,7 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
         this.elementType = Element.SYMBOL_REFERENCE;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = value.getAnchorContext();
         this.malformed = false;
         this.line = line;
         this.column = column;
@@ -34,6 +35,7 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
         this.elementType = Element.SYMBOL_REFERENCE;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = value.getAnchorContext();
         this.malformed = false;
         this.line = line;
         this.column = column;
@@ -49,11 +51,11 @@ public class SymbolReference extends MasterProgramElement implements AssignableE
     }
 
     @Override
-    public String toHTML(int HTMLIndentationLevel, String anchorContext) {
+    public String toHTML(int HTMLIndentationLevel) {
         if (this.hasParenthesis)
-            return HTMLHelper.genAHref(value.getContext() + ":" + value.getName(), HTMLHelper.genSpan("ident", "(" + value.getName() + ")"));
+            return HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", "(" + value.getName() + ")"));
         else
-            return HTMLHelper.genAHref(anchorContext + ":" + value.getName(), HTMLHelper.genSpan("ident", value.getName()));
+            return HTMLHelper.genAHref(this.anchorContext, HTMLHelper.genSpan("ident", value.getName()));
     }
 
     @Override
