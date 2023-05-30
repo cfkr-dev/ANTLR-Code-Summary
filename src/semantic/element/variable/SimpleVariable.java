@@ -60,7 +60,7 @@ public class SimpleVariable extends MasterVariable {
 
         if (!context.hasThisSymbol(this.name)) {
             if (!(assignableElement instanceof Variable || assignableElement instanceof Constant)) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
@@ -73,7 +73,7 @@ public class SimpleVariable extends MasterVariable {
         if (assignableElement instanceof Variable || assignableElement instanceof Constant) {
 
             if (!context.hasThisSymbol(assignableElement.getName())) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }

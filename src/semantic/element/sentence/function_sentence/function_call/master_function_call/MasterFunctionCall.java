@@ -31,7 +31,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     @Override
     public FunctionCall addParam(AssignableElement param) {
         if (param.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible llamar a una función con una expresión malformada (" + param.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible llamar a una función con una expresión malformada (" + param.toString() + ")");
             this.errorOnCreation = true;
             return this;
         }
@@ -59,6 +59,32 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
         return this;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder functionCall = new StringBuilder();
+
+        functionCall
+            .append(this.functionName)
+            .append("(");
+
+        boolean first = true;
+        for (AssignableElement param: this.callingParams) {
+            if (first)
+                first = false;
+            else
+                functionCall.append(", ");
+
+            functionCall
+                .append(param.toString());
+        }
+
+        functionCall
+            .append(")");
+
+        return functionCall.toString();
+    }
+
+    @Override
     public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 

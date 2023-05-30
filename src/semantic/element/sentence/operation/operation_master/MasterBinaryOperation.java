@@ -23,9 +23,9 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     @Override
     public String toString() {
         if (this.hasParenthesis)
-            return "(" + firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue() + ")";
+            return "(" + firstOperand.toString() + " " + symbol + " " + secondOperand.toString() + ")";
         else
-            return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
+            return firstOperand.toString() + " " + symbol + " " + secondOperand.toString();
     }
 
     @Override
@@ -83,13 +83,13 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
         }
 
         if (firstOperand.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.toString() + ")");
             this.setMalformed();
             return null;
         }
 
         if (secondOperand.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + secondOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + secondOperand.toString() + ")");
             this.setMalformed();
             return null;
         }

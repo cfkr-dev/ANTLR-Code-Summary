@@ -117,7 +117,7 @@ public class Program extends MasterProgrammableElement {
         Variable variable = super.createNewVariable(type, name, line, column);
 
         if (variable == null) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + name + " por que " + name + " no ha sido declarado previamente");
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
                 variable = new SimpleVariable(type, name, this, line, column);
             } else {
@@ -182,9 +182,10 @@ public class Program extends MasterProgrammableElement {
     public String toHTML(int HTMLIndentationLevel) {
 
         // CHECK MALFORMED
-        if (this.malformed)
-            throw new RuntimeException("No es posible crear el resumen del programa");
-
+        if (this.malformed) {
+            System.err.println("\nERROR => No es posible crear el resumen del programa si hay errores por corregir");
+            System.exit(1);
+        }
         // GET PROGRAM ELEMENTS TO BUILD HTML
         List<Function> functions = this.getAllInnerFunctions();
         List<ProgramElement> declarations = this.getAllMainDeclarations();

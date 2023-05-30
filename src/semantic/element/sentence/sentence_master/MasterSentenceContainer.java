@@ -132,7 +132,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         Variable variable = this.createNewVariable(type, name, line, column);
 
         if (variable == null) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + name + " por que " + name + " no ha sido declarado previamente");
             if (!Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
                 variable = new SimpleVariable(type, name, this, line, column);
             } else {
@@ -167,7 +167,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         Variable variable = (Variable) this.getSymbolByNameAndElement(name, Element.VARIABLE);
 
         if (variable == null) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + name + " por que " + name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + name + " por que " + name + " no ha sido declarado previamente");
             variable = new SimpleVariable("ANY", name, this, line, column);
             variable.setMalformed();
             error = true;
