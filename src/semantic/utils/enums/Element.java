@@ -1,6 +1,7 @@
 package semantic.utils.enums;
 
 public enum Element {
+    PROGRAM,
     VARIABLE,
     CONSTANT,
     FUNCTION,

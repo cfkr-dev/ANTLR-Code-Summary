@@ -5,6 +5,7 @@ import semantic.utils.enums.Type;
 
 public interface ProgramElement {
 
+    public String getAnchorContext();
     public Type getType();
 
     public String getName();
@@ -12,6 +13,10 @@ public interface ProgramElement {
     public Element getElementType();
 
     public ProgrammableElement getContext();
+
+    public ProgramElement forceChangeContext(ProgrammableElement context);
+
+    public ProgramElement forceChangeContext(ProgrammableElement context, String customAnchorContext);
 
     public ProgrammableElement getSuperContext();
 
@@ -23,8 +28,6 @@ public interface ProgramElement {
 
     public void setMalformed();
 
-    public String toHTML();
-
-    public abstract String toHTMLIdentifier ();
+    public String toHTML(int HTMLIndentationLevel);
 
 }

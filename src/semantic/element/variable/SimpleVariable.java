@@ -5,13 +5,13 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.element.variable.variable_master.MasterVariable;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
 public class SimpleVariable extends MasterVariable {
 
     private AssignableElement value;
-    private boolean hasParenthesis;
 
     public SimpleVariable(String type, String name, ProgrammableElement context, int line, int column) {
         this.type = Type.valueOf(type.toUpperCase());
@@ -19,21 +19,11 @@ public class SimpleVariable extends MasterVariable {
         this.name = name;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.value = null;
         this.malformed = false;
         this.line = line;
         this.column = column;
-        this.hasParenthesis = false;
-    }
-
-    @Override
-    public String getValue() {
-        return this.name;
-    }
-
-    @Override
-    public void forceSetValue(AssignableElement assignableElement) {
-        this.value = assignableElement;
     }
 
     @Override
@@ -45,9 +35,13 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public AssignableElement setParenthesis() {
-        this.hasParenthesis = true;
-        return this;
+    public AssignableElement getValue() {
+        return this.value;
+    }
+
+    @Override
+    public void forceSetValue(AssignableElement assignableElement) {
+        this.value = assignableElement;
     }
 
     @Override
@@ -65,8 +59,8 @@ public class SimpleVariable extends MasterVariable {
         }
 
         if (!context.hasThisSymbol(this.name)) {
-            if (!(assignableElement instanceof Variable<?> || assignableElement instanceof Constant)) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            if (!(assignableElement instanceof Variable || assignableElement instanceof Constant)) {
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
@@ -76,10 +70,10 @@ public class SimpleVariable extends MasterVariable {
             return false;
         }
 
-        if (assignableElement instanceof Variable<?> || assignableElement instanceof Constant) {
+        if (assignableElement instanceof Variable || assignableElement instanceof Constant) {
 
             if (!context.hasThisSymbol(assignableElement.getName())) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
@@ -97,21 +91,28 @@ public class SimpleVariable extends MasterVariable {
     }
 
     @Override
-    public String toString() {
-        if (this.value == null)
-            return this.name;
-        else
-            return this.name + " = " + this.value.getValue();
-    }
+    public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-    @Override
-    public String toHTML() {
+        StringBuilder HTMLVariable = new StringBuilder();
 
         if (this.value == null)
-            return "<p>" + this.type.name() + " " + this.name + ";</p>\n";
+            return HTMLVariable
+                .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
+                .append(tabs)
+                .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
+                .append(" ")
+                .append(HTMLHelper.genSpan("ident", this.getName()))
+                .toString();
         else
-            return "<p>" + this.type.name() + " " + this.name + " = " + this.value + ";</p>\n";
-
+            return HTMLVariable
+                .append(tabs).append(HTMLHelper.genA(this.anchorContext)).append("\n")
+                .append(tabs)
+                .append(HTMLHelper.genSpan("palres", this.getType().name().toLowerCase()))
+                .append(" ")
+                .append(HTMLHelper.genSpan("ident", this.getName()))
+                .append(HTMLHelper.genSpan("palres", " = "))
+                .append(this.value.toHTML(HTMLIndentationLevel))
+                .toString();
     }
-
 }

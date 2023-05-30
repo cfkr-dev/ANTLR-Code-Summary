@@ -52,6 +52,15 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
                 this.addToSymbolTable(variable);
             }
             return variable;
+        } else if(this.getSymbolByNameAndElement(name, Element.VARIABLE).getContext() != this) {
+            Variable variable;
+            if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
+                variable = this.createNewVariable("STRUCT", line, column);
+            } else {
+                variable = new SimpleVariable(type, name, this, line, column);
+                this.updateSymbolTable(variable);
+            }
+            return variable;
         } else {
             System.err.println("ERROR " + line + ":" + column + " => " + "Este elemento ya ha sido declarado anteriormente con el mismo nombre (" + name + ")");
             return null;

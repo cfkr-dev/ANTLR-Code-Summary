@@ -4,6 +4,7 @@ import semantic.element.Function;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
 import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -14,11 +15,12 @@ public class ReturnPoint extends MasterSimpleSentence {
 
     public ReturnPoint(Function targetFunction, AssignableElement returnElement, ProgrammableElement context, int line, int column) {
         this.type = returnElement.getType();
-        this.name = targetFunction.getName() + "_RETURN";
+        this.name = "RETURN_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.RETURN;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.targetFunction = targetFunction;
         this.returnElement = returnElement;
         this.line = line;
@@ -26,10 +28,16 @@ public class ReturnPoint extends MasterSimpleSentence {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-
-        return "<SPAN CLASS=\"ident\">return</SPAN>  " + this.returnElement.toHTML();
-
+        return new StringBuilder()
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "return"))
+            .append(" ")
+            .append(this.returnElement.toHTML(HTMLIndentationLevel))
+            .append(";")
+            .append(HTMLHelper.genBr(tabs))
+            .toString();
     }
 }

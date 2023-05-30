@@ -3,6 +3,7 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.BinaryOperation;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
@@ -15,16 +16,16 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     protected Boolean hasParenthesis;
 
     @Override
-    public String getValue() {
-        return this.toString();
+    public AssignableElement getValue() {
+        return this;
     }
 
     @Override
     public String toString() {
         if (this.hasParenthesis)
-            return "(" + firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue() + ")";
+            return "(" + firstOperand.toString() + " " + symbol + " " + secondOperand.toString() + ")";
         else
-            return firstOperand.getValue() + " " + symbol + " " + secondOperand.getValue();
+            return firstOperand.toString() + " " + symbol + " " + secondOperand.toString();
     }
 
     @Override
@@ -39,17 +40,22 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
     }
 
     @Override
-    public String toHTML() {
-
-        String HTMLOp = new String();
-
-        HTMLOp = this.firstOperand.toHTML() + " " + this.symbol + " " + this.secondOperand.toHTML();
+    public String toHTML(int HTMLIndentationLevel) {
+        StringBuilder HTMLOperation = new StringBuilder()
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel))
+            .append(" ")
+            .append(HTMLHelper.genSpan("palres", this.symbol))
+            .append(" ")
+            .append(this.secondOperand.toHTML(HTMLIndentationLevel));
 
         if (this.hasParenthesis)
-            return "(" + HTMLOp + ")";
+            return HTMLOperation
+                .insert(0, "(")
+                .append(")")
+                .toString();
         else
-            return HTMLOp;
-
+            return HTMLOperation
+                .toString();
     }
 
     public MasterBinaryOperation firstOperand(AssignableElement firstOperand) {
@@ -77,13 +83,13 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
         }
 
         if (firstOperand.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.toString() + ")");
             this.setMalformed();
             return null;
         }
 
         if (secondOperand.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + secondOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + secondOperand.toString() + ")");
             this.setMalformed();
             return null;
         }

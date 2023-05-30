@@ -13,21 +13,22 @@ public class InnerFunctionCall extends MasterFunctionCall {
 
     private Function function;
 
-    public InnerFunctionCall(Function function, ProgrammableElement context, Boolean partOfExpression, int line, int column) {
+    public InnerFunctionCall(Function function, ProgrammableElement context, int line, int column) {
         if (Type.checkTypeCasting(function.getName()))
             this.type = Type.valueOf(function.getName());
         else
             this.type = function.getType();
-        this.name = function.getName() + "_CALL";
+        this.name = "INNER_CALL_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
-        this.sentenceType = Sentence.FUNCT_CALL;
+        this.sentenceType = Sentence.INNER_FUNCT_CALL;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = function.getAnchorContext();
         this.function = function;
         this.functionName = function.getName();
         this.callingParams = new LinkedList<>();
-        this.partOfExpression = partOfExpression;
         this.malformed = true;
+        this.partOfExpression = true;
         this.errorOnCreation = false;
         this.line = line;
         this.column = column;
@@ -42,10 +43,6 @@ public class InnerFunctionCall extends MasterFunctionCall {
         this.malformed = true;
     }
 
-    @Override
-    public String toHTML() {
-        return null;
-    }
     @Override
     public FunctionCall call() {
         if (this.errorOnCreation) {

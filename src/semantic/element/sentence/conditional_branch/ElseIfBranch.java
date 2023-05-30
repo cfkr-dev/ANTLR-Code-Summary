@@ -4,6 +4,7 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -18,11 +19,12 @@ public class ElseIfBranch extends MasterConditionalBranch {
 
     public ElseIfBranch(AssignableElement logicOperation, ConditionalBranch previous, ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = logicOperation.getValue() + "_IF_ELSE_BRANCH";
+        this.name = "IF_ELSE_BRANCH_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.IF_ELSE;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = logicOperation;
@@ -41,14 +43,28 @@ public class ElseIfBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-        String HTMLElseIf = new String();
+        StringBuilder HTMLElseIf = new StringBuilder()
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "else if"))
+            .append("(")
+            .append(this.logicOperation.toHTML(HTMLIndentationLevel))
+            .append(")")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("{")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("<div>\n");
 
-        HTMLElseIf = "<p><SPAN CLASS=\"ident\">else if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
-        HTMLElseIf += this.toHTMLBrackets();
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLElseIf.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
-        return HTMLElseIf;
+        HTMLElseIf
+            .append(tabs).append("</div>\n\n")
+            .append(tabs).append("}")
+            .append(HTMLHelper.genBr(tabs));
 
+        return HTMLElseIf.toString();
     }
 }

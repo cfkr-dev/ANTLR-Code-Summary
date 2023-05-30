@@ -3,6 +3,7 @@ package semantic.element.sentence.operation.operation_master;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.UnaryOperation;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Operation;
 import semantic.utils.enums.Type;
 
@@ -13,16 +14,16 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
     protected Operation operationType;
 
     @Override
-    public String getValue() {
-        return this.toString();
+    public AssignableElement getValue() {
+        return this;
     }
 
     @Override
     public String toString() {
         if (this.hasParenthesis)
-            return "(" + symbol + firstOperand.getValue() + ")";
+            return "(" + symbol + firstOperand.toString() + ")";
         else
-            return symbol + firstOperand.getValue();
+            return symbol + firstOperand.toString();
 
     }
 
@@ -38,19 +39,24 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
         return this;
     }
 
-
     @Override
-    public String toHTML() {
-
-        String HTMLOp = new String();
-
-        HTMLOp = this.symbol + " " + this.firstOperand.toHTML();
+    public String toHTML(int HTMLIndentationLevel) {
+        StringBuilder HTMLOperation = new StringBuilder()
+            .append(HTMLHelper.genSpan("palres", this.symbol));
 
         if (this.hasParenthesis)
-            return "(" + HTMLOp + ")";
-        else
-            return HTMLOp;
+            HTMLOperation
+                .append("(");
 
+        HTMLOperation
+            .append(this.firstOperand.toHTML(HTMLIndentationLevel));
+
+        if (this.hasParenthesis)
+            HTMLOperation
+                .append(")");
+
+        return HTMLOperation
+            .toString();
     }
 
     public MasterUnaryOperation firstOperand(AssignableElement firstOperand) {
@@ -68,7 +74,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
         }
 
         if (firstOperand.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.getValue() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.toString() + ")");
             this.setMalformed();
             return null;
         }

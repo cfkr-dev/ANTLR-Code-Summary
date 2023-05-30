@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Division extends ArithmeticOperation {
     public Division(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "DIVISION";
+        this.name = "DIVISION_" + line + "_" + column ;
         this.symbol = "DIV";
         this.operationType = Operation.DIVISION;
 

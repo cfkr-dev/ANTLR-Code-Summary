@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Sum extends ArithmeticOperation {
     public Sum(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "SUM";
+        this.name = "SUM_" + line + "_" + column;
         this.symbol = "+";
         this.operationType = Operation.SUM;
 

@@ -2,11 +2,13 @@ package semantic.element;
 
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
+import semantic.element.sentence.sentence_interface.Sentence;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.StructVariable;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 
@@ -24,6 +26,10 @@ public class Function extends MasterSentenceContainer {
         this.elementType = Element.FUNCTION;
         this.context = context;
         this.superContext = this;
+        if (this.name.equals("Main"))
+            this.anchorContext = "PROGRAMA_PRINCIPAL:" + this.name;
+        else
+            this.anchorContext = "FUNCIONES:" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.params = new LinkedList<>();
@@ -60,30 +66,56 @@ public class Function extends MasterSentenceContainer {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-        String HTMLFunction = new String();
+        StringBuilder function = new StringBuilder()
+            .append(tabs).append(HTMLHelper.genSpan("palres", this.type.name().toLowerCase()))
+            .append(" ")
+            .append(HTMLHelper.genSpan("ident", this.name))
+            .append("(");
 
-        HTMLFunction = "<p>" + this.toStringCabecera() + " {</p>\n";
+        boolean first = true;
 
-        HTMLFunction += this.toHTMLBrackets();
-
-        return HTMLFunction;
-
-    }
-
-    public String toStringCabecera() {
-
-        StringBuilder header = new StringBuilder(this.type + " " + this.toHTMLIdentifier() + "(");
-
-        for (Variable param : params) {
-
-            header.append(param.getType()).append(" ").append(param.toHTMLIdentifier()).append(",");
-
+        for (Variable variable: this.params) {
+            if (first)
+                first = false;
+            else
+                function
+                    .append(", ");
+            function
+                .append(HTMLHelper.genSpan("palres", variable.getType().name().toLowerCase()))
+                .append(" ")
+                .append(HTMLHelper.genSpan("ident", variable.getName()));
         }
 
-        return header.substring(0, header.length()-1) + ")";
+        function
+            .append(")")
+            .append(HTMLHelper.genBr(tabs));
 
+        function
+            .append(tabs)
+            .append("{")
+            .append(HTMLHelper.genBr(tabs));
+
+        function
+            .append(tabs)
+            .append("<div>\n");
+
+        for (Sentence sentence: this.sentences)
+            function
+                .append(sentence.toHTML(HTMLIndentationLevel + 1));
+
+        function
+            .append(tabs)
+            .append("</div>\n\n");
+
+        function
+            .append(tabs)
+            .append("}")
+            .append(HTMLHelper.genBr(tabs));
+
+        return function.toString();
     }
 
     public boolean checkCallingParams(List<AssignableElement> params) {
@@ -110,5 +142,23 @@ public class Function extends MasterSentenceContainer {
             }
             return true;
         }
+    }
+
+    public String getHeader() {
+        StringBuilder header = new StringBuilder().append(this.type.name().toLowerCase()).append(" ").append(this.name).append("(");
+
+        boolean first = true;
+
+        for (Variable variable: this.params) {
+            if (first)
+                first = false;
+            else
+                header.append(", ");
+            header.append(variable.getType().name().toLowerCase()).append(" ").append(variable.getName());
+        }
+
+        header.append(")");
+
+        return header.toString();
     }
 }
