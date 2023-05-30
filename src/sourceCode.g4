@@ -1,23 +1,23 @@
 grammar sourceCode;
 
-    @header{
+@header{
+import semantic.utils.Constants;
+import semantic.element.Function;
+import semantic.element.Program;
+import semantic.element.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.element.literal.literal_master.Literal;
+import semantic.element.sentence.conditional_branch.ConditionalBranch;
+import semantic.element.sentence.function_sentence.function_call.FunctionCall;
+import semantic.element.sentence.loop_sentence.DoWhileLoop;
+import semantic.element.sentence.loop_sentence.ForLoop;
+import semantic.element.sentence.operation.operation_master.arithmetic.ArithmeticOperation;
+import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
+import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
+import semantic.element.sentence.sentence_master.MasterSentenceContainer;
+import semantic.element.variable.StructVariable;
+}
 
-        import semantic.element.Function;
-        import semantic.element.Program;
-        import semantic.element.element_interfaces.AssignableElement;
-        import semantic.element.element_interfaces.ProgrammableElement;
-        import semantic.element.literal.literal_master.Literal;
-        import semantic.element.sentence.conditional_branch.ConditionalBranch;
-        import semantic.element.sentence.function_sentence.function_call.FunctionCall;
-        import semantic.element.sentence.loop_sentence.DoWhileLoop;
-        import semantic.element.sentence.loop_sentence.ForLoop;
-        import semantic.element.sentence.operation.operation_master.arithmetic.ArithmeticOperation;
-        import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
-        import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
-        import semantic.element.sentence.sentence_master.MasterSentenceContainer;
-        import semantic.element.variable.StructVariable;
-
-    }
 /*
 |-------------------------------------|
 |        GRAMMAR SPECIFICATION        |
@@ -27,7 +27,7 @@ grammar sourceCode;
     // **** MAIN SECTION ****
     // ------------------------
         program_prime
-            : {Program program = new Program();}  program[program]
+            : {Program program = new Program(); Constants.PROGRAM = program;}  program[program]
             ;
         program[Program context]
             : sentlist[$context]
@@ -97,7 +97,8 @@ grammar sourceCode;
             vardef_aux[ProgrammableElement context,String type,String name]
                 :{
                      if($context instanceof Program ){
-                         $context.addNewVariableDefinition($type,$name,$start.getLine(),$start.getCharPositionInLine());
+                        Program newContext=(Program)$context;
+                        newContext.addNewVariableDefinition($type,$name,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else if($context instanceof MasterSentenceContainer ){
                          MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
@@ -105,22 +106,22 @@ grammar sourceCode;
                      }
                      else{
                         StructVariable newContext=(StructVariable)$context;
-                         newContext.addNewSimpleProperty($type, $name,$start.getLine(),$start.getCharPositionInLine());
+                        newContext.addNewSimpleProperty($type, $name,$start.getLine(),$start.getCharPositionInLine());
                      }
 
                  }
                 | '=' simpvalue[$context]
                 {
                      if($context instanceof Program ){
-                     Program newContext=(Program)$context;
-                         newContext.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
+                        Program newContext=(Program)$context;
+                        newContext.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else if($context instanceof MasterSentenceContainer ){
                          MasterSentenceContainer newContext=(MasterSentenceContainer)$context;
                          newContext.addNewVariableDefinitionAndAssign($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
                      }
                      else{
-                        StructVariable newContext=(StructVariable)$context;
+                         StructVariable newContext=(StructVariable)$context;
                          newContext.addNewSimpleProperty($type,$name,$simpvalue.value,$start.getLine(),$start.getCharPositionInLine());
                      }
 
@@ -140,16 +141,16 @@ grammar sourceCode;
             struct_def[ProgrammableElement context] returns [StructVariable struct]
                 : 'struct' '{'
                  {
+                    StructVariable structAux;
                     if( $context instanceof Program){
                         Program newContext=(Program)$context;
-
-                        StructVariable structAux=newContext.addNewVariableDefinition("struct",$start.getLine(),$start.getCharPositionInLine());
+                        structAux=(StructVariable)newContext.addNewVariableDefinition("struct",$start.getLine(),$start.getCharPositionInLine()).getVariable();
                     }else{
                         StructVariable newContext=(StructVariable)$context;
-                        StructVariable structAux=newContext.addNewNestedStructProperty("struct",$start.getLine(),$start.getCharPositionInLine());
+                        structAux=newContext.addNewNestedStructProperty($start.getLine(),$start.getCharPositionInLine());
                     }
                 }
-                dcllist_struct[structAux] '}' {$struct=structAux}
+                dcllist_struct[structAux] '}' {$struct=(StructVariable)structAux;}
                 ;
 
             dcllist_struct[ProgrammableElement context]
@@ -237,7 +238,7 @@ grammar sourceCode;
 
             mainhead[Program context] returns [Function contextMain]
                 : tvoid 'Main' '(' {Function contextMainAux= context.addMainFunction($start.getLine(),$start.getCharPositionInLine());}
-                 mainhead_aux[contextMainAux] {$contextMain = contextMainAux}
+                 mainhead_aux[contextMainAux] {$contextMain = contextMainAux;}
 
                 ;
 
@@ -289,8 +290,8 @@ grammar sourceCode;
         
         /* ---- ASSIGNMENTS ---- */
 
-            asig[MasterSentenceContainer context] returns [ String name, AssignableElement value]
-                : IDENTIFIER  '=' exp[$context] {$name=$IDENTIFIER.text , $value=$exp.value;}
+            asig[MasterSentenceContainer context] returns [String name, AssignableElement value]
+                : IDENTIFIER  '=' exp[$context] {$name=$IDENTIFIER.text; $value=$exp.value;}
                 ;
 
 

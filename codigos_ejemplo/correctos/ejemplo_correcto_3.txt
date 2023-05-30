@@ -13,8 +13,8 @@ integer calc_integer(integer number_1,integer number_2){
 }
 integer calc_float(float number_3,float number_4, float number_5){
    float number_float ;
-   number_float= ((number_3-number_4) DIV number_5)
-   MOD number_3*(number_3-number_5);
+   number_float= INTEGER(((number_3-number_4) DIV number_5))
+   MOD INTEGER(number_3*(number_3-number_5));
    return number_float;
 }
 
