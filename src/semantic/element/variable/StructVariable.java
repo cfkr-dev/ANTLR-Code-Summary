@@ -159,7 +159,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
                 return false;
             }
 
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getName() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
             this.setMalformed();
             return false;
         }
@@ -167,7 +167,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         if (assignableElement.getValue() instanceof StructVariable) {
 
             if (!context.hasThisSymbol(assignableElement.getValue().getName())) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getValue().getName() + " a " + this.name + " por que " + assignableElement.getValue().getName() + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.toString() + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }

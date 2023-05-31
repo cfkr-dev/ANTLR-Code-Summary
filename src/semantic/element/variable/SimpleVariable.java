@@ -73,15 +73,15 @@ public class SimpleVariable extends MasterVariable {
                 return false;
             }
 
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.getName() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
             this.setMalformed();
             return false;
         }
 
         if (assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant) {
 
-            if (!context.hasThisSymbol(assignableElement.getName())) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.getName() + " no ha sido declarado previamente");
+            if (!context.hasThisSymbol(assignableElement.getValue().getName())) {
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.toString() + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }

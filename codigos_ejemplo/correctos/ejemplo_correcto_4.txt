@@ -35,7 +35,7 @@ void Main (integer i){
 
 // (Si eliminamos una unica barra se convierte en un comentario multilinea)
 void Main (integer j){
-
+    string s;
     s = "Test de que funcionan las comillas simples ' y las comillas dobles escapadas \" en los comentarios de domillas dobles";
     s = 'Test de que funcionan las comillas simples " y las comillas dobles escapadas \' en los comentarios de domillas simple';
 

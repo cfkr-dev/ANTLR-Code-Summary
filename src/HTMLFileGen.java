@@ -1,35 +1,23 @@
+import java.awt.*;
 import java.io.*;
 
 import static semantic.utils.Constants.FILE_NAME;
 
 public class HTMLFileGen {
-
-    private static File fichero;
-    public static void starter () {
-
-        // Comprobar que el fichero no existe
-            // Si existe excepcion
-        fichero = new File(FILE_NAME + ".html");
-        if (fichero.exists())
-            throw new RuntimeException("El fichero de resumen de programa ya existe");
-
-        // Abrir fichero
+    public static void generate (String HTML) throws IOException {
         try {
-            // A partir del objeto File creamos el fichero físicamente
-            if (!fichero.createNewFile())
-                System.out.println("No ha podido ser creado el fichero");
+            File file = new File(FILE_NAME + ".html");
 
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            if (file.exists()) {
+                System.out.println("ATENCIÓN => Ya existe un fichero con el mismo nombre (" + file.getName() + "). Será reemplazado.");
+                if (!file.delete())
+                    throw new IOException();
+            }
 
-    }
+            if (!file.createNewFile())
+                throw new IOException();
 
-    public static void generate (String HTML) {
-
-        // Introducir string en el fichero
-        try {
-            FileWriter fw = new FileWriter(fichero);
+            FileWriter fw = new FileWriter(file);
             BufferedWriter bw = new BufferedWriter(fw);
             PrintWriter pw = new PrintWriter(bw);
             pw.write(HTML);
@@ -37,18 +25,27 @@ public class HTMLFileGen {
             pw.close();
             bw.close();
 
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+            System.out.println(
+                "El resumen del programa ha sido creado con éxito.\n" +
+                "El fichero se encuentra en: " + file.getAbsolutePath()
+            );
 
-        // Ejecutar fichero en navegador
-        Runtime runtime = Runtime.getRuntime();
-        try {
-            runtime.exec("Start msedge " + FILE_NAME + ".html");
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        if (Desktop.isDesktopSupported()) {
+            Desktop desktop = Desktop.getDesktop();
 
+            if (file.exists())
+                desktop.open(file);
+            else
+                throw new IOException();
+
+        } else
+            System.out.println(
+                "No es posible abrir el navegador para mostrar el resumen del programa.\n" +
+                "El fichero se encuentra en: " + file.getAbsolutePath()
+            );
+        } catch (IOException e) {
+            throw new IOException("ERROR => Ha ocurrido un problema al crear el resumen del programa", e);
+        }
     }
 
 }
