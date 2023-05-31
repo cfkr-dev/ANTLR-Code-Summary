@@ -217,7 +217,7 @@ public class Program extends MasterProgrammableElement {
                     .append("\t\t</style>\n")
                 .append("\t</head>\n")
                 .append("\t<body>\n")
-                    .append("\t\t").append(HTMLHelper.genH(1, this.name)).append("\n\n")
+                    .append("\t\t").append(HTMLHelper.genH(1, "Programa: " + this.name)).append("\n\n")
                     .append(HTMLFunctionHeaders)
                     .append(HTMLFunctionBodies)
                     .append(HTMLMainProgram)

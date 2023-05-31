@@ -40,7 +40,7 @@ public class HTMLFileGen {
 
         } else
             System.out.println(
-                "No es posible abrir el navegador para mostrar el resumen del programa.\n" +
+                "ATENCIÓN => No es posible abrir el navegador para mostrar el resumen del programa.\n" +
                 "El fichero se encuentra en: " + file.getAbsolutePath()
             );
         } catch (IOException e) {

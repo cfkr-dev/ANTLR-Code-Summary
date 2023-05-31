@@ -89,7 +89,13 @@ public class ForLoop extends MasterProgrammableSentence {
         StringBuilder HTMLFor = new StringBuilder()
             .append(tabs)
             .append(HTMLHelper.genSpan("palres", "for"))
-            .append("(")
+            .append("(");
+
+        if (createdIndexVariable && indexVariable.getSentenceType().equals(Sentence.ASSIG))
+            HTMLFor
+                .append(HTMLHelper.genA(this.indexVariable.getVariable().getAnchorContext()));
+
+        HTMLFor
             .append(this.indexVariable.toHTMLNoWhiteSpaces())
             .append(" ")
             .append(this.conditionStop.toHTML(HTMLIndentationLevel))

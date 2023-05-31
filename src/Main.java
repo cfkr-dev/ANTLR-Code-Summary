@@ -40,29 +40,29 @@ public class Main {
             // Add custom error strategy to parser
             parser.setErrorHandler(new CustomErrorStrategy());
 
+            // Get source file name
+            Constants.FILE_NAME = new File(args[0]).getName();
+
             // Run parser
             parser.program_prime();
 
             // Create HTML string
             String HTML = Constants.PROGRAM.toHTML(0);
 
-            // Get source file name
-            Constants.FILE_NAME = new File(args[0]).getName();
-
             // Generate HTML file
             HTMLFileGen.generate(HTML);
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             // Input recognition error
-            System.err.println("ERROR => El analisis ha sido abortado.\n" + (e.getMessage() != null ? e.getMessage() : ""));
+            System.err.println("\nERROR => El analisis ha sido abortado (Error de reconocimiento).");
 
         } catch (IOException e) {
             // Input / Output recognition error
-            System.err.println("ERROR => El analisis ha sido abortado.\n" + (e.getMessage() != null ? e.getMessage() : ""));
+            System.err.println("\nERROR => El analisis ha sido abortado (Error de entrada/salida).");
 
         } catch (java.lang.RuntimeException e) {
             // Other fail
-            System.err.println("ERROR => El analisis ha sido abortado.\n" + (e.getMessage() != null ? e.getMessage() : ""));
+            System.err.println("\nERROR => El analisis ha sido abortado (Se han detectado errores sintácticos).");
         }
     }
 }
