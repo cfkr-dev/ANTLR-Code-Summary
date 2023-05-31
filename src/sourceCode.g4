@@ -170,7 +170,7 @@ import semantic.element.variable.StructVariable;
 
         /* ---- ASSIGNABLE VALUES ---- */
 
-            simpvalue[ProgrammableElement context] returns[AssignableElement value]
+            simpvalue[ProgrammableElement context] returns [AssignableElement value]
                 : NUMERIC_INTEGER_CONST {$value=$context.newIntegerConstant($NUMERIC_INTEGER_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
                 | NUMERIC_REAL_CONST {$value=$context.newRealConstant($NUMERIC_REAL_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
                 | STRING_CONST {$value=$context.newStringConstant($STRING_CONST.text,$start.getLine(),$start.getCharPositionInLine());}
@@ -196,7 +196,7 @@ import semantic.element.variable.StructVariable;
     // **** FUNCTION IMPLEMENTATION SECTION ****
     // -----------------------------------------
 
-        funcdef [Program context]
+        funcdef[Program context]
             : funchead[$context] '{' funcdef_aux[$funchead.returnFunction]
             ;
 
@@ -207,8 +207,8 @@ import semantic.element.variable.StructVariable;
 
         /* ---- FUNCTION HEAD ---- */
 
-            funchead [Program context] returns [Function returnFunction]
-                : tbas IDENTIFIER '('{Function functionAux = $context.addNewFunction($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} funchead_aux [functionAux] {$returnFunction = functionAux;}
+            funchead[Program context] returns [Function returnFunction]
+                : tbas IDENTIFIER '('{Function functionAux = $context.addNewFunction($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} funchead_aux[functionAux] {$returnFunction = functionAux;}
                 ;
 
             funchead_aux[Function context]
@@ -219,12 +219,12 @@ import semantic.element.variable.StructVariable;
 
         /* ---- FUNCTION PARAMETERS ---- */
 
-            typedef [Function context]
+            typedef[Function context]
                 : tbas IDENTIFIER {$context.addParam($tbas.type, $IDENTIFIER.text,$start.getLine(),$start.getCharPositionInLine());} typedef_aux[$context]
 
                 ;
 
-            typedef_aux [Function context]
+            typedef_aux[Function context]
                 : ',' typedef[$context]
                 |
                 ;
@@ -282,7 +282,7 @@ import semantic.element.variable.StructVariable;
                 | struct_vardef[$context]
                 ;
 
-            simple_vardef_code [MasterSentenceContainer context] returns [String type,String name]
+            simple_vardef_code[MasterSentenceContainer context] returns [String type,String name]
                 : tbas IDENTIFIER {$type=$tbas.type; $name= $IDENTIFIER.text ;}
                 ;
     
@@ -296,7 +296,7 @@ import semantic.element.variable.StructVariable;
 
 
 
-            vardef_and_asig[MasterSentenceContainer context, boolean forLoop] returns[String type,String name,AssignableElement value]
+            vardef_and_asig[MasterSentenceContainer context, boolean forLoop] returns [String type,String name,AssignableElement value]
                 : simple_vardef_code[$context]  '=' exp[$context, false]
                 {
                   if (!forLoop) {
@@ -346,7 +346,7 @@ import semantic.element.variable.StructVariable;
 
         /* ---- IF-ELSE SENTENCE ---- */
 
-            if [MasterSentenceContainer context]
+            if[MasterSentenceContainer context]
                 : 'if' expcond[$context, false] {MasterSentenceContainer ifContext=$context.addNewIfBranch($expcond.value,$start.getLine(),$start.getCharPositionInLine());}'{' sentlist_aux[ifContext] if_aux[$context,ifContext]
                 ;
 
@@ -407,17 +407,17 @@ import semantic.element.variable.StructVariable;
 
         /* ---- CONDITIONAL OPERATIONS ---- */
 
-            expcond[MasterSentenceContainer context, boolean forLoop] returns[AssignableElement value]
+            expcond[MasterSentenceContainer context, boolean forLoop] returns [AssignableElement value]
                 : factorcond[$context, forLoop] expcond_aux[$context,$factorcond.value, forLoop] {$value=$expcond_aux.value;}
                 ;
 
-            expcond_aux[MasterSentenceContainer context,AssignableElement left, boolean forLoop] returns[AssignableElement value]
-                : oplog[$context,$left] expcond[$context, forLoop]{AssignableElement valueH=$oplog.operation.secondOperand($expcond.value);}
-                expcond_aux1=expcond_aux[$context,valueH,forLoop] {$value=$expcond_aux1.value ;}
+            expcond_aux[MasterSentenceContainer context,AssignableElement left, boolean forLoop] returns [AssignableElement value]
+                : oplog[$context,$left] expcond[$context, forLoop]{AssignableElement valueAux=$oplog.operation.secondOperand($expcond.value);}
+                expcond_aux1=expcond_aux[$context,valueAux,forLoop] {$value=$expcond_aux1.value ;}
                 | {$value=$left;}
                 ;
 
-            oplog[MasterSentenceContainer context ,AssignableElement left ] returns[BinaryLogicalOperation operation]
+            oplog[MasterSentenceContainer context ,AssignableElement left ] returns [BinaryLogicalOperation operation]
                 : '||'{$operation=(BinaryLogicalOperation)$context.newLogicalOperation().or($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 | '&'{$operation=(BinaryLogicalOperation)$context.newLogicalOperation().and($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 ;
@@ -433,7 +433,7 @@ import semantic.element.variable.StructVariable;
                 | {$value=$left;}
                 ;
 
-            opcomp[MasterSentenceContainer context ,AssignableElement left ] returns[ComparisonOperation operation]
+            opcomp[MasterSentenceContainer context ,AssignableElement left ] returns [ComparisonOperation operation]
                 : '<' {$operation=(ComparisonOperation)$context.newComparisonOperation().lower($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 | '>' {$operation=(ComparisonOperation)$context.newComparisonOperation().greater($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 | '<='{$operation=(ComparisonOperation)$context.newComparisonOperation().lowerEqual($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
@@ -444,17 +444,17 @@ import semantic.element.variable.StructVariable;
 
         /* ---- ARITHMETIC OPERATIONS ---- */
 
-            exp[MasterSentenceContainer context, boolean forLoop] returns[AssignableElement value]
+            exp[MasterSentenceContainer context, boolean forLoop] returns [AssignableElement value]
                 :factor[$context, forLoop] exp_aux[$context,$factor.value, forLoop] {$value=$exp_aux.value;}
                 ;
 
-            exp_aux[MasterSentenceContainer context,AssignableElement left, boolean forLoop] returns[AssignableElement value]
-                : op[$context,$left] exp[$context, forLoop] {AssignableElement valueH=$op.operation.secondOperand($exp.value);}
-                  exp_aux1=exp_aux[$context,valueH, forLoop] {$value=$exp_aux1.value ;}
+            exp_aux[MasterSentenceContainer context,AssignableElement left, boolean forLoop] returns [AssignableElement value]
+                : op[$context,$left] exp[$context, forLoop] {AssignableElement valueAux=$op.operation.secondOperand($exp.value);}
+                  exp_aux1=exp_aux[$context,valueAux, forLoop] {$value=$exp_aux1.value ;}
                 | {$value=$left;}
                 ;
 
-            op[MasterSentenceContainer context ,AssignableElement left ] returns[ArithmeticOperation operation]
+            op[MasterSentenceContainer context ,AssignableElement left ] returns [ArithmeticOperation operation]
                 : '+' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().sum($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 | '-' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().subtraction($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
                 | '*' {$operation=(ArithmeticOperation)$context.newArithmeticOperation().multiplication($start.getLine(),$start.getCharPositionInLine()).firstOperand($left);}
