@@ -54,15 +54,15 @@ public class Main {
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             // Input recognition error
-            System.err.println("Error de reconocimiento: " + e.getMessage());
+            System.err.println("ERROR => El analisis ha sido abortado.\n" + (e.getMessage() != null ? e.getMessage() : ""));
 
         } catch (IOException e) {
             // Input / Output recognition error
-            System.err.println("Error de entrada/salida: " + e.getMessage());
+            System.err.println("ERROR => El analisis ha sido abortado.\n" + (e.getMessage() != null ? e.getMessage() : ""));
 
         } catch (java.lang.RuntimeException e) {
             // Other fail
-            System.err.println("Error de ejecución: " + e.getMessage());
+            System.err.println("ERROR => El analisis ha sido abortado.\n" + (e.getMessage() != null ? e.getMessage() : ""));
         }
     }
 }
