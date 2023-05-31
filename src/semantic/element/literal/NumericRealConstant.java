@@ -1,5 +1,6 @@
 package semantic.element.literal;
 
+import semantic.HTMLToolKit;
 import semantic.element.literal.literal_master.Literal;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.enums.Element;
@@ -18,6 +19,5 @@ public class NumericRealConstant extends Literal {
         this.line = line;
         this.column = column;
     }
-
 
 }

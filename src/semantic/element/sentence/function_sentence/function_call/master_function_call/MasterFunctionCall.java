@@ -1,5 +1,6 @@
 package semantic.element.sentence.function_sentence.function_call.master_function_call;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.sentence.function_sentence.function_call.FunctionCall;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
@@ -50,33 +51,26 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
 
     public String toHTML() {
 
-        StringBuilder HTMLFunction = new StringBuilder("<SPAN CLASS=\"ident\">" + this.functionName + "</SPAN>(");
+        StringBuilder HTMLFunction;
+        if (this.getSuperContext().hasThisSymbol(this.functionName))
+            HTMLFunction = new StringBuilder(HTMLToolKit.identRefMaker("FUNCIONES:" + this.functionName ,this.functionName) + "(");
+        else
+            HTMLFunction = new StringBuilder(HTMLToolKit.identMaker(this.functionName) + "(");
 
         for (AssignableElement elem : callingParams) {
 
             if (elem != callingParams.get(0))
                 HTMLFunction.append(", ");
 
-            HTMLFunction.append(elem.getName());
+            HTMLFunction.append(elem.toHTML());
 
         }
         HTMLFunction.append(")");
 
-        if (this.getSuperContext().hasThisSymbol(this.functionName)) {
-
-            if (partOfExpression)
-                return "<A HREF=\"#" + this.functionName + "\">" + HTMLFunction.toString() + "</A>\n";
-            else
-                return "<A HREF=\"#" + this.functionName + "\">" + HTMLFunction.toString() + "</A>\n" + ";<br>\n";
-
-        } else {
-
-            if (partOfExpression)
-                return HTMLFunction.toString();
-            else
-                return HTMLFunction.toString() + ";<br>\n";
-
-        }
+        if (partOfExpression)
+            return HTMLFunction.toString();
+        else
+            return HTMLFunction.toString() + ";<br>\n";
 
     }
 

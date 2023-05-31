@@ -27,7 +27,8 @@ public interface ProgramElement {
 
     public String toHTML();
 
-    public abstract String toHTMLIdentifier ();
-
     public String toHTMLLong();
+
+    public String toHTMLContex();
+
 }

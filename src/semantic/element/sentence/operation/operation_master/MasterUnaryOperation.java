@@ -1,5 +1,6 @@
 package semantic.element.sentence.operation.operation_master;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
 import semantic.element.sentence.operation.operation_interface.UnaryOperation;

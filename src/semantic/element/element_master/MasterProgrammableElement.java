@@ -15,11 +15,14 @@ import semantic.utils.enums.Type;
 import java.util.Map;
 
 public abstract class MasterProgrammableElement extends MasterProgramElement implements ProgrammableElement {
+
     protected Map<Element, Map<String, ProgramElement>> symbolTable;
 
     @Override
     public void addToSymbolTable(ProgramElement element) {
+
         this.symbolTable.get(element.getElementType()).put(element.getName(), element);
+
     }
 
     @Override
@@ -62,6 +65,7 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
     public StructVariable createNewVariable(String type, int line, int column) {
         if (Type.valueOf(type.toUpperCase()).equals(Type.STRUCT)) {
             StructVariable variable = new StructVariable(this, line, column);
+            //this.addToSymbolTable(variable);
             return variable;
         } else {
             return null;

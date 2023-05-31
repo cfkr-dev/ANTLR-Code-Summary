@@ -1,5 +1,6 @@
 package semantic.element.sentence.variable_sentence;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
 import semantic.element.variable.variable_interface.Variable;
@@ -26,12 +27,14 @@ public class VariableDefinition extends MasterSimpleSentence {
     @Override
     public String toHTML() {
 
-        return this.variable.getType() + " " + this.variable.getName();
+
+        return HTMLToolKit.palresMaker(this.variable.getType().toString()) + " " + HTMLToolKit.identRefGenerator(this.variable.toHTMLContex(), this.variable.getName());
     }
 
     public String toHTMLLong() {
 
-        return this.variable.getType() + " " + this.variable.getName() + ";<br>\n";
+        return this.toHTML() + ";<br>\n";
+
     }
 
 }

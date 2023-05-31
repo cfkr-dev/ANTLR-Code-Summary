@@ -1,5 +1,6 @@
 package semantic.element.sentence.function_sentence;
 
+import semantic.HTMLToolKit;
 import semantic.element.Function;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
@@ -29,7 +30,7 @@ public class ReturnPoint extends MasterSimpleSentence {
     public String toHTML() {
 
 
-        return "<SPAN CLASS=\"ident\">return</SPAN>  " + this.returnElement.toHTML();
+        return HTMLToolKit.palresMaker("return") + " (" + this.returnElement.toHTML() + ");<br>\n";
 
     }
 

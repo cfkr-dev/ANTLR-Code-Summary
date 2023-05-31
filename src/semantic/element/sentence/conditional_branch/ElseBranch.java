@@ -1,5 +1,6 @@
 package semantic.element.sentence.conditional_branch;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.Constants;
@@ -42,10 +43,10 @@ public class ElseBranch extends MasterConditionalBranch {
 
         String HTMLElse = new String();
 
-        HTMLElse = "<SPAN CLASS=\"ident\">else</SPAN> {<br>\n";
-        HTMLElse += this.toHTMLBrackets();
+        HTMLElse = HTMLToolKit.palresMaker("else") + " ";
+        HTMLElse += HTMLToolKit.betweenBrakets(this.sentences);
 
-        return HTMLElse;
+        return HTMLElse + "<br>\n";
 
     }
 

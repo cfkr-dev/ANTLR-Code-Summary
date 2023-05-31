@@ -1,5 +1,6 @@
 package semantic.element;
 
+import semantic.HTMLToolKit;
 import semantic.element.literal.literal_master.Literal;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgrammableElement;
@@ -35,13 +36,13 @@ public class Constant extends MasterProgramElement implements AssignableElement 
     @Override
     public String toHTML() {
 
-        return this.name;
+        return HTMLToolKit.identRefMaker(this.toHTMLContex(), this.name);
 
     }
 
     public String toHTMLLong () {
 
-        return "#define " + this.name + " \"" + this.value.toHTML() + "\"<br>\n";
+        return HTMLToolKit.palresMaker("#define")  + " " + HTMLToolKit.identRefGenerator(this.toHTMLContex(), this.name) + this.value.toHTML().replace("\">","\">\"").replace("</", "\"</") + "<br>\n";
 
     }
 

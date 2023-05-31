@@ -14,7 +14,7 @@ public class HTMLFileGen {
         fichero = new File(FILE_NAME + ".html");
 
         //TODO quitar este comentario de abajo
-        //if (fichero.exists())
+        /*if (fichero.exists())
             //throw new RuntimeException("El fichero de resumen de programa ya existe");
 
         // Abrir fichero
@@ -26,6 +26,7 @@ public class HTMLFileGen {
         } catch (IOException e) {
             e.printStackTrace();
         }
+        //*/
 
     }
 

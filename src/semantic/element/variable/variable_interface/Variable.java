@@ -10,4 +10,5 @@ public interface Variable<E extends AssignableElement> extends AssignableElement
     public Variable variableClone();
     public void forceSetMalformed();
 
+
 }

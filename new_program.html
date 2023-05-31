@@ -1,84 +1,86 @@
 <!doctype html>
 <html>
 	<head>
-		<title>new_program.html</title>
+		<title>new_program.c.html</title>
 		<style>
 			.cte {color:rgb(19,189,72);}
-			.parles {font-weight: bold;}
-			.ident {color:rgb(255,0,0);}
-		</style>	</head>
+			.palres {font-weight: bold;}
+			.ident {color:rgb(0,0,230);}
+		</style>
+	</head>
 	<body>
 		<A NAME="INICIO"></A>
-		<h1>Programa: new_program</h1>
+		<h1>Programa: new_program.c</h1>
 		<h2>Funciones</h2>
 		<ul>
-			<li><A HREF="#Main">Programa principal</A></li>
-			<li><A HREF="#save">VOID <SPAN CLASS="ident">save</SPAN>(STRING <SPAN CLASS="ident">nombre</SPAN>)</A></li>
+			<li><A HREF="#PROGRAMA_PRINCIPAL">Programa Principal</A></li>
+			<li><A HREF="#FUNCIONES:codificar_cadena">STRING codificar_cadena(STRING cadena, INTEGER desplazamiento)</A></li>
+			<li><A HREF="#FUNCIONES:save">VOID save(STRING nombre)</A></li>
 		</ul>
 		<hr>
-		<A NAME="save"></A>
+		<A NAME="FUNCIONES"></A>
 		<p>
-		VOID <SPAN CLASS="ident">save</SPAN>(STRING <SPAN CLASS="ident">nombre</SPAN>) {<br>
-			<DIV style="text-indent: 2cm">
-				<SPAN CLASS="ident">fopen</SPAN>(STRING_CONST_file.text, STRING_CONST_w);<br>
-				<SPAN CLASS="ident">printf</SPAN>(nombre);<br>
-			</DIV>
-		}<br>
+		<SPAN CLASS="palres">STRING</SPAN> <A NAME="FUNCIONES:codificar_cadena"><SPAN CLASS="ident">codificar_cadena</SPAN></A>(<SPAN CLASS="palres">STRING</SPAN> <A NAME="FUNCIONES:codificar_cadena:cadena"><SPAN CLASS="ident">cadena</SPAN></A>, <SPAN CLASS="palres">INTEGER</SPAN> <A NAME="FUNCIONES:codificar_cadena:desplazamiento"><SPAN CLASS="ident">desplazamiento</SPAN></A>){<br>
+		|&emsp;	<SPAN CLASS="palres">STRING</SPAN> <A NAME="FUNCIONES:codificar_cadena:cadena2(99,99)"><SPAN CLASS="ident">cadena2</SPAN></A>;<br>
+		|&emsp;	<A HREF="#FUNCIONES:codificar_cadena:cadena2(99,99)">cadena2</A> = (<A HREF="#FUNCIONES:codificar_cadena:cadena(99,99)">cadena</A> + <A HREF="#FUNCIONES:codificar_cadena:desplazamiento(99,99)">desplazamiento</A>) * <SPAN CLASS="ident">random</SPAN>(<A HREF="#FUNCIONES:codificar_cadena:desplazamiento(99,99)">desplazamiento</A>);<br>
+		|&emsp;	<SPAN CLASS="palres">return</SPAN> (<A HREF="#FUNCIONES:codificar_cadena:cadena2(99,99)">cadena2</A>);<br>
+		}
 		</p>
-		<A HREF="#save">Inicio de la funcion</A>
-		<A HREF="#INICIO">Inicio del programa</A> </br>
+		<A HREF="#FUNCIONES:codificar_cadena">Inicio de la funcion</A>
+		<A HREF="#INICIO">Inicio del programa</A>
 		<hr>
+		<p>
+		<SPAN CLASS="palres">VOID</SPAN> <A NAME="FUNCIONES:save"><SPAN CLASS="ident">save</SPAN></A>(<SPAN CLASS="palres">STRING</SPAN> <A NAME="FUNCIONES:save:nombre"><SPAN CLASS="ident">nombre</SPAN></A>){<br>
+		|&emsp;	<SPAN CLASS="ident">fopen</SPAN>(<SPAN CLASS="cte">"file.text"</SPAN>, <SPAN CLASS="cte">"w"</SPAN>);<br>
+		|&emsp;	<SPAN CLASS="ident">printf</SPAN>(<A HREF="#FUNCIONES:save:nombre(99,99)">nombre</A>);<br>
+		}
+		</p>
+		<A HREF="#FUNCIONES:save">Inicio de la funcion</A>
+		<A HREF="#INICIO">Inicio del programa</A>
+		<hr>
+		<A NAME="PROGRAMA_PRINCIPAL"></A>
 		<h2>Programa principal</h2>
-		<A NAME="Main"></A>
-		<p>#define FECHA "<SPAN CLASS="cte">2023</SPAN>"<br>
-		#define CODIGO "<SPAN CLASS="cte">10</SPAN>"<br>
-		INTEGER n_alumnos;<br>
-		FLOAT __valor_real;<br>
-		STRING nombre = alumno1;<br>
+		<p>
+		<SPAN CLASS="palres">#define</SPAN> <A NAME="PROGRAMA_PRINCIPAL:FECHA"><SPAN CLASS="ident">FECHA</SPAN></A><SPAN CLASS="cte">"2023"</SPAN><br>
+		<SPAN CLASS="palres">#define</SPAN> <A NAME="PROGRAMA_PRINCIPAL:CODIGO"><SPAN CLASS="ident">CODIGO</SPAN></A><SPAN CLASS="cte">"10"</SPAN><br>
+		<SPAN CLASS="palres">INTEGER</SPAN> <A NAME="PROGRAMA_PRINCIPAL:n_alumnos"><SPAN CLASS="ident">n_alumnos</SPAN></A>;<br>
+		<SPAN CLASS="palres">FLOAT</SPAN> <A NAME="PROGRAMA_PRINCIPAL:__valor_real"><SPAN CLASS="ident">__valor_real</SPAN></A>;<br>
+		<SPAN CLASS="palres">STRING</SPAN> <A NAME="PROGRAMA_PRINCIPAL:nombre"><SPAN CLASS="ident">nombre</SPAN></A> = <SPAN CLASS="cte">"alumno1"</SPAN>;<br>
+		<SPAN CLASS="palres">struct</SPAN>{<br>
+		|&emsp;	<SPAN CLASS="palres">STRING</SPAN> <A NAME="PROGRAMA_PRINCIPAL:alumno:nombre(99,99)"><SPAN CLASS="ident">nombre</SPAN></A>;<br>
+		|&emsp;	<SPAN CLASS="palres">STRING</SPAN> <A NAME="PROGRAMA_PRINCIPAL:alumno:apellido(99,99)"><SPAN CLASS="ident">apellido</SPAN></A>;<br>
+		|&emsp;	<SPAN CLASS="palres">INTEGER</SPAN> <A NAME="PROGRAMA_PRINCIPAL:alumno:n_expediente(99,99)"><SPAN CLASS="ident">n_expediente</SPAN></A>;<br>
+		|&emsp;	<SPAN CLASS="palres">INTEGER</SPAN> <A NAME="PROGRAMA_PRINCIPAL:alumno:promocion(99,99)"><SPAN CLASS="ident">promocion</SPAN></A> = <SPAN CLASS="cte">2023</SPAN>;<br>
+		} <A NAME="PROGRAMA_PRINCIPAL:alumno"><SPAN CLASS="ident">alumno</SPAN></A>;<br>
 		</p>
 		<p>
-		VOID <SPAN CLASS="ident">Main</SPAN>) {<br>
-			<DIV style="text-indent: 2cm">
-				<SPAN CLASS="ident">while</SPAN> (n_alumnos < CODIGO) {<br>
-					<DIV style="text-indent: 2cm">
-						STRING codificado;<br>
-						codificado = codificado;<br>
-						<A HREF="#save"><SPAN CLASS="ident">save</SPAN>(codificado)</A>
-						;<br>
-						n_alumnos = n_alumnos;<br>
-						codificado = codificado;<br>
-						<SPAN CLASS="ident">if</SPAN> (codificado == __valor_real) {<br>
-							<DIV style="text-indent: 2cm">
-								__valor_real = __valor_real;<br>
-							</DIV>
-						}<br>
-						<SPAN CLASS="ident">if</SPAN> (codificado == __valor_real & n_alumnos > <SPAN CLASS="cte">1</SPAN>) {<br>
-							<DIV style="text-indent: 2cm">
-								<SPAN CLASS="ident">for</SPAN> (i; i > CODIGO; i = i) {<br>
-									<DIV style="text-indent: 2cm">
-										codificado = codificado;<br>
-									</DIV>
-								}<br>
-								<SPAN CLASS="ident">printf</SPAN>(codificado);<br>
-							</DIV>
-						}<br>
-						<SPAN CLASS="ident">else if</SPAN> ((! codificado * CODIGO > FECHA)) {<br>
-							<DIV style="text-indent: 2cm">
-								<SPAN CLASS="ident">printf</SPAN>(n_alumnos);<br>
-							</DIV>
-						}<br>
-						<SPAN CLASS="ident">else</SPAN> {<br>
-							<DIV style="text-indent: 2cm">
-								<SPAN CLASS="ident">printf</SPAN>(STRING_CONST_'fin del \'programa\' con "codificacion" %s', codificado);<br>
-							</DIV>
-						}<br>
-					</DIV>
-				}<br>
-			</DIV>
-		}<br>
+		<SPAN CLASS="palres">VOID</SPAN> <A NAME="PROGRAMA_PRINCIPAL:Main"><SPAN CLASS="ident">Main</SPAN></A>(){<br>
+		|&emsp;	<SPAN CLASS="palres">while</SPAN> (<A HREF="#PROGRAMA_PRINCIPAL:n_alumnos">n_alumnos</A> < <A HREF="#PROGRAMA_PRINCIPAL:CODIGO">CODIGO</A>) {<br>
+		|&emsp;	|&emsp;	<SPAN CLASS="palres">STRING</SPAN> <A NAME="PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)"><SPAN CLASS="ident">codificado</SPAN></A>;<br>
+		|&emsp;	|&emsp;	<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> = <A HREF="#FUNCIONES:codificar_cadena">codificar_cadena</A>(<A HREF="#PROGRAMA_PRINCIPAL:nombre">nombre</A>, <A HREF="#PROGRAMA_PRINCIPAL:FECHA">FECHA</A>);<br>
+		|&emsp;	|&emsp;	<A HREF="#FUNCIONES:save">save</A>(<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A>);<br>
+		|&emsp;	|&emsp;	<A HREF="#PROGRAMA_PRINCIPAL:n_alumnos">n_alumnos</A> = <A HREF="#PROGRAMA_PRINCIPAL:n_alumnos">n_alumnos</A> + <SPAN CLASS="cte">1</SPAN>;<br>
+		|&emsp;	|&emsp;	<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> = <A HREF="#FUNCIONES:codificar_cadena">codificar_cadena</A>(<A HREF="#PROGRAMA_PRINCIPAL:nombre">nombre</A>, (<A HREF="#PROGRAMA_PRINCIPAL:CODIGO">CODIGO</A> DIV <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A>));<br>
+		|&emsp;	|&emsp;	<SPAN CLASS="palres">if</SPAN> (<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> == <A HREF="#PROGRAMA_PRINCIPAL:__valor_real">__valor_real</A>) {<br>
+		|&emsp;	|&emsp;	|&emsp;	<A HREF="#PROGRAMA_PRINCIPAL:__valor_real">__valor_real</A> = <SPAN CLASS="ident">FLOAT</SPAN>(<A HREF="#PROGRAMA_PRINCIPAL:n_alumnos">n_alumnos</A>);<br>
+		|&emsp;	|&emsp;	}<br>
+		|&emsp;	|&emsp;	<SPAN CLASS="palres">if</SPAN> (<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> == <A HREF="#PROGRAMA_PRINCIPAL:__valor_real">__valor_real</A> & <A HREF="#PROGRAMA_PRINCIPAL:n_alumnos">n_alumnos</A> > <SPAN CLASS="cte">1</SPAN>) {<br>
+		|&emsp;	|&emsp;	|&emsp;	<SPAN CLASS="palres">for</SPAN> (<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado == __valor_real & n_alumnos > 1_IF_BRANCH(99,99):i(99,99)">i</A>; <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado == __valor_real & n_alumnos > 1_IF_BRANCH(99,99):i(99,99)">i</A> > <A HREF="#PROGRAMA_PRINCIPAL:CODIGO">CODIGO</A>; <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado == __valor_real & n_alumnos > 1_IF_BRANCH(99,99):i(99,99)">i</A> = <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado == __valor_real & n_alumnos > 1_IF_BRANCH(99,99):i(99,99)">i</A> + <SPAN CLASS="cte">1</SPAN>) {<br>
+		|&emsp;	|&emsp;	|&emsp;	|&emsp;	<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> = <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> - <SPAN CLASS="cte">1</SPAN>;<br>
+		|&emsp;	|&emsp;	|&emsp;	}<br>
+		|&emsp;	|&emsp;	|&emsp;	<SPAN CLASS="ident">printf</SPAN>(<A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A>);<br>
+		|&emsp;	|&emsp;	}<br>
+		|&emsp;	|&emsp;	<SPAN CLASS="palres">else if</SPAN> ((! <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A> * <A HREF="#PROGRAMA_PRINCIPAL:CODIGO">CODIGO</A> > <A HREF="#PROGRAMA_PRINCIPAL:FECHA">FECHA</A>)) {<br>
+		|&emsp;	|&emsp;	|&emsp;	<SPAN CLASS="ident">printf</SPAN>(<A HREF="#PROGRAMA_PRINCIPAL:n_alumnos">n_alumnos</A>);<br>
+		|&emsp;	|&emsp;	}<br>
+		|&emsp;	|&emsp;	<SPAN CLASS="palres">else</SPAN> {<br>
+		|&emsp;	|&emsp;	|&emsp;	<SPAN CLASS="ident">printf</SPAN>(<SPAN CLASS="cte">"'fin del \'programa\' con "codificacion" %s'"</SPAN>, <A HREF="#PROGRAMA_PRINCIPAL:Main:WHILE_LOOP(99,99):codificado(99,99)">codificado</A>);<br>
+		|&emsp;	|&emsp;	}<br>
+		|&emsp;	}<br>
+		}
 		</p>
-		<A HREF="#Main">Inicio del programa principal</A>
-		<A HREF="#INICIO">Inicio del programa</A> </br>
+		<A HREF="#PROGRAMA_PRINCIPAL:Main">Inicio del programa principal</A>
+		<A HREF="#INICIO">Inicio del programa</A>
 		<hr>
 	</body>
 </html>

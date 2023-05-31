@@ -221,7 +221,8 @@ public class FunctionsAndVariablesTest {
 
         ///*
         //  struct {
-        StructVariable program_struct = program.createNewVariable("STRUCT", 99, 99);
+        //TODO: aqui está el origen del error de los struct
+        StructVariable program_struct = (StructVariable) program.createNewVariable("STRUCT", "", 99, 99);
 
             //  string nombre;
             program_struct.addNewSimpleProperty("string","nombre", 99, 99);

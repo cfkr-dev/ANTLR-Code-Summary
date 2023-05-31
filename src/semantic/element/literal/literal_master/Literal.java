@@ -1,7 +1,10 @@
 package semantic.element.literal.literal_master;
 
+import semantic.HTMLToolKit;
+import semantic.element.Constant;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_master.MasterProgramElement;
+import semantic.element.literal.NumericIntegerConstant;
 
 public abstract class Literal extends MasterProgramElement implements AssignableElement {
     protected String value;
@@ -18,7 +21,7 @@ public abstract class Literal extends MasterProgramElement implements Assignable
 
     public String toHTML() {
 
-        return "<SPAN CLASS=\"cte\">" + value + "</SPAN>";
+        return HTMLToolKit.cteMaker(value);
 
     }
     @Override

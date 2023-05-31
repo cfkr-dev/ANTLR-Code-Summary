@@ -1,5 +1,6 @@
 package semantic.element;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
@@ -64,11 +65,11 @@ public class Function extends MasterSentenceContainer {
 
         String HTMLFunction = new String();
 
-        HTMLFunction = "<p>\n" + this.toStringCabecera() + " {<br>\n";
+        HTMLFunction = "<p>\n" + this.toStringCabeceraLong();
 
-        HTMLFunction += this.toHTMLBrackets();
+        HTMLFunction += HTMLToolKit.betweenBrakets(this.sentences);
 
-        return HTMLFunction + "</p>\n";
+        return HTMLFunction + "\n</p>\n";
 
     }
 
@@ -79,15 +80,34 @@ public class Function extends MasterSentenceContainer {
 
     public String toStringCabecera() {
 
-        StringBuilder header = new StringBuilder(this.type + " " + this.toHTMLIdentifier() + "(");
+        StringBuilder header = new StringBuilder(this.type + " " + this.name + "(");
 
         for (Variable param : params) {
 
-            header.append(param.getType()).append(" ").append(param.toHTMLIdentifier()).append(",");
+            if (param != params.get(0))
+                header.append(", ");
+            header.append(param.getType() + " " + param.getName());
 
         }
 
-        return header.substring(0, header.length()-1) + ")";
+
+        return header.append(")").toString();
+
+    }
+    public String toStringCabeceraLong() {
+
+        StringBuilder header = new StringBuilder(HTMLToolKit.palresMaker(this.type.toString()) + " " + HTMLToolKit.identRefGenerator(this.toHTMLContex(), this.name) + "(");
+
+        for (Variable param : params) {
+
+            if (param != params.get(0))
+                header.append(", ");
+            header.append(HTMLToolKit.palresMaker(param.getType().toString()) + " " + HTMLToolKit.identRefGenerator(param.getContext().toHTMLContex() + ":" + param.getName(), param.getName()));
+
+        }
+
+
+        return header.append(")").toString();
 
     }
 

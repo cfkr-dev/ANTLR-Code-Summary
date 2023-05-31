@@ -1,5 +1,6 @@
 package semantic.element;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_master.MasterProgrammableElement;
 import semantic.element.literal.literal_master.Literal;
@@ -41,6 +42,7 @@ public class Program extends MasterProgrammableElement {
     @Override
     public Variable createNewVariable(String type, String name, int line, int column) {
         Variable variable = super.createNewVariable(type, name, line, column);
+
         if (variable != null)
             this.programElements.add(variable);
         else {
@@ -92,30 +94,28 @@ public class Program extends MasterProgrammableElement {
         if (this.malformed)
           throw new RuntimeException("No es posible crear el resumen de programa");
 
-        String HTMLCabecera = new String();
+        String HTMLCabecera;
         String HTMLFuncitonsCabecera = new String();
         String HTMLFunctions = new String();
         String HTMLGlobalVariables = new String();
 
         String HTMLMain = new String();
-        String HTMLFinal = new String();
+        String HTMLFinal;
 
         HTMLCabecera = "<!doctype html>\n" +
                        "<html>\n" +
                        "\t<head>\n" +
-                       "\t\t<title>" + this.name + ".html" + "</title>\n" +
+                       "\t\t<title>" + this.name + ".c.html" + "</title>\n" +
                        "\t\t<style>\n" +
                        "\t\t\t.cte {color:rgb(19,189,72);}\n" +
-                       "\t\t\t.parles {font-weight: bold;}\n" +
-                       //"\t\t\t.ident {color:rgb(107,103,189);}\n" +
-                       "\t\t\t.ident {color:rgb(255,0,0);}\n" +
-                       "\t\t</style>" +
+                       "\t\t\t.palres {font-weight: bold;}\n" +
+                       "\t\t\t.ident {color:rgb(0,0,230);}\n" +
+                       "\t\t</style>\n" +
                        "\t</head>\n" +
                        "\t<body>\n" +
-                       "\t\t<A NAME=\"INICIO\"></A>\n" +
-                       "\t\t<h1>Programa: " + this.name + "</h1>\n" +
-                       "\t\t<h2>Funciones</h2>\n" +
-                       "\t\t<ul>\n";
+                       "\t\t" + HTMLToolKit.refGenerator("INICIO", "") + "\n" +
+                       "\t\t<h1>Programa: " + this.name  + ".c" + "</h1>\n";
+
 
         HTMLFinal = "\t</body>\n" +
                     "</html>";
@@ -127,27 +127,31 @@ public class Program extends MasterProgrammableElement {
 
                 if (element.getName() == "Main") { //HTMLMain
 
-                    HTMLCabecera += "\t\t\t<li><A HREF=\"#" + element.getName() + "\">Programa principal</A></li>\n";
+                    // Añadir la referencia al menu principal
+                    HTMLFuncitonsCabecera = "\t\t<h2>Funciones</h2>\n" +
+                                            "\t\t<ul>\n" +
+                                            "\t\t\t<li>" + HTMLToolKit.refLinker("PROGRAMA_PRINCIPAL", "Programa Principal") + "</li>\n" +
+                                            HTMLFuncitonsCabecera;
 
-                    HTMLGlobalVariables = "\t\t<A NAME=\"" + element.getName() + "\"></A>\n" +
-                                          "\t\t<p>" + HTMLGlobalVariables;
-                    HTMLGlobalVariables = "\t\t<h2>Programa principal</h2>\n" +
-                                          //"\t\t</br>\n" +
-                                          HTMLGlobalVariables;
-                    HTMLMain = "\t\t" + element.toHTML().replace("\n", "\n\t\t");
-                    HTMLMain += "<A HREF=\"#" + element.getName() + "\">Inicio del programa principal</A>\n";
-                    HTMLMain += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-                    HTMLMain += "\t\t<hr>\n";
+                    HTMLGlobalVariables = "\t\t" + HTMLToolKit.refGenerator("PROGRAMA_PRINCIPAL", "") + "\n" +
+                                          "\t\t<h2>Programa principal</h2>\n" +
+                                          "\t\t<p>\n" +
+                                          "\t\t" + HTMLGlobalVariables;
+
+
+                    HTMLMain = "\t\t" + element.toHTML().replace("\n", "\n\t\t") +
+                               HTMLToolKit.refLinker("PROGRAMA_PRINCIPAL:" + element.getName(), "Inicio del programa principal") + "\n" +
+                               "\t\t" + HTMLToolKit.refLinker("INICIO", "Inicio del programa") + "\n" +
+                               "\t\t<hr>\n";
 
                 } else { //HTMLFunction
 
-                    HTMLFuncitonsCabecera = "\t\t\t<li><A HREF=\"#" + element.getName() + "\">" + ((Function) element).toStringCabecera() + "</A></li>\n";
+                    HTMLFuncitonsCabecera += "\t\t\t<li>" + HTMLToolKit.refLinker("FUNCIONES:" + element.getName(), ((Function)element).toStringCabecera()) + "</li>\n";
 
-                    HTMLFunctions = "\t\t<A NAME=\"" + element.getName() + "\"></A>\n";
-                    HTMLFunctions += "\t\t" + element.toHTML().replace("\n", "\n\t\t");
-                    HTMLFunctions += "<A HREF=\"#" + element.getName() + "\">Inicio de la funcion</A>\n";
-                    HTMLFunctions += "\t\t<A HREF=\"#INICIO\">Inicio del programa</A> </br>\n";
-                    HTMLFunctions += "\t\t<hr>\n";
+                    HTMLFunctions += "\t\t" + element.toHTML().replace("\n", "\n\t\t") +
+                                     HTMLToolKit.refLinker("FUNCIONES:" + element.getName(), "Inicio de la funcion") + "\n" +
+                                     "\t\t" + HTMLToolKit.refLinker("INICIO", "Inicio del programa") + "\n" +
+                                     "\t\t<hr>\n";
 
                 }
 
@@ -160,15 +164,12 @@ public class Program extends MasterProgrammableElement {
 
         }
 
-        HTMLCabecera += HTMLFuncitonsCabecera;
-        HTMLCabecera += "\t\t</ul>\n";
-        HTMLCabecera += "\t\t<hr>\n";
+        HTMLFunctions = "\t\t" + HTMLToolKit.refGenerator("FUNCIONES", "") + "\n" + HTMLFunctions;
 
-        String aux = HTMLCabecera + HTMLFunctions + HTMLGlobalVariables + "</p>\n" + HTMLMain + HTMLFinal;
+        HTMLFuncitonsCabecera += "\t\t</ul>\n";
+        HTMLFuncitonsCabecera += "\t\t<hr>\n";
 
-        aux.replaceAll("\r\n", "\n").replaceAll("\n", "\n<BR>\n").replaceAll("\t", "&nbsp;&nbsp;&nbsp;&nbsp;");
-
-        return aux;
+        return HTMLCabecera + HTMLFuncitonsCabecera + HTMLFunctions + HTMLGlobalVariables + "</p>\n" + HTMLMain + HTMLFinal;
 
     }
 

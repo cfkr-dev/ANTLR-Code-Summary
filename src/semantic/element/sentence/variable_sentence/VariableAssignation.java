@@ -1,7 +1,9 @@
 package semantic.element.sentence.variable_sentence;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.element.sentence.sentence_master.MasterSimpleSentence;
+import semantic.element.variable.SimpleVariable;
 import semantic.element.variable.variable_interface.Variable;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
@@ -25,12 +27,13 @@ public class VariableAssignation extends MasterSimpleSentence {
         return variable;
     }
 
+    //TODO: hacer algo con la parte derecha del = que tambien acepte structs
     @Override
     public String toHTML() {
-        return this.variable.getName() + " = " + this.variable.getValue();
+        return HTMLToolKit.identRefMaker(this.variable.toHTMLContex(), this.variable.getName()) + " = " + ((SimpleVariable)this.variable).toHTMLValue();
     }
 
     public String toHTMLLong() {
-        return this.variable.getName() + " = " + this.variable.getValue() + ";<br>\n";
+        return this.toHTML() + ";<br>\n";
     }
 }

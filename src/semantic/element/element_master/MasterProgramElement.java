@@ -1,5 +1,6 @@
 package semantic.element.element_master;
 
+import semantic.element.variable.StructVariable;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Type;
 import semantic.element.element_interfaces.ProgramElement;
@@ -72,12 +73,36 @@ public abstract class MasterProgramElement implements ProgramElement {
     @Override
     public abstract String toHTMLLong();
 
-
     @Override
-    public String toHTMLIdentifier () {
+    public String toHTMLContex () {
 
-        return "<SPAN CLASS=\"ident\">" + this.name + "</SPAN>";
+        if (this.context.getContext()== null) { // El siguiente es el programa, no necesito llegar tan lejos
 
-    }
+            if (this.getElementType() == Element.FUNCTION) { // In a function
+
+                if (this.getName() == "Main") { // In main
+
+                    return "PROGRAMA_PRINCIPAL:" + this.getName();
+
+                } else { // In any other fucntion
+
+                    return "FUNCIONES:" + this.getName();
+
+                }
+
+            }else { // main part
+
+                return "PROGRAMA_PRINCIPAL:" + this.getName();
+
+            }
+
+        } else {
+
+            return this.context.toHTMLContex() + ":" + this.name + "(" + this.getLine() + "," + this.getColumn() + ")";
+
+        }
+
+    };
+
 
 }

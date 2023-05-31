@@ -1,5 +1,6 @@
 package semantic.element.sentence.conditional_branch;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
@@ -43,10 +44,10 @@ public class IfBranch extends MasterConditionalBranch {
     @Override
     public String toHTML() {
 
-        String HTMLIf = "<SPAN CLASS=\"ident\">if</SPAN> (" + this.logicOperation.toHTML() + ") {<br>\n";
-        HTMLIf += this.toHTMLBrackets();
+        String HTMLIf = HTMLToolKit.palresMaker("if") + " (" + this.logicOperation.toHTML() + ") ";
+        HTMLIf += HTMLToolKit.betweenBrakets(this.sentences);
 
-        return HTMLIf;
+        return HTMLIf + "<br>\n";
 
     }
 

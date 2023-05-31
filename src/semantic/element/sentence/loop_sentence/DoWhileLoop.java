@@ -1,5 +1,6 @@
 package semantic.element.sentence.loop_sentence;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
@@ -56,10 +57,10 @@ public class DoWhileLoop extends MasterProgrammableSentence {
     @Override
     public String toHTML() {
 
-        String HTMLDoWhile = "<SPAN CLASS=\"ident\">do</SPAN> {<br>\n";
+        String HTMLDoWhile = HTMLToolKit.palresMaker("do") + " ";
 
-        HTMLDoWhile += this.toHTMLBrackets();
-        HTMLDoWhile = HTMLDoWhile.substring(0, HTMLDoWhile.length() - 5) + " <SPAN CLASS=\"ident\">while</SPAN> (" + this.logicOperation.toHTML() + ");<br>\n";
+        HTMLDoWhile += HTMLToolKit.betweenBrakets(this.sentences);
+        HTMLDoWhile += " " + HTMLToolKit.palresMaker("while") + " (" + this.logicOperation.toHTML() + ");<br>\n";
 
         return HTMLDoWhile;
 

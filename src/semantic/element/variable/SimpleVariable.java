@@ -1,5 +1,6 @@
 package semantic.element.variable;
 
+import semantic.HTMLToolKit;
 import semantic.element.Constant;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgrammableElement;
@@ -105,16 +106,22 @@ public class SimpleVariable extends MasterVariable {
 
     public String toHTML () {
 
-        return this.name;
+        return HTMLToolKit.identRefMaker(this.toHTMLContex(), this.name);
 
     }
 
     public String toHTMLLong() {
 
         if (this.value == null)
-            return this.type.name() + " " + this.name + ";<br>\n";
+            return HTMLToolKit.palresMaker(this.type.toString()) + " " + HTMLToolKit.identRefGenerator(this.toHTMLContex(), this.name) + ";<br>\n";
         else
-            return this.type.name() + " " + this.name + " = " + this.value + ";<br>\n";
+            return HTMLToolKit.palresMaker(this.type.toString()) + " " + HTMLToolKit.identRefGenerator(this.toHTMLContex(), this.name) + " = " + this.value.toHTML() + ";<br>\n";
+
+    }
+
+    public String toHTMLValue() {
+
+        return this.value.toHTML();
 
     }
 

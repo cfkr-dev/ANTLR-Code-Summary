@@ -1,5 +1,6 @@
 package semantic.element.variable;
 
+import semantic.HTMLToolKit;
 import semantic.element.literal.NumericIntegerConstant;
 import semantic.element.literal.NumericRealConstant;
 import semantic.element.literal.StringConstant;
@@ -42,7 +43,6 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
         } else {
             this.malformed = false;
         }
-
         this.name = name;
         this.context.addToSymbolTable(this);
         return this;
@@ -224,28 +224,27 @@ public class StructVariable extends MasterVariable<Variable> implements Programm
     @Override
     public String toHTML() {
 
-        return this.name;
+        return HTMLToolKit.identRefMaker(this.toHTMLContex(), this.name);
 
 
     }
 
     public String toHTMLLong() {
 
-        StringBuilder HTMLStruct = new StringBuilder("struct{<br>\n");
+        String HTMLStruct = HTMLToolKit.palresMaker("struct");
 
-        HTMLStruct.append("\t<DIV style=\"text-indent: 2cm\">\n\t\t");
+        HTMLStruct += HTMLToolKit.betweenBrakets(this.properties);
 
-        for (Variable<? extends AssignableElement> element : this.properties) {
-
-            HTMLStruct.append(element.toHTMLLong().replace("\n", "\n\t\t"));
-
-        }
-
-        HTMLStruct.deleteCharAt(HTMLStruct.length()-1);
-        HTMLStruct.append("</DIV>\n");
-        HTMLStruct.append("} ").append(this.name).append(";<br>\n");
-
-        return HTMLStruct.toString();
+        return HTMLStruct + " " + HTMLToolKit.identRefGenerator(this.toHTMLContex(), this.name) + ";<br>\n";
 
     }
+
+    /*
+    public String toHTMLValue() {
+
+        return this.value.toHTML() + ";<br>\n";
+
+    }
+    //*/
+
 }

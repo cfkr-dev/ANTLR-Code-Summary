@@ -1,5 +1,6 @@
 package semantic.element.sentence.loop_sentence;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
@@ -8,6 +9,7 @@ import semantic.utils.Constants;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
+import javax.swing.text.html.HTML;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -40,10 +42,11 @@ public class WhileLoop extends MasterProgrammableSentence {
     @Override
     public String toHTML() {
 
-        String HTMLWhile = "<SPAN CLASS=\"ident\">while</SPAN> (" + this.logicOperation.toHTML() + ") {<br>\n";
-        HTMLWhile += this.toHTMLBrackets();
+        String HTMLWhile = HTMLToolKit.palresMaker("while") + " (" + this.logicOperation.toHTML() + ") ";
 
-        return HTMLWhile;
+        HTMLWhile += HTMLToolKit.betweenBrakets(this.sentences);
+
+        return HTMLWhile + "<br>\n";
 
     }
 

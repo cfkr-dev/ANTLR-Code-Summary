@@ -1,5 +1,6 @@
 package semantic.element.sentence.loop_sentence;
 
+import semantic.HTMLToolKit;
 import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
@@ -54,10 +55,10 @@ public class ForLoop extends MasterProgrammableSentence {
     @Override
     public String toHTML() {
 
-        String HTMLFor = "<SPAN CLASS=\"ident\">for</SPAN> (" + this.indexVariable.toHTML() + "; " + this.conditionStop.toHTML() + "; " + this.assignationAfterIteration.toHTML() + ") {<br>\n";
-        HTMLFor += this.toHTMLBrackets();
+        String HTMLFor = HTMLToolKit.palresMaker("for") + " (" + this.indexVariable.toHTML() + "; " + this.conditionStop.toHTML() + "; " + this.assignationAfterIteration.toHTML() + ") ";
+        HTMLFor += HTMLToolKit.betweenBrakets(this.sentences);
 
-        return HTMLFor;
+        return HTMLFor + "<br>\n";
 
     }
 

@@ -1,5 +1,6 @@
 package semantic.element.literal;
 
+import semantic.HTMLToolKit;
 import semantic.element.literal.literal_master.Literal;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.enums.Element;
@@ -22,10 +23,11 @@ public class StringConstant extends Literal {
     @Override
      public String toHTML() {
 
-        return "<SPAN CLASS=\"cte\">\"" + value + "\"</SPAN>";
+        return HTMLToolKit.cteMaker("\"" + value + "\"");
 
     }
 
+    // TODO: hay que poner el tipo de comillas que se usa: simples o dobles
     @Override
     public String toHTMLLong() {
         return this.toHTML();
