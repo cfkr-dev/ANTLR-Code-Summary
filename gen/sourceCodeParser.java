@@ -1,6 +1,14 @@
 // Generated from /data_linux/UNIVERSIDAD/GII_GIS_5/PL/Practicas/practica_obligatoria/src/sourceCode.g4 by ANTLR 4.12.0
 
-import semantic.utils.Constants;
+import org.antlr.v4.runtime.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.ParserATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
+import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.tree.ParseTreeListener;
+import org.antlr.v4.runtime.tree.ParseTreeVisitor;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import semantic.element.Function;
 import semantic.element.Program;
 import semantic.element.element_interfaces.AssignableElement;
@@ -9,21 +17,14 @@ import semantic.element.literal.literal_master.Literal;
 import semantic.element.sentence.conditional_branch.ConditionalBranch;
 import semantic.element.sentence.function_sentence.function_call.FunctionCall;
 import semantic.element.sentence.loop_sentence.DoWhileLoop;
-import semantic.element.sentence.loop_sentence.ForLoop;
 import semantic.element.sentence.operation.operation_master.arithmetic.ArithmeticOperation;
 import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
 import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
 import semantic.element.sentence.sentence_master.MasterSentenceContainer;
 import semantic.element.variable.StructVariable;
+import semantic.utils.Constants;
 
-import org.antlr.v4.runtime.atn.*;
-import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.misc.*;
-import org.antlr.v4.runtime.tree.*;
 import java.util.List;
-import java.util.Iterator;
-import java.util.ArrayList;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class sourceCodeParser extends Parser {
@@ -3814,9 +3815,9 @@ public class sourceCodeParser extends Parser {
 				((Expcond_auxContext)_localctx).oplog = oplog(_localctx.context,_localctx.left);
 				setState(467);
 				((Expcond_auxContext)_localctx).expcond = expcond(_localctx.context, forLoop);
-				AssignableElement valueH=((Expcond_auxContext)_localctx).oplog.operation.secondOperand(((Expcond_auxContext)_localctx).expcond.value);
+				AssignableElement valueAux=((Expcond_auxContext)_localctx).oplog.operation.secondOperand(((Expcond_auxContext)_localctx).expcond.value);
 				setState(469);
-				((Expcond_auxContext)_localctx).expcond_aux1 = expcond_aux(_localctx.context,valueH,forLoop);
+				((Expcond_auxContext)_localctx).expcond_aux1 = expcond_aux(_localctx.context,valueAux,forLoop);
 				((Expcond_auxContext)_localctx).value = ((Expcond_auxContext)_localctx).expcond_aux1.value ;
 				}
 				break;
@@ -4294,9 +4295,9 @@ public class sourceCodeParser extends Parser {
 				((Exp_auxContext)_localctx).op = op(_localctx.context,_localctx.left);
 				setState(522);
 				((Exp_auxContext)_localctx).exp = exp(_localctx.context, forLoop);
-				AssignableElement valueH=((Exp_auxContext)_localctx).op.operation.secondOperand(((Exp_auxContext)_localctx).exp.value);
+				AssignableElement valueAux=((Exp_auxContext)_localctx).op.operation.secondOperand(((Exp_auxContext)_localctx).exp.value);
 				setState(524);
-				((Exp_auxContext)_localctx).exp_aux1 = exp_aux(_localctx.context,valueH, forLoop);
+				((Exp_auxContext)_localctx).exp_aux1 = exp_aux(_localctx.context,valueAux, forLoop);
 				((Exp_auxContext)_localctx).value = ((Exp_auxContext)_localctx).exp_aux1.value ;
 				}
 				break;
