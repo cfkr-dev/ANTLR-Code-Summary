@@ -1,22 +1,20 @@
-//Tutorial comentarios
-//* Esto son dos comentarios monolinea
-    //Lo de aquí no está comentado
-//*/
+/*
 
-/* Esto es un comentario multilinea
-    Lo que está aqui por eliminar un simbolo ahora está comentado
-//*/
+   Para ejecutar este script y poder apreciar los errores hemos comentado las lineas que los producen de modo que
+   si se desea observar el comportamiento de un determinado error, basta con añadir '//' al comienzo de la línea
+   superior que contenga el siguiente patrón 'ERROR N =>'. Por ejemplo. Añade '//' en línea 11 - columna 0.
 
-
+*/
 
 integer entero_1= 0953 ;
+
 /*
-//Comenta la linea de arriba para generar el error de redlaracion de una variable
+// ERROR 1 => Declaración de variable usando el mismo nombre que otra ya creada
 integer entero_1;
 //*/
 
 /*
-//Comenta la linea de arriba para generar el error error de tipos en la asigancion de una variable
+// ERROR 2 => Tipos en la asiganción de un valor a una variable
 string frase = 33;
 //*/
 
@@ -26,24 +24,24 @@ integer fun_a(integer number_1,integer number_2) {
     integer number_int = 3 ;
 
     /*
-    //Comenta la linea de arriba para generar el error de uso de variable no declarada
+    // ERROR 3 => Uso de variable no declarada
     number_int = variable_inventada;
     //*/
 
     /*
-    //Comenta la linea de arriba para generar el error de uso de una funcion como si de una variable se tratara
+    // ERROR 4 => Uso de un identificador de función como si de una variable se tratase
     number_int = fun_b;
     //*/
 
     number_int= ((number_1+number_2)*number_2)     DIV       number_1;
 
     /*
-    //Comenta la linea de arriba para generar el error de invocacion de metodo con argumentos erroneos
+    // ERROR 5 => Llamada a una función con argumentos erroneos
     fun_b("a", "b", "c");
     //*/
 
     /*
-    //Comenta la linea de arriba para generar el error de devolucion de tipo incorrecto
+    // ERROR 6 => Intento de devolver un elemento de un tipo incorrecto al que deberia una función
     return "hola";
     /*/
     return number_int;
@@ -54,19 +52,19 @@ integer fun_a(integer number_1,integer number_2) {
 void fun_b(float number_3, float number_4, float number_5) {
 
     /*
-    //Comenta la linea de arriba para generar el error de else sin if
+    // ERROR 7 => Generar una rama else sin una rama previa if
     else {
 
     }
     //*/
 
     /*
-    //Comenta la linea de arriba para generar el error de invocacion de metodo con argumentos sin argumentos
+    // ERROR 8 => Llamada a una funcíon la cual espera argumentos, sin ellos
     fun_a();
     //*/
 
     /*
-    //Comenta la linea de arriba para generar el error de if con senteencia logica icorrecta
+    // ERROR 9 => Creacción de una rama if con una condición lógica icorrecta
     if (!"hola") {
 
     }
@@ -74,7 +72,7 @@ void fun_b(float number_3, float number_4, float number_5) {
 
 
     /*
-    //Comenta la linea de arriba para generar el error de intentar hacer un return illegal
+    // ERROR 10 => Intentar devolver un elemento en una función que no devuelve nada
     return 3;
     //*/
 
@@ -86,7 +84,7 @@ void Main () {
     integer n;
 
     /*
-    //Comenta la linea de arriba para generar el error de while con exprexion logica incorrecta
+    // ERROR 11 => Generación de bucle while con una condición lógica incorrecta
     while (!"hola") {
 
     }
@@ -94,7 +92,7 @@ void Main () {
 
 
     /*
-    //Comenta la linea de arriba para generar el error de for con variable no declarada en la expresion logica
+    // ERROR 12 => Generación de un bucle for sin sentencia de actualización post-iteración
     for (n = 0; n < variable_inventada) {
 
     }
