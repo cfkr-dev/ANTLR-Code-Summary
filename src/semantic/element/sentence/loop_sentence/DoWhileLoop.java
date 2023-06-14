@@ -29,6 +29,7 @@ public class DoWhileLoop extends MasterProgrammableSentence {
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = null;
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }

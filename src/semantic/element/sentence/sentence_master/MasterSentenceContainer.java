@@ -563,17 +563,28 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
     public ReturnPoint addNewReturnPoint(AssignableElement returnElement, int line, int column){
         boolean error = false;
 
-        if (!Type.checkTypeConsistency(this.getSuperContext().getType(), returnElement.getType())) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "El tipo del elemento devuelto debe concordar con el tipo de la función");
+        if (this.getSuperContext().getType().equals(Type.VOID)) {
+            System.err.println("ERROR " + line + ":" + column + " => La función " + this.getSuperContext().getName() + " es de tipo " + Type.VOID + ". No se esperaba un punto de retorno");
             error = true;
         }
 
-        if (returnElement.isMalformed()) {
+        if (this.hasReturnPoint && !error) {
+            System.err.println("ERROR " + line + ":" + column + " => Una función no puede tener más de un punto de retorno dentro de un mismo contexto");
+            error = true;
+        }
+
+        if (!Type.checkTypeConsistency(this.getSuperContext().getType(), returnElement, true) && !error) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "El tipo del elemento devuelto (" + returnElement.getType() + ") debe concordar con el tipo de la función (" + this.getSuperContext().getType() + ")");
+            error = true;
+        }
+
+        if (returnElement.isMalformed() && !error) {
             System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar una expresión malformada");
             error = true;
         }
 
         ReturnPoint returnPoint = new ReturnPoint((Function) this.getSuperContext(), returnElement, this, line, column);
+        this.setReturnPoint();
 
         if (error) {
             returnElement.setMalformed();

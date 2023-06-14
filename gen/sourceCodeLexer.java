@@ -1,29 +1,12 @@
 // Generated from /data_linux/UNIVERSIDAD/GII_GIS_5/PL/Practicas/practica_obligatoria/src/sourceCode.g4 by ANTLR 4.12.0
 
-import semantic.utils.Constants;
-import semantic.element.Function;
-import semantic.element.Program;
-import semantic.element.element_interfaces.AssignableElement;
-import semantic.element.element_interfaces.ProgrammableElement;
-import semantic.element.literal.literal_master.Literal;
-import semantic.element.sentence.conditional_branch.ConditionalBranch;
-import semantic.element.sentence.function_sentence.function_call.FunctionCall;
-import semantic.element.sentence.loop_sentence.DoWhileLoop;
-import semantic.element.sentence.loop_sentence.ForLoop;
-import semantic.element.sentence.operation.operation_master.arithmetic.ArithmeticOperation;
-import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
-import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
-import semantic.element.sentence.sentence_master.MasterSentenceContainer;
-import semantic.element.variable.StructVariable;
-
-import org.antlr.v4.runtime.Lexer;
-import org.antlr.v4.runtime.CharStream;
-import org.antlr.v4.runtime.Token;
-import org.antlr.v4.runtime.TokenStream;
 import org.antlr.v4.runtime.*;
-import org.antlr.v4.runtime.atn.*;
+import org.antlr.v4.runtime.atn.ATN;
+import org.antlr.v4.runtime.atn.ATNDeserializer;
+import org.antlr.v4.runtime.atn.LexerATNSimulator;
+import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
-import org.antlr.v4.runtime.misc.*;
+import org.antlr.v4.runtime.misc.Interval;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class sourceCodeLexer extends Lexer {
@@ -113,6 +96,15 @@ public class sourceCodeLexer extends Lexer {
 
 	public Vocabulary getVocabulary() {
 		return VOCABULARY;
+	}
+
+
+	@Override
+	public void notifyListeners(LexerNoViableAltException e) {
+	    String text = this._input.getText(Interval.of(this._tokenStartCharIndex, this._input.index()));
+	    String msg = "Error al reconocer un token: '" + this.getErrorDisplay(text) + "'";
+	    ANTLRErrorListener listener = this.getErrorListenerDispatch();
+	    listener.syntaxError(this, (Object)null, this._tokenStartLine, this._tokenStartCharPositionInLine, msg, e);
 	}
 
 

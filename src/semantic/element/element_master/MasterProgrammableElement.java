@@ -16,6 +16,7 @@ import java.util.Map;
 
 public abstract class MasterProgrammableElement extends MasterProgramElement implements ProgrammableElement {
     protected Map<Element, Map<String, ProgramElement>> symbolTable;
+    protected boolean hasReturnPoint;
 
     @Override
     public void addToSymbolTable(ProgramElement element) {
@@ -81,16 +82,29 @@ public abstract class MasterProgrammableElement extends MasterProgramElement imp
     public ProgramElement getSymbolByNameAndElement(String name, Element element) {
         return this.symbolTable.get(element).get(name);
     }
+
     @Override
     public NumericIntegerConstant newIntegerConstant(String value, int line, int column) {
         return new NumericIntegerConstant(value, this, line, column);
     }
+
     @Override
     public NumericRealConstant newRealConstant(String value, int line, int column) {
         return new NumericRealConstant(value, this, line, column);
     }
+
     @Override
     public StringConstant newStringConstant(String value, int line, int column) {
         return new StringConstant(value, this, line, column);
+    }
+
+    @Override
+    public boolean hasReturnPoint() {
+        return this.hasReturnPoint;
+    }
+
+    @Override
+    public void setReturnPoint() {
+        this.hasReturnPoint = true;
     }
 }

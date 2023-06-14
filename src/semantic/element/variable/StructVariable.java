@@ -173,7 +173,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
             }
         }
 
-        if (!Type.checkTypeConsistency(assignableElement.getType(), this.type)) {
+        if (!Type.checkTypeConsistency(this.type, assignableElement, true)) {
             System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar un elemento de tipo \"" + assignableElement.getType() + "\" a una variable de tipo " + this.type.name().toLowerCase());
             this.setMalformed();
             return false;
@@ -228,6 +228,16 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
     @Override
     public StringConstant newStringConstant(String value, int line, int column) {
         return new StringConstant(value, this, line, column);
+    }
+
+    @Override
+    public boolean hasReturnPoint() {
+        throw new RuntimeException("Unsupported");
+    }
+
+    @Override
+    public void setReturnPoint() {
+        throw new RuntimeException("Unsupported");
     }
 
     /**

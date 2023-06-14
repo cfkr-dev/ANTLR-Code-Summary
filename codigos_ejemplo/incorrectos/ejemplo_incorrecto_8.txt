@@ -2,7 +2,7 @@
 
    Para ejecutar este script y poder apreciar los errores hemos comentado las lineas que los producen de modo que
    si se desea observar el comportamiento de un determinado error, basta con añadir '//' al comienzo de la línea
-   superior que contenga el siguiente patrón 'ERROR N =>'. Por ejemplo. Añade '//' en línea 11 - columna 0.
+   superior que contenga el siguiente patrón 'ERROR N =>'. Por ejemplo. Añade '//' en línea 11 - columna 1.
 
 */
 
@@ -18,64 +18,70 @@ integer entero_1;
 string frase = 33;
 //*/
 
-
-integer fun_a(integer number_1,integer number_2) {
-
-    integer number_int = 3 ;
-
-    /*
-    // ERROR 3 => Uso de variable no declarada
-    number_int = variable_inventada;
-    //*/
-
-    /*
-    // ERROR 4 => Uso de un identificador de función como si de una variable se tratase
-    number_int = fun_b;
-    //*/
-
-    number_int= ((number_1+number_2)*number_2)     DIV       number_1;
-
-    /*
-    // ERROR 5 => Llamada a una función con argumentos erroneos
-    fun_b("a", "b", "c");
-    //*/
-
-    /*
-    // ERROR 6 => Intento de devolver un elemento de un tipo incorrecto al que deberia una función
-    return "hola";
-    /*/
-    return number_int;
-    //*/
-
+string fun_c(string param_1) {
+    return param_1 + "!!!!";
 }
 
 void fun_b(float number_3, float number_4, float number_5) {
 
     /*
-    // ERROR 7 => Generar una rama else sin una rama previa if
+    // ERROR 3 => Generar una rama else sin una rama previa if
     else {
 
     }
     //*/
 
     /*
-    // ERROR 8 => Llamada a una funcíon la cual espera argumentos, sin ellos
-    fun_a();
+    // ERROR 4 => Llamada a una funcíon la cual espera argumentos, sin ellos
+    fun_c();
     //*/
 
     /*
-    // ERROR 9 => Creacción de una rama if con una condición lógica icorrecta
+    // ERROR 5 => Creacción de una rama if con una condición lógica incorrecta
     if (!"hola") {
 
     }
     //*/
 
-
     /*
-    // ERROR 10 => Intentar devolver un elemento en una función que no devuelve nada
+    // ERROR 6 => Intentar devolver un elemento en una función de tipo void
     return 3;
     //*/
 
+}
+
+integer fun_a(integer number_1,integer number_2) {
+
+    integer number_int = 3 ;
+
+    /*
+    // ERROR 7 => Uso de variable no declarada
+    number_int = variable_inventada;
+    //*/
+
+    /*
+    // ERROR 8 => Uso de un identificador de función como si de una variable se tratase
+    number_int = fun_b;
+    //*/
+
+    number_int= ((number_1+number_2)*number_2)     DIV       number_1;
+
+    /*
+    // ERROR 9 => Llamada a una función con argumentos erroneos
+    fun_b("a", "b", "c");
+    //*/
+
+    /*
+    // ERROR 10 => Intento de devolver un elemento de un tipo incorrecto al que deberia una función
+    return "hola";
+    /*/
+    return number_int;
+    //*/
+
+    /*
+    // ERROR 11 => Intento de crear una sentencia return dentro de un contexto que previamente llamó a otra.
+    return fun_devolver_resultado();
+    //*/
 
 }
 
@@ -84,15 +90,14 @@ void Main () {
     integer n;
 
     /*
-    // ERROR 11 => Generación de bucle while con una condición lógica incorrecta
+    // ERROR 12 => Generación de bucle while con una condición lógica incorrecta
     while (!"hola") {
 
     }
     //*/
 
-
     /*
-    // ERROR 12 => Generación de un bucle for sin sentencia de actualización post-iteración
+    // ERROR 13 => Generación de un bucle for sin sentencia de actualización post-iteración
     for (n = 0; n < variable_inventada) {
 
     }

@@ -1,6 +1,7 @@
 import org.antlr.v4.runtime.*;
 import org.antlr.v4.runtime.misc.IntervalSet;
 import org.antlr.v4.runtime.misc.Pair;
+import semantic.utils.Constants;
 
 public class CustomErrorStrategy extends DefaultErrorStrategy {
 
@@ -96,6 +97,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
                 this.reportFailedPredicate(recognizer, (FailedPredicateException)e);
             } else {
                 System.err.println("Error de reconocimiento desconocido: " + e.getClass().getName());
+                Constants.PROGRAM.setMalformed();
                 recognizer.notifyErrorListeners(e.getOffendingToken(), e.getMessage(), e);
             }
 
@@ -117,12 +119,14 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
         }
 
         String msg = "No se ha encontrado una alternativa a " + this.escapeWSAndQuote(input);
+        Constants.PROGRAM.setMalformed();
         recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
     }
 
     @Override
     protected void reportInputMismatch(Parser recognizer, InputMismatchException e) {
         String msg = "Entrada inesperada " + this.getTokenErrorDisplay(e.getOffendingToken()) + " esperado " + e.getExpectedTokens().toString(recognizer.getVocabulary());
+        Constants.PROGRAM.setMalformed();
         recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
     }
 
@@ -130,6 +134,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
     protected void reportFailedPredicate(Parser recognizer, FailedPredicateException e) {
         String ruleName = recognizer.getRuleNames()[recognizer.getRuleContext().getRuleIndex()];
         String msg = "Regla " + ruleName + " " + e.getMessage();
+        Constants.PROGRAM.setMalformed();
         recognizer.notifyErrorListeners(e.getOffendingToken(), msg, e);
     }
 
@@ -141,6 +146,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
             String tokenName = this.getTokenErrorDisplay(t);
             IntervalSet expecting = this.getExpectedTokens(recognizer);
             String msg = "Entrada desconocida " + tokenName + " esperado " + expecting.toString(recognizer.getVocabulary());
+            Constants.PROGRAM.setMalformed();
             recognizer.notifyErrorListeners(t, msg, (RecognitionException)null);
         }
     }
@@ -152,6 +158,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
             Token t = recognizer.getCurrentToken();
             IntervalSet expecting = this.getExpectedTokens(recognizer);
             String msg = "Falta " + expecting.toString(recognizer.getVocabulary()) + " antes de " + this.getTokenErrorDisplay(t);
+            Constants.PROGRAM.setMalformed();
             recognizer.notifyErrorListeners(t, msg, (RecognitionException)null);
         }
     }

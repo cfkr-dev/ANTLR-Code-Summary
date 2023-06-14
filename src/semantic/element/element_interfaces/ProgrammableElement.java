@@ -29,4 +29,8 @@ public interface ProgrammableElement<E extends ProgramElement> extends ProgramEl
     public NumericRealConstant newRealConstant(String value, int line, int column);
 
     public StringConstant newStringConstant(String value, int line, int column);
+
+    public boolean hasReturnPoint();
+
+    public void setReturnPoint();
 }

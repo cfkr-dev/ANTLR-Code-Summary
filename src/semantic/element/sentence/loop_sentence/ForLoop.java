@@ -38,6 +38,7 @@ public class ForLoop extends MasterProgrammableSentence {
         this.assignationAfterIteration = null;
         this.createdIndexVariable = false;
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }

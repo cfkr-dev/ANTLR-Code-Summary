@@ -39,16 +39,12 @@ public class InnerFunctionCall extends MasterFunctionCall {
         return function;
     }
 
-    public void setMalformed() {
-        this.malformed = true;
-    }
-
     @Override
     public FunctionCall call() {
         if (this.errorOnCreation) {
             this.setMalformed();
         } else {
-            if (!this.function.checkCallingParams(this.callingParams))
+            if (!this.function.checkCallingParams(this.callingParams, this.line, this.column))
                 this.setMalformed();
             else
                 this.malformed = false;

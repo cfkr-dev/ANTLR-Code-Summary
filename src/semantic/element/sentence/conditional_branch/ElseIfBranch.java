@@ -30,6 +30,7 @@ public class ElseIfBranch extends MasterConditionalBranch {
         this.logicOperation = logicOperation;
         this.previous = previous;
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }
