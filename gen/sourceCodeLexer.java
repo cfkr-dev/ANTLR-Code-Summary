@@ -6,6 +6,7 @@ import org.antlr.v4.runtime.atn.ATNDeserializer;
 import org.antlr.v4.runtime.atn.LexerATNSimulator;
 import org.antlr.v4.runtime.atn.PredictionContextCache;
 import org.antlr.v4.runtime.dfa.DFA;
+import org.antlr.v4.runtime.misc.Interval;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast", "CheckReturnValue"})
 public class sourceCodeLexer extends Lexer {
@@ -98,6 +99,13 @@ public class sourceCodeLexer extends Lexer {
 	}
 
 
+	@Override
+	public void notifyListeners(LexerNoViableAltException e) {
+	    String text = this._input.getText(Interval.of(this._tokenStartCharIndex, this._input.index()));
+	    String msg = "Error al reconocer un token: '" + this.getErrorDisplay(text) + "'";
+	    ANTLRErrorListener listener = this.getErrorListenerDispatch();
+	    listener.syntaxError(this, (Object)null, this._tokenStartLine, this._tokenStartCharPositionInLine, msg, e);
+	}
 
 
 	public sourceCodeLexer(CharStream input) {
