@@ -104,7 +104,7 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
             return null;
         }
 
-        if (!Type.checkTypeConsistency(firstOperand.getType(), secondOperand.getType())) {
+        if (!Type.checkTypeConsistency(firstOperand.getType(), secondOperand, false)) {
             errorHelper(firstOperand, secondOperand);
         }
 
@@ -116,12 +116,12 @@ public abstract class MasterBinaryOperation extends MasterProgramElement impleme
 
     private void errorHelper(AssignableElement operand) {
         this.setMalformed();
-        System.err.println("ERROR " + line + ":" + column + " => " + operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + operand.toString() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 
     private void errorHelper(AssignableElement operandA, AssignableElement operandB) {
         this.setMalformed();
-        System.err.println("ERROR " + line + ":" + column + " => " + operandA.getName() + " (" + operandA.getType() + ") no es operable con " + operandB.getName() + " (" + operandB.getType() + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + operandA.toString() + " (" + operandA.getType() + ") no es operable con " + operandB.toString() + " (" + operandB.getType() + ")");
     }
 
 }

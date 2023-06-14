@@ -1,6 +1,7 @@
 package semantic.utils.enums;
 
 import semantic.element.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.ProgramElement;
 import semantic.utils.Constants;
 
 public enum Type {
@@ -24,8 +25,11 @@ public enum Type {
         return Constants.TYPE_OPERATION_RULES.get(type).contains(operation);
     }
 
-    public static boolean checkTypeConsistency(Type typeA, Type typeB) {
-        return Constants.TYPE_X_TYPE_RULES.get(typeA).contains(typeB);
+    public static boolean checkTypeConsistency(Type typeA, ProgramElement programElementB, boolean literalRestrictive) {
+        if (literalRestrictive && programElementB.getElementType().equals(Element.LITERAL))
+            return programElementB.getType().equals(typeA);
+        else
+            return Constants.TYPE_X_TYPE_RULES.get(typeA).contains(programElementB.getType());
     }
 
     public static boolean checkTypeCasting(String casterFunctionName) {

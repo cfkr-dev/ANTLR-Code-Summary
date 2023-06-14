@@ -563,8 +563,8 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
     public ReturnPoint addNewReturnPoint(AssignableElement returnElement, int line, int column){
         boolean error = false;
 
-        if (!Type.checkTypeConsistency(this.getSuperContext().getType(), returnElement.getType())) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "El tipo del elemento devuelto debe concordar con el tipo de la función");
+        if (!Type.checkTypeConsistency(this.getSuperContext().getType(), returnElement, true)) {
+            System.err.println("ERROR " + line + ":" + column + " => " + "El tipo del elemento devuelto (" + returnElement.getType() + ") debe concordar con el tipo de la función (" + this.getSuperContext().getType() + ")");
             error = true;
         }
 

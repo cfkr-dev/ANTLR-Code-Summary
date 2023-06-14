@@ -89,6 +89,6 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
 
     private void errorHelper(AssignableElement operand) {
         this.setMalformed();
-        System.err.println("ERROR " + line + ":" + column + " => " + operand.getName() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
+        System.err.println("ERROR " + line + ":" + column + " => " + operand.toString() + " (" + operand.getType() + ") " + "no puede formar parte de esta operación (" + Operation.getOperationName(this.operationType) + ")");
     }
 }

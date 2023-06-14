@@ -118,24 +118,24 @@ public class Function extends MasterSentenceContainer {
         return function.toString();
     }
 
-    public boolean checkCallingParams(List<AssignableElement> params) {
+    public boolean checkCallingParams(List<AssignableElement> params, int line, int column) {
         if (this.malformed) {
             this.setMalformed();
             return false;
         }
 
         if (this.params.size() != params.size()) {
-            if (this.params.size() < params.size())
-                System.err.println("ERROR " + line + ":" + column + " => " + "Parámetros insuficientes para la función" + this.name + ". Se esperaban " + this.params.size());
+            if (this.params.size() > params.size())
+                System.err.println("ERROR " + line + ":" + column + " => " + "Parámetros insuficientes para la función " + this.name + ". Esperados: " + this.params.size() + ". Introducidos: " + params.size());
             else
-                System.err.println("ERROR " + line + ":" + column + " => " + "Más parámetros de lo esperado para la función" + this.name + ". Se esperaban " + this.params.size());
+                System.err.println("ERROR " + line + ":" + column + " => " + "Más parámetros de lo esperado para la función " + this.name + ". Esperados:  " + this.params.size() + ". Introducidos: " + params.size());
             return false;
         }
         else {
             int index = 0;
             for (Variable param: this.params) {
-                if (!Type.checkTypeConsistency(param.getType(), params.get(index).getType())){
-                    System.err.println("ERROR " + line + ":" + column + " => " + "Los tipos no coinciden. Esperado " + param.getName() + " (" + param.getType() + ") pero pero recibido " + params.get(index).getType());
+                if (!Type.checkTypeConsistency(param.getType(), params.get(index), true)){
+                    System.err.println("ERROR " + line + ":" + column + " => " + "Los tipos de los parámetros no coinciden. Esperado " + param.getName() + " (" + param.getType() + ") pero pero recibido " + params.get(index).getType());
                     return false;
                 }
                 index++;
