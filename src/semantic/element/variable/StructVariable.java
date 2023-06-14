@@ -230,6 +230,16 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         return new StringConstant(value, this, line, column);
     }
 
+    @Override
+    public boolean hasReturnPoint() {
+        throw new RuntimeException("Unsupported");
+    }
+
+    @Override
+    public void setReturnPoint() {
+        throw new RuntimeException("Unsupported");
+    }
+
     /**
      * Se delega el comportamiento a el método ".addNewSimpleProperty()"
      */

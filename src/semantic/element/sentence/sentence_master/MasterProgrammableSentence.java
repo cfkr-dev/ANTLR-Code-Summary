@@ -9,5 +9,4 @@ public abstract class MasterProgrammableSentence extends MasterSentenceContainer
     public semantic.utils.enums.Sentence getSentenceType() {
         return this.sentenceType;
     }
-
 }

@@ -34,6 +34,7 @@ public class Function extends MasterSentenceContainer {
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.params = new LinkedList<>();
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }

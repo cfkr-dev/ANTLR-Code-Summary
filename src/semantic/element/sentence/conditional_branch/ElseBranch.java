@@ -27,6 +27,7 @@ public class ElseBranch extends MasterConditionalBranch {
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.previous = previous;
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }

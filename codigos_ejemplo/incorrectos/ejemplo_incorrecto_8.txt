@@ -44,7 +44,7 @@ void fun_b(float number_3, float number_4, float number_5) {
     //*/
 
     /*
-    // ERROR 6 => Intentar devolver un elemento en una función que no devuelve nada
+    // ERROR 6 => Intentar devolver un elemento en una función de tipo void
     return 3;
     //*/
 

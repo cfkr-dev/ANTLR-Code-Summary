@@ -33,6 +33,7 @@ public class Program extends MasterProgrammableElement {
         this.symbolTable = this.initializeSymbolTable();
         this.programElements = new LinkedList<>();
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = 0;
         this.column = 0;
         Constants.PROGRAM = this;
