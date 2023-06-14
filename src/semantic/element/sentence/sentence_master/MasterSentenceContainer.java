@@ -569,7 +569,7 @@ public abstract class  MasterSentenceContainer extends MasterProgrammableElement
         }
 
         if (this.hasReturnPoint && !error) {
-            System.err.println("ERROR " + line + ":" + column + " => Una función no puede tener mas de un punto de retorno dentro de un mismo contexto");
+            System.err.println("ERROR " + line + ":" + column + " => Una función no puede tener más de un punto de retorno dentro de un mismo contexto");
             error = true;
         }
 
