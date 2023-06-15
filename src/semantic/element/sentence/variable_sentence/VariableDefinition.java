@@ -10,7 +10,7 @@ import semantic.utils.enums.Sentence;
 
 public class VariableDefinition extends MasterSimpleSentence implements VariableSentence {
 
-    private Variable variable;
+    private final Variable variable;
 
     public VariableDefinition(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();

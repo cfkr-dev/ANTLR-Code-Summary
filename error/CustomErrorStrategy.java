@@ -147,7 +147,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
             IntervalSet expecting = this.getExpectedTokens(recognizer);
             String msg = "Entrada desconocida " + tokenName + " esperado " + expecting.toString(recognizer.getVocabulary());
             Constants.PROGRAM.setMalformed();
-            recognizer.notifyErrorListeners(t, msg, (RecognitionException)null);
+            recognizer.notifyErrorListeners(t, msg, null);
         }
     }
 
@@ -159,7 +159,7 @@ public class CustomErrorStrategy extends DefaultErrorStrategy {
             IntervalSet expecting = this.getExpectedTokens(recognizer);
             String msg = "Falta " + expecting.toString(recognizer.getVocabulary()) + " antes de " + this.getTokenErrorDisplay(t);
             Constants.PROGRAM.setMalformed();
-            recognizer.notifyErrorListeners(t, msg, (RecognitionException)null);
+            recognizer.notifyErrorListeners(t, msg, null);
         }
     }
 

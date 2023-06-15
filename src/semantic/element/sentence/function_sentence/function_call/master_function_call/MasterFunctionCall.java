@@ -31,7 +31,7 @@ public abstract class MasterFunctionCall extends MasterSimpleSentence implements
     @Override
     public FunctionCall addParam(AssignableElement param) {
         if (param.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible llamar a una función con una expresión malformada (" + param.toString() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible llamar a una función con una expresión malformada (" + param + ")");
             this.errorOnCreation = true;
             return this;
         }

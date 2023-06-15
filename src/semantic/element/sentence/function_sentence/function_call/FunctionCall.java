@@ -12,7 +12,7 @@ public interface FunctionCall extends AssignableElement {
 
     boolean isPartOfExpression();
 
-    public void notPartOfExpression();
+    void notPartOfExpression();
 
     FunctionCall addParam(AssignableElement param);
 

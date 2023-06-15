@@ -10,7 +10,7 @@ import semantic.utils.enums.Sentence;
 
 public class ConstantDefinition extends MasterSimpleSentence implements ConstantSentence {
 
-    private Constant constant;
+    private final Constant constant;
     public ConstantDefinition(Constant constant, ProgrammableElement context, int line, int column) {
         this.type = constant.getType();
         this.name = "CONST_DEF_" + line + "_" + column;

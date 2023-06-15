@@ -10,8 +10,8 @@ import semantic.utils.enums.Sentence;
 
 public class ReturnPoint extends MasterSimpleSentence {
 
-    private Function targetFunction;
-    private AssignableElement returnElement;
+    private final Function targetFunction;
+    private final AssignableElement returnElement;
 
     public ReturnPoint(Function targetFunction, AssignableElement returnElement, ProgrammableElement context, int line, int column) {
         this.type = returnElement.getType();
@@ -31,13 +31,11 @@ public class ReturnPoint extends MasterSimpleSentence {
     public String toHTML(int HTMLIndentationLevel) {
         String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-        return new StringBuilder()
-            .append(tabs)
-            .append(HTMLHelper.genSpan("palres", "return"))
-            .append(" ")
-            .append(this.returnElement.toHTML(HTMLIndentationLevel))
-            .append(";")
-            .append(HTMLHelper.genBr(tabs))
-            .toString();
+        return tabs +
+                HTMLHelper.genSpan("palres", "return") +
+                " " +
+                this.returnElement.toHTML(HTMLIndentationLevel) +
+                ";" +
+                HTMLHelper.genBr(tabs);
     }
 }

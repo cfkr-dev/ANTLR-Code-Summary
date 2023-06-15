@@ -154,12 +154,12 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
 
         if (!context.hasThisSymbol(this.name)) {
             if (!(assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant)) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
 
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
             this.setMalformed();
             return false;
         }
@@ -167,7 +167,7 @@ public class StructVariable extends MasterVariable implements ProgrammableElemen
         if (assignableElement.getValue() instanceof StructVariable) {
 
             if (!context.hasThisSymbol(assignableElement.getValue().getName())) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.toString() + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement + " a " + this.name + " por que " + assignableElement + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }

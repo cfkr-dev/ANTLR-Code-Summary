@@ -10,8 +10,8 @@ import semantic.utils.enums.Type;
 
 public class Constant extends MasterProgramElement {
 
-    private Literal value;
-    private boolean malformed;
+    private final Literal value;
+    private final boolean malformed;
 
     public Constant(String name, Literal value, ProgrammableElement context, int line, int column) {
         this.type = value.getType();

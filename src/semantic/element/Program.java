@@ -23,7 +23,7 @@ import java.util.Map;
 
 public class Program extends MasterProgrammableElement {
 
-    private List<ProgramElement> programElements;
+    private final List<ProgramElement> programElements;
 
     public Program() {
         this.name = Constants.FILE_NAME;
@@ -205,27 +205,26 @@ public class Program extends MasterProgrammableElement {
         StringBuilder HTMLMainProgram = generateMainProgram(declarations, mainProgram);
 
         // MAIN HTML CODE
-        StringBuilder HTMLProgram = new StringBuilder()
-            .append("<!doctype html>\n")
-            .append("<html>\n")
-                .append("\t<head>\n")
-                    .append("\t\t<title>").append(this.name).append("</title>\n")
-                    .append("\t\t<style>\n")
-                        .append("\t\t\t.palres {font-weight: bold;}\n")
-                        .append("\t\t\t.cte {color:green;}\n")
-                        .append("\t\t\t.ident {color:blue;}\n")
-                        .append("\t\t\tdiv {margin-left: 1.5rem;}\n")
-                    .append("\t\t</style>\n")
-                .append("\t</head>\n")
-                .append("\t<body>\n")
-                    .append("\t\t").append(HTMLHelper.genH(1, "Programa: " + this.name)).append("\n\n")
-                    .append(HTMLFunctionHeaders)
-                    .append(HTMLFunctionBodies)
-                    .append(HTMLMainProgram)
-                .append("\t</body>\n")
-            .append("</html>");
+        String HTMLProgram = "<!doctype html>\n" +
+                "<html>\n" +
+                "\t<head>\n" +
+                "\t\t<title>" + this.name + "</title>\n" +
+                "\t\t<style>\n" +
+                "\t\t\t.palres {font-weight: bold;}\n" +
+                "\t\t\t.cte {color:green;}\n" +
+                "\t\t\t.ident {color:blue;}\n" +
+                "\t\t\tdiv {margin-left: 1.5rem;}\n" +
+                "\t\t</style>\n" +
+                "\t</head>\n" +
+                "\t<body>\n" +
+                "\t\t" + HTMLHelper.genH(1, "Programa: " + this.name) + "\n\n" +
+                HTMLFunctionHeaders +
+                HTMLFunctionBodies +
+                HTMLMainProgram +
+                "\t</body>\n" +
+                "</html>";
 
-        return HTMLProgram.toString();
+        return HTMLProgram;
     }
 
     private StringBuilder generateFunctionHeadersList(List<Function> functions) {

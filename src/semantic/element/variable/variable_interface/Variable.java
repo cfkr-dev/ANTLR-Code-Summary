@@ -7,8 +7,8 @@ import semantic.element.element_interfaces.ProgrammableElement;
 public interface Variable extends ProgramElement {
     boolean setValue(AssignableElement assignableElement, ProgrammableElement context, int line, int column);
     AssignableElement getValue();
-    public void forceSetValue(AssignableElement assignableElement);
-    public Variable variableClone();
-    public Variable variableClone(String name);
-    public void forceSetMalformed();
+    void forceSetValue(AssignableElement assignableElement);
+    Variable variableClone();
+    Variable variableClone(String name);
+    void forceSetMalformed();
 }

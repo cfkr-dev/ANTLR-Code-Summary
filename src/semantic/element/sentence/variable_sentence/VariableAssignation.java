@@ -10,7 +10,7 @@ import semantic.utils.enums.Sentence;
 import semantic.utils.enums.Type;
 
 public class VariableAssignation extends MasterSimpleSentence implements VariableSentence {
-    private Variable variable;
+    private final Variable variable;
 
     public VariableAssignation(Variable variable, ProgrammableElement context, int line, int column) {
         this.type = variable.getType();

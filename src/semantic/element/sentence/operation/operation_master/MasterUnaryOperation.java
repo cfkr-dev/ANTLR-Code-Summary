@@ -74,7 +74,7 @@ public abstract class MasterUnaryOperation extends MasterProgramElement implemen
         }
 
         if (firstOperand.isMalformed()) {
-            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand.toString() + ")");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No es posible operar con una expresión malformada (" + firstOperand + ")");
             this.setMalformed();
             return null;
         }

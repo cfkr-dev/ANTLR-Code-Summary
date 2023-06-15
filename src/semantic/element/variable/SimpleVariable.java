@@ -68,12 +68,12 @@ public class SimpleVariable extends MasterVariable {
 
         if (!context.hasThisSymbol(this.name)) {
             if (!(assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant)) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }
 
-            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
+            System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement + " a " + this.name + " por que " + this.name + " no ha sido declarado previamente");
             this.setMalformed();
             return false;
         }
@@ -81,7 +81,7 @@ public class SimpleVariable extends MasterVariable {
         if (assignableElement.getValue() instanceof Variable || assignableElement.getValue() instanceof Constant) {
 
             if (!context.hasThisSymbol(assignableElement.getValue().getName())) {
-                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement.toString() + " a " + this.name + " por que " + assignableElement.toString() + " no ha sido declarado previamente");
+                System.err.println("ERROR " + line + ":" + column + " => " + "No se puede asignar " + assignableElement + " a " + this.name + " por que " + assignableElement + " no ha sido declarado previamente");
                 this.setMalformed();
                 return false;
             }

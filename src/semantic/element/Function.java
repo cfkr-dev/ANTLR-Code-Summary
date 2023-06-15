@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 public class Function extends MasterSentenceContainer {
-    private List<Variable> params;
+    private final List<Variable> params;
 
     public Function(String type, String name, Program context, int line, int column) {
         this.type = Type.valueOf(type.toUpperCase());

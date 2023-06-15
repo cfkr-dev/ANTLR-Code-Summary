@@ -5,29 +5,29 @@ import semantic.utils.enums.Type;
 
 public interface ProgramElement {
 
-    public String getAnchorContext();
-    public Type getType();
+    String getAnchorContext();
+    Type getType();
 
-    public String getName();
+    String getName();
 
-    public Element getElementType();
+    Element getElementType();
 
-    public ProgrammableElement getContext();
+    ProgrammableElement getContext();
 
-    public ProgramElement forceChangeContext(ProgrammableElement context);
+    ProgramElement forceChangeContext(ProgrammableElement context);
 
-    public ProgramElement forceChangeContext(ProgrammableElement context, String customAnchorContext);
+    ProgramElement forceChangeContext(ProgrammableElement context, String customAnchorContext);
 
-    public ProgrammableElement getSuperContext();
+    ProgrammableElement getSuperContext();
 
-    public int getLine();
+    int getLine();
 
-    public int getColumn();
+    int getColumn();
 
-    public boolean isMalformed();
+    boolean isMalformed();
 
-    public void setMalformed();
+    void setMalformed();
 
-    public String toHTML(int HTMLIndentationLevel);
+    String toHTML(int HTMLIndentationLevel);
 
 }

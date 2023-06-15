@@ -11,7 +11,7 @@ import java.util.LinkedList;
 
 public class InnerFunctionCall extends MasterFunctionCall {
 
-    private Function function;
+    private final Function function;
 
     public InnerFunctionCall(Function function, ProgrammableElement context, int line, int column) {
         if (Type.checkTypeCasting(function.getName()))
