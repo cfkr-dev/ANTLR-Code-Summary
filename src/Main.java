@@ -10,8 +10,10 @@ public class Main {
     public static void main(String[] args) throws InstantiationException {
         try {
             // Check arguments
-            if (args.length == 0)
+            if (args.length == 0) {
                 System.err.println("Argumentos incorrectos: para iniciar el conversor indique la ruta de fichero de entrada");
+                throw new IllegalArgumentException();
+            }
 
             // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
@@ -57,12 +59,16 @@ public class Main {
             System.err.println("\nERROR => El analisis ha sido abortado (Error de reconocimiento).");
 
         } catch (IOException e) {
-            // Input / Output recognition error
+            // Input / Output error
             System.err.println("\nERROR => El analisis ha sido abortado (Error de entrada/salida).");
+
+        } catch (IllegalArgumentException e) {
+            // Arguments error
+            System.err.println("\nERROR => El analisis ha sido abortado (Error de argumentos).");
 
         } catch (java.lang.RuntimeException e) {
             // Other fail
-            System.err.println("\nERROR => El analisis ha sido abortado (Se han detectado errores sintácticos).");
+            System.err.println("\nERROR => El analisis ha sido abortado (Se han detectado errores en el proceso de parsing).");
         }
     }
 }
