@@ -12,7 +12,7 @@ public class Main {
     public static void main(String[] args) throws InstantiationException {
         try {
             // Check arguments
-            if (args.length == 0) {
+            if (args.length != 1) {
                 System.err.println("Argumentos incorrectos: para iniciar indique la ruta de un fichero de entrada");
                 exit(1);
             }
