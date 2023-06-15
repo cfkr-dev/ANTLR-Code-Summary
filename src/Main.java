@@ -6,13 +6,15 @@ import semantic.utils.Constants;
 import java.io.File;
 import java.io.IOException;
 
+import static java.lang.System.exit;
+
 public class Main {
     public static void main(String[] args) throws InstantiationException {
         try {
             // Check arguments
             if (args.length == 0) {
-                System.err.println("Argumentos incorrectos: para iniciar el conversor indique la ruta de fichero de entrada");
-                throw new IllegalArgumentException();
+                System.err.println("Argumentos incorrectos: para iniciar indique la ruta de un fichero de entrada");
+                exit(1);
             }
 
             // Create input stream for reading file
@@ -61,10 +63,6 @@ public class Main {
         } catch (IOException e) {
             // Input / Output error
             System.err.println("\nERROR => El analisis ha sido abortado (Error de entrada/salida).");
-
-        } catch (IllegalArgumentException e) {
-            // Arguments error
-            System.err.println("\nERROR => El analisis ha sido abortado (Error de argumentos).");
 
         } catch (java.lang.RuntimeException e) {
             // Other fail
