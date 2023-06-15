@@ -42,6 +42,23 @@ public void notifyListeners(LexerNoViableAltException e) {
 }
 }
 
+
+// **** OVERLOAD CONSTRUCTOR AND ADD PROGRAM REFERENCE ****
+// --------------------------------------------------------
+
+@parser::members{
+private Program program;
+
+public sourceCodeParser(TokenStream input, boolean addProgramReference) {
+    super(input);
+    _interp = new ParserATNSimulator(this,_ATN,_decisionToDFA,_sharedContextCache);
+    if(addProgramReference) {
+        this.program = new Program();
+        Constants.PROGRAM = this.program;
+    }
+}
+}
+
 /*
 |-------------------------------------|
 |        GRAMMAR SPECIFICATION        |
@@ -50,13 +67,11 @@ public void notifyListeners(LexerNoViableAltException e) {
 
     // **** MAIN SECTION ****
     // ----------------------
-        program_prime
-            : {Program program = new Program(); Constants.PROGRAM = program;}  program[program]
-            ;
-        program[Program context]
-            : sentlist[$context]
-            | funlist[$context] sentlist[$context]
-            | dcllist[$context] program_aux[$context]
+
+        program
+            : sentlist[program]
+            | funlist[program] sentlist[program]
+            | dcllist[program] program_aux[program]
             ;
 
         program_aux[Program context]

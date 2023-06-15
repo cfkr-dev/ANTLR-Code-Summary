@@ -24,16 +24,6 @@ import org.antlr.v4.runtime.tree.ParseTreeListener;
  */
 public interface sourceCodeListener extends ParseTreeListener {
 	/**
-	 * Enter a parse tree produced by {@link sourceCodeParser#program_prime}.
-	 * @param ctx the parse tree
-	 */
-	void enterProgram_prime(sourceCodeParser.Program_primeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link sourceCodeParser#program_prime}.
-	 * @param ctx the parse tree
-	 */
-	void exitProgram_prime(sourceCodeParser.Program_primeContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link sourceCodeParser#program}.
 	 * @param ctx the parse tree
 	 */

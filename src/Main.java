@@ -20,6 +20,9 @@ public class Main {
             // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
 
+            // Get source file name
+            Constants.FILE_NAME = new File(args[0]).getName();
+
             // Create lexer
             sourceCodeLexer lexer = new sourceCodeLexer(input);
 
@@ -27,7 +30,7 @@ public class Main {
             CommonTokenStream tokens = new CommonTokenStream(lexer);
 
             // Create parser
-            sourceCodeParser parser = new sourceCodeParser(tokens);
+            sourceCodeParser parser = new sourceCodeParser(tokens, true);
 
             // Remove default error listener from lexer
             lexer.removeErrorListeners();
@@ -44,11 +47,8 @@ public class Main {
             // Add custom error strategy to parser
             parser.setErrorHandler(new CustomErrorStrategy());
 
-            // Get source file name
-            Constants.FILE_NAME = new File(args[0]).getName();
-
             // Run parser
-            parser.program_prime();
+            parser.program();
 
             // Create HTML string
             String HTML = Constants.PROGRAM.toHTML(0);

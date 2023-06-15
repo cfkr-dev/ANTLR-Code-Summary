@@ -33,18 +33,6 @@ public class sourceCodeBaseListener implements sourceCodeListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterProgram_prime(sourceCodeParser.Program_primeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitProgram_prime(sourceCodeParser.Program_primeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterProgram(sourceCodeParser.ProgramContext ctx) { }
 	/**
 	 * {@inheritDoc}

@@ -2,7 +2,7 @@
 
    Para ejecutar este script y poder apreciar los errores hemos comentado las lineas que los producen de modo que
    si se desea observar el comportamiento de un determinado error, basta con añadir '//' al comienzo de la línea
-   superior que contenga el siguiente patrón 'ERROR N =>'. Por ejemplo. Añade '//' en línea 11 - columna 1.
+   superior que contenga el siguiente patrón 'ERROR N =>'. Por ejemplo. Añade '/' en línea 11 - columna 1.
 
 */
 
