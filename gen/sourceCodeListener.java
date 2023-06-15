@@ -1,4 +1,21 @@
 // Generated from /data_linux/UNIVERSIDAD/GII_GIS_5/PL/Practicas/practica_obligatoria/src/sourceCode.g4 by ANTLR 4.12.0
+
+import semantic.utils.Constants;
+import semantic.element.Function;
+import semantic.element.Program;
+import semantic.element.element_interfaces.AssignableElement;
+import semantic.element.element_interfaces.ProgrammableElement;
+import semantic.element.literal.literal_master.Literal;
+import semantic.element.sentence.conditional_branch.ConditionalBranch;
+import semantic.element.sentence.function_sentence.function_call.FunctionCall;
+import semantic.element.sentence.loop_sentence.DoWhileLoop;
+import semantic.element.sentence.loop_sentence.ForLoop;
+import semantic.element.sentence.operation.operation_master.arithmetic.ArithmeticOperation;
+import semantic.element.sentence.operation.operation_master.comparison.ComparisonOperation;
+import semantic.element.sentence.operation.operation_master.logical.BinaryLogicalOperation;
+import semantic.element.sentence.sentence_master.MasterSentenceContainer;
+import semantic.element.variable.StructVariable;
+
 import org.antlr.v4.runtime.tree.ParseTreeListener;
 
 /**

@@ -1,28 +1,24 @@
 import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
+import semantic.utils.Constants;
 
+import java.io.File;
 import java.io.IOException;
 
-import static semantic.utils.Constants.FILE_NAME;
-import static semantic.utils.Constants.PROGRAM;
+import static java.lang.System.exit;
 
 public class Main {
     public static void main(String[] args) throws InstantiationException {
         try {
-
             // Check arguments
-            if (args.length == 0)
-                System.err.println("Argumentos incorrectos: para iniciar el conversor indique la ruta de fichero de entrada");
+            if (args.length == 0) {
+                System.err.println("Argumentos incorrectos: para iniciar indique la ruta de un fichero de entrada");
+                exit(1);
+            }
 
             // Create input stream for reading file
             CharStream input = CharStreams.fromFileName(args[0]);
-
-            // Save file name
-            FILE_NAME = args[0];
-
-            // Start HTML generator
-            HTMLFileGen.starter();
 
             // Create lexer
             sourceCodeLexer lexer = new sourceCodeLexer(input);
@@ -48,23 +44,29 @@ public class Main {
             // Add custom error strategy to parser
             parser.setErrorHandler(new CustomErrorStrategy());
 
+            // Get source file name
+            Constants.FILE_NAME = new File(args[0]).getName();
+
             // Run parser
             parser.program_prime();
 
-            // Start generation
-            HTMLFileGen.generate(PROGRAM.toHTML());
+            // Create HTML string
+            String HTML = Constants.PROGRAM.toHTML(0);
+
+            // Generate HTML file
+            HTMLFileGen.generate(HTML);
 
         } catch (org.antlr.v4.runtime.RecognitionException e) {
             // Input recognition error
-            System.err.println("Error de reconocimiento: " + e.getMessage());
+            System.err.println("\nERROR => El analisis ha sido abortado (Error de reconocimiento).");
 
         } catch (IOException e) {
-            // Input / Output recognition error
-            System.err.println("Error de entrada/salida: " + e.getMessage());
+            // Input / Output error
+            System.err.println("\nERROR => El analisis ha sido abortado (Error de entrada/salida).");
 
         } catch (java.lang.RuntimeException e) {
             // Other fail
-            System.err.println("Error de ejecución: " + e.getMessage());
+            System.err.println("\nERROR => El analisis ha sido abortado (Se han detectado errores en el proceso de parsing).");
         }
     }
 }

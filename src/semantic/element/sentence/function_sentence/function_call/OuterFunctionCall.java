@@ -10,17 +10,21 @@ import java.util.LinkedList;
 
 public class OuterFunctionCall extends MasterFunctionCall {
 
-    public OuterFunctionCall(String functionName, ProgrammableElement context, Boolean partOfExpression, int line, int column) {
-        this.type = Type.ANY;
-        this.name = functionName + "_CALL";
+    public OuterFunctionCall(String functionName, ProgrammableElement context, int line, int column) {
+        if (Type.checkTypeCasting(functionName))
+            this.type = Type.valueOf(functionName);
+        else
+            this.type = Type.ANY;
+        this.name = "OUTER_CALL_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
-        this.sentenceType = Sentence.FUNCT_CALL;
+        this.sentenceType = Sentence.OUTER_FUNCT_CALL;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.functionName = functionName;
         this.callingParams = new LinkedList<>();
-        this.partOfExpression = partOfExpression;
         this.malformed = true;
+        this.partOfExpression = true;
         this.errorOnCreation = false;
         this.line = line;
         this.column = column;

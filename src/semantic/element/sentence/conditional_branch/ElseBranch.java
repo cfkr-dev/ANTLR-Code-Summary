@@ -3,6 +3,7 @@ package semantic.element.sentence.conditional_branch;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -16,15 +17,17 @@ public class ElseBranch extends MasterConditionalBranch {
 
     public ElseBranch(ConditionalBranch previous, ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = "_ELSE_BRANCH";
+        this.name = "ELSE_BRANCH_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.ELSE;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.previous = previous;
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }
@@ -38,14 +41,25 @@ public class ElseBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-        String HTMLElse = new String();
+        StringBuilder HTMLElse = new StringBuilder()
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "else"))
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("{")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("<div>\n");
 
-        HTMLElse = "<p><SPAN CLASS=\"ident\">else</SPAN> {</p>\n";
-        HTMLElse += this.toHTMLBrackets();
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLElse.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
-        return HTMLElse;
+        HTMLElse
+            .append(tabs).append("</div>\n\n")
+            .append(tabs).append("}")
+            .append(HTMLHelper.genBr(tabs));
 
+        return HTMLElse.toString();
     }
 }

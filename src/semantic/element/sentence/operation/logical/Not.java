@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Not extends UnaryLogicalOperation {
     public Not(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "NOT";
+        this.name = "NOT_" + line + "_" + column;
         this.symbol = "!";
         this.operationType = Operation.NOT;
 

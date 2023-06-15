@@ -6,6 +6,6 @@ import semantic.utils.enums.Type;
 
 public interface BinaryOperation extends AssignableElement {
 
-    public Type assertType(AssignableElement firstOperand, AssignableElement secondOperand);
+    Type assertType(AssignableElement firstOperand, AssignableElement secondOperand);
     MasterBinaryOperation setParenthesis();
 }

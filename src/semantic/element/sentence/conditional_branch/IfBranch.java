@@ -4,6 +4,7 @@ import semantic.element.element_interfaces.AssignableElement;
 import semantic.element.element_interfaces.ProgramElement;
 import semantic.element.element_interfaces.ProgrammableElement;
 import semantic.utils.Constants;
+import semantic.utils.HTMLHelper;
 import semantic.utils.enums.Element;
 import semantic.utils.enums.Sentence;
 
@@ -18,16 +19,18 @@ public class IfBranch extends MasterConditionalBranch {
 
     public IfBranch(AssignableElement logicOperation, ProgrammableElement context, int line, int column) {
         this.type = null;
-        this.name = logicOperation.getValue() + "_IF_BRANCH";
+        this.name = "IF_BRANCH_" + line + "_" + column;
         this.elementType = Element.SENTENCE;
         this.sentenceType = Sentence.IF;
         this.context = context;
         this.superContext = context.getSuperContext();
+        this.anchorContext = context.getAnchorContext() + ":" + this.name;
         this.sentences = new LinkedList<>();
         this.symbolTable = generateLocalSymbolTable(context.getSymbolTable());
         this.logicOperation = logicOperation;
         this.previous = null;
         this.malformed = false;
+        this.hasReturnPoint = false;
         this.line = line;
         this.column = column;
     }
@@ -41,14 +44,26 @@ public class IfBranch extends MasterConditionalBranch {
     }
 
     @Override
-    public String toHTML() {
+    public String toHTML(int HTMLIndentationLevel) {
+        String tabs = HTMLHelper.genTabs(HTMLIndentationLevel);
 
-        String HTMLIf = new String();
+        StringBuilder HTMLIf = new StringBuilder()
+            .append(tabs)
+            .append(HTMLHelper.genSpan("palres", "if"))
+            .append(this.logicOperation.toHTML(HTMLIndentationLevel))
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("{")
+            .append(HTMLHelper.genBr(tabs))
+            .append(tabs).append("<div>\n");
 
-        HTMLIf = "<p><SPAN CLASS=\"ident\">if</SPAN> (" + this.logicOperation.toHTML() + ") {</p>\n";
-        HTMLIf += this.toHTMLBrackets();
+        for (semantic.element.sentence.sentence_interface.Sentence sentence: this.sentences)
+            HTMLIf.append(sentence.toHTML(HTMLIndentationLevel + 1));
 
-        return HTMLIf;
+        HTMLIf
+            .append(tabs).append("</div>\n\n")
+            .append(tabs).append("}")
+            .append(HTMLHelper.genBr(tabs));
 
+        return HTMLIf.toString();
     }
 }

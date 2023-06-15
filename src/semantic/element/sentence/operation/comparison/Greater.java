@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Greater extends ComparisonOperation {
     public Greater(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "GREATER";
+        this.name = "GREATER_" + line + "_" + column;
         this.symbol = ">";
         this.operationType = Operation.GREATER;
 

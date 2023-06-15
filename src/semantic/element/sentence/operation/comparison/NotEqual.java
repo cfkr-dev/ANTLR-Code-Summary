@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class NotEqual extends ComparisonOperation {
     public NotEqual(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "NotEqual";
+        this.name = "NotEqual_" + line + "_" + column;
         this.symbol = "!=";
         this.operationType = Operation.NOT_EQUAL;
 

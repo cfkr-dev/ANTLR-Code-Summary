@@ -6,6 +6,6 @@ import semantic.utils.enums.Type;
 
 public interface UnaryOperation extends AssignableElement {
 
-    public Type assertType(AssignableElement firstOperand);
-    public MasterUnaryOperation setParenthesis();
+    Type assertType(AssignableElement firstOperand);
+    MasterUnaryOperation setParenthesis();
 }

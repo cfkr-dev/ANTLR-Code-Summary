@@ -7,7 +7,7 @@ import semantic.utils.enums.Operation;
 public class Subtraction extends ArithmeticOperation {
     public Subtraction(ProgrammableElement context, int line, int column) {
         super(context, line, column);
-        this.name = "SUBTRACTION";
+        this.name = "SUBTRACTION_" + line + "_" + column;
         this.symbol = "-";
         this.operationType = Operation.SUBTRACTION;
 

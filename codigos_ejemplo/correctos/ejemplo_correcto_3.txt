@@ -1,5 +1,5 @@
 integer entero_1= 0953 ;
-integer _entero2= -690 ;
+integer _entero_2= -690 ;
 float __float1_ = +.456;
 float float2_ = +045e16;
 float float3 = -00.69;
@@ -13,12 +13,14 @@ integer calc_integer(integer number_1,integer number_2){
 }
 integer calc_float(float number_3,float number_4, float number_5){
    float number_float ;
-   number_float= ((number_3-number_4) DIV number_5)
-   MOD number_3*(number_3-number_5);
+   number_float= INTEGER(((number_3-number_4) DIV number_5))
+   MOD INTEGER(number_3*(number_3-number_5));
    return number_float;
 }
 
 void Main (){
+
+integer n;
 
 do{
     print(frase);

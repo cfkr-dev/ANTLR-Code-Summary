@@ -24,9 +24,13 @@ public interface ProgrammableElement<E extends ProgramElement> extends ProgramEl
 
     ProgramElement getSymbolByNameAndElement(String name, Element element);
 
-    public NumericIntegerConstant newIntegerConstant(String value, int line, int column);
+    NumericIntegerConstant newIntegerConstant(String value, int line, int column);
 
-    public NumericRealConstant newRealConstant(String value, int line, int column);
+    NumericRealConstant newRealConstant(String value, int line, int column);
 
-    public StringConstant newStringConstant(String value, int line, int column);
+    StringConstant newStringConstant(String value, int line, int column);
+
+    boolean hasReturnPoint();
+
+    void setReturnPoint();
 }
