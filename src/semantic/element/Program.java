@@ -36,7 +36,6 @@ public class Program extends MasterProgrammableElement {
         this.hasReturnPoint = false;
         this.line = 0;
         this.column = 0;
-        Constants.PROGRAM = this;
     }
 
     private Map<Element, Map<String, ProgramElement>> initializeSymbolTable () {

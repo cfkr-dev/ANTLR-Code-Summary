@@ -27,12 +27,6 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface sourceCodeVisitor<T> extends ParseTreeVisitor<T> {
 	/**
-	 * Visit a parse tree produced by {@link sourceCodeParser#program_prime}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitProgram_prime(sourceCodeParser.Program_primeContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link sourceCodeParser#program}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
